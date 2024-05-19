@@ -16,7 +16,8 @@ module.exports = {
       },
       fontFamily: {
         'roboto': ['Roboto', 'sand-serif'],
-        'poppins': ['Poppins', 'sand-serif']
+        'poppins': ['Poppins', 'sand-serif'],
+        'ruthie': ['Ruthie', 'sand-serif'],
       }
     },
     accentColor: ({ theme }) => ({

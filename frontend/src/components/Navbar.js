@@ -8,7 +8,7 @@ const Navbar = () => {
     const toggleBurgerIcon = () => {
         setBurgerIcon(!burgerIcon);
         setMenuVisible(!menuVisible);
-    }
+    }    
     
     return(
         <nav className=' flex items-center justify-between border border-b-1 border-b-gray-200 font-roboto h-14'>
@@ -16,7 +16,7 @@ const Navbar = () => {
             <a href="/"><img className=' w-30 h-20' src={logoDark} alt="campus bodima" /></a>
             </div>
 
-            <ul className=' hidden md:flex flex-grow justify-evenly mx-16 text-cusGray'>
+            <ul className=' hidden md:flex flex-grow justify-evenly mx-16 md:px-1 lg:px-28 text-cusGray'>
             <li><a href="/">Home</a></li>
             <li><a href="">Map</a></li>
             <li><a href="">Post Ad</a></li>
@@ -35,7 +35,7 @@ const Navbar = () => {
             </div>       
 
             <div className=' mx-10 hidden md:block'>
-            <button className='btn bg-primary'>Log in</button>
+                <button className='btn bg-primary' onClick={() => window.location.href = '/login'}>Log in</button>
             </div>
 
             {menuVisible && (
@@ -48,7 +48,7 @@ const Navbar = () => {
                 <li><a href="" className='block w-full text-center'>Profile</a></li>
                 </ul>
                 <div className=' flex justify-center'>
-                <button className='btn bg-primary'>Log in</button>
+                    <button className='btn bg-primary' onClick={() => window.location.href = '/login'}>Log in</button>
                 </div>
             </div>
             )}
