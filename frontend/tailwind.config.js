@@ -2,6 +2,8 @@
 module.exports = {
   content: [
     "./src/App.js",
+    "./src/pages/**.js",
+    "./src/components/**.js"
   ],
   presets: [],
   darkMode: 'media', // or 'class'
