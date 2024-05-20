@@ -16,8 +16,8 @@ const Navbar = () => {
             <a href="/"><img className=' w-30 h-20' src={logoDark} alt="campus bodima" /></a>
             </div>
 
-            <ul className=' hidden md:flex flex-grow justify-evenly mx-16 md:px-1 lg:px-28 text-cusGray'>
-            <li><a href="/">Home</a></li>
+            <ul className=' hidden md:flex flex-grow justify-evenly mx-16 lg:px-32 text-cusGray'>
+            <li><a href="/" className=' hover:border-b-2 border-cusGray'>Home</a></li>
             <li><a href="">Map</a></li>
             <li><a href="">Post Ad</a></li>
             <li><a href="">About Us</a></li>

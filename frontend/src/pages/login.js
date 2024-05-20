@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import LoginSideView from "../components/LoginSideView";
+import { useForm } from "react-hook-form";
 
 const Login = () => {
     const [isStudent, setIsStudent] = useState(true);
+    const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+
+    const email = watch('email');
+    const password = watch('password');
 
     const togglePx = isStudent ? '0px' : '127px';
     const stdTxtClr = isStudent ? 'white' : 'black';
@@ -19,6 +24,10 @@ const Login = () => {
         setIsStudent(false);
     };
 
+    const onSubmit = () => {
+        console.log(email, password, accType);
+    }
+
     useEffect(() => console.log(accType), [accType])
 
     return(
@@ -31,12 +40,14 @@ const Login = () => {
                 </div>
 
                 <div className=' flex justify-center'>                    
-                    <form action="" className=' w-full lg:w-96'>
+                    <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
                         <p className=' mt-3 mb-1'>Email</p>
-                        <input type="email" name='name' className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='johndoyle@gmail.com'/>
+                        <input type="email" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='johndoyle@gmail.com'
+                        {...register('email', { maxLength: 100})}/>
+                        {errors.email && <span className=" text-red-600 text-sm">max character limit is 100</span>}
 
                         <p className=' mt-3 mb-1'>Password</p>
-                        <input type="password" name='name' className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='*******'/>
+                        <input type="password" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='*******'/>
                                                 
                         <div className="flex justify-center mt-6">
                             <div className="relative w-64 border border-gray-500 rounded-full">
