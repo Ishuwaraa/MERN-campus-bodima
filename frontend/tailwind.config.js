@@ -535,6 +535,7 @@ module.exports = {
     },
     height: ({ theme }) => ({
       auto: 'auto',
+      '128': '32rem',
       ...theme('spacing'),
       '1/2': '50%',
       '1/3': '33.333333%',
@@ -891,6 +892,10 @@ module.exports = {
       72: '18rem',
       80: '20rem',
       96: '24rem',
+      110:'31rem',
+      115:'40rem',
+      120:'55rem',
+      125:'85rem'
     },
     stroke: ({ theme }) => ({
       none: 'none',
@@ -1023,6 +1028,7 @@ module.exports = {
     }),
     width: ({ theme }) => ({
       auto: 'auto',
+      '100': '34rem',
       ...theme('spacing'),
       '1/2': '50%',
       '1/3': '33.333333%',
