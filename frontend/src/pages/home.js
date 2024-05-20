@@ -1,4 +1,6 @@
 import Navbar from "../components/Navbar";
+import AdDetail from "../components/AdDetail";
+import card from '../assets/card.png';
 import heropic from "../assets/home/heropic.png";
 import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
@@ -48,6 +50,17 @@ const Home = () => {
           <img src={sticker1} alt="sticker1"/>
         </div>
 
+      </div>
+
+        cards
+      <div className=" mx-5 my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <AdDetail 
+            image={card} 
+            title='NSBM Hostel Lodge' 
+            location='76, Vihara rd, Homagama'
+            price='4500'
+            rating='3.5' 
+        />            
       </div>
 
 

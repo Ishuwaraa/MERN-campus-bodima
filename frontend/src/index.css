@@ -5,3 +5,7 @@
 .btn {
     @apply text-white text-xl font-bold px-3 py-1 rounded-lg text-center
 }
+
+.card {
+    @apply w-80 rounded-lg overflow-hidden shadow-md relative cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200;
+}
