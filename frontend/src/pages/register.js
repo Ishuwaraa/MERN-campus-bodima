@@ -6,7 +6,7 @@ const Register = () => {
             <LoginSideView />
 
             <div className=' m-10 font-poppins'>
-                <div className=' flex justify-center mb-14'>
+                <div className=' flex justify-center mb-10 md:mb-14'>
                     <p className=' font-bold text-2xl text-cusGray'>Let's get started</p>
                 </div>
                 <div className=' flex justify-center'>                    
@@ -34,7 +34,7 @@ const Register = () => {
                             <button className='btn bg-primary'>Create profile</button>
                         </div>
                         
-                        <div className=' flex justify-center mt-1'>
+                        <div className=' flex justify-center mt-2'>
                             <p>Already have an account? <a href="/login" className=' text-primary'>Log in</a></p>
                         </div>
 
