@@ -12,7 +12,29 @@ const Home = () => {
     <div>
       <Navbar />
 
-      <div className="box-border md:w-128 p-4 border-2 mt-28 mx-10 md:h-128 border-primary rounded-lg w-128 h-115 ">
+      <div className="box-border p-4 border-2 mt-28 mx-10 border-primary rounded-lg flex flex-col md:flex-row md:items-start">
+  <div className="md:w-1/3 flex justify-center md:justify-end mb-10 md:mb-0">
+    <img src={heropic} alt="hero" className="w-56 md:w-full"/>
+  </div>
+  <div className="flex flex-col flex-grow items-center md:items-start md:ml-10">
+    <h1 className="font-roboto text-4xl md:text-7xl font-semibold text-primary leading-tight text-center md:text-left">
+      Your Premier <br /> Student <span className="text-secondary">Housing</span> <br /> Solution
+    </h1>
+    <div className="box-border border-2 border-secondary mt-10 md:mt-20 rounded-lg flex items-center w-full md:w-auto px-4">
+      <input
+        type="text"
+        placeholder="Search by university..."
+        className="bg-transparent border-none outline-none h-11 flex-grow p-3"
+      />
+      <div className="text-secondary ml-4">
+        <Search />
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      {/* <div className="box-border md:w-128 p-4 border-2 mt-28 mx-10 md:h-128 border-primary rounded-lg w-128 h-115 ">
         <div className=" md:w-1/3 md:absolute md:top-16 md:right-20 w-56 mx-10 mt-10">
           <img src={heropic} alt="hero" />
         </div>
@@ -32,7 +54,7 @@ const Home = () => {
             className="w-96 bg-transparent border-none outline-none h-11 p-3"
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="md:mt-72 mt-64 ">
         <div className="md:mx-40 font-roboto">
@@ -135,7 +157,7 @@ const Home = () => {
       <br />
       <br />
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };
