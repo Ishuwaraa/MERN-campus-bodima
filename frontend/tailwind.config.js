@@ -12,7 +12,9 @@ module.exports = {
       colors: {
         primary: '#FF7A00',
         secondary: '#0B3CEA',
+        footerb: '#1A2A66',
         cusGray: '#555453',
+        ashGray: '#DADADA'
       },
       fontFamily: {
         'roboto': ['Roboto', 'sand-serif'],
@@ -646,6 +648,8 @@ module.exports = {
     },
     margin: ({ theme }) => ({
       auto: 'auto',
+      
+
       ...theme('spacing'),
     }),
     lineClamp: {
@@ -895,7 +899,9 @@ module.exports = {
       110:'31rem',
       115:'40rem',
       120:'55rem',
-      125:'85rem'
+      121:'66rem',
+      122:'77rem',
+      125:'85rem',
     },
     stroke: ({ theme }) => ({
       none: 'none',
@@ -1029,6 +1035,7 @@ module.exports = {
     width: ({ theme }) => ({
       auto: 'auto',
       '100': '34rem',
+      '101'  : '30rem',
       ...theme('spacing'),
       '1/2': '50%',
       '1/3': '33.333333%',
@@ -1064,6 +1071,7 @@ module.exports = {
       min: 'min-content',
       max: 'max-content',
       fit: 'fit-content',
+      
     }),
     willChange: {
       auto: 'auto',
