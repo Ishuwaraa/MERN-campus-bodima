@@ -6,91 +6,79 @@ import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
 import about from "../assets/home/about.jpg";
 import { Search } from "lucide-react";
-import Footer from "../components/Footer";
+
 const Home = () => {
   return (
     <div>
       <Navbar />
 
-      <div className="box-border p-4 border-2 mt-28 mx-10 border-primary rounded-lg flex flex-col md:flex-row md:items-start">
-  <div className="md:w-1/3 flex justify-center md:justify-end mb-10 md:mb-0">
-    <img src={heropic} alt="hero" className="w-56 md:w-full"/>
-  </div>
-  <div className="flex flex-col flex-grow items-center md:items-start md:ml-10">
-    <h1 className="font-roboto text-4xl md:text-7xl font-semibold text-primary leading-tight text-center md:text-left">
-      Your Premier <br /> Student <span className="text-secondary">Housing</span> <br /> Solution
-    </h1>
-    <div className="box-border border-2 border-secondary mt-10 md:mt-20 rounded-lg flex items-center w-full md:w-auto px-4">
-      <input
-        type="text"
-        placeholder="Search by university..."
-        className="bg-transparent border-none outline-none h-11 flex-grow p-3"
-      />
-      <div className="text-secondary ml-4">
-        <Search />
+      <div className="flex justify-center mx-8 md:mx-10 my-8">
+  <div className="grid md:grid-cols-2 md:gap-5 md:mx-20 md:mt-20 border border-primary rounded-lg md:w-full mt-10 px-10 py-10 ">
+    <div className="flex flex-col  items-center justify-center md:items-start md:ml-10 order-1 md:order-1">
+      <h1 className="font-roboto text-4xl md:text-7xl font-semibold text-primary leading-tight text-center md:text-left">
+        Your Premier <br /> Student <span className="text-secondary">Housing</span> <br /> Solution
+      </h1>
+      <div className="box-border border-2 border-secondary mt-10 md:mt-20 rounded-lg flex items-center w-full md:w-auto px-4">
+        <input
+          type="text"
+          placeholder="Search by university..."
+          className="bg-transparent border-none outline-none h-11 flex-grow p-3"
+        />
+        <div className="text-secondary ml-4">
+          <Search />
+        </div>
       </div>
+    </div>
+    <div className="flex justify-center md:justify-end mb-10 md:mb-0 -order-2 md:order-1">
+      <img src={heropic} alt="hero" className="w-56 md:w-96" />
     </div>
   </div>
 </div>
 
 
-      {/* <div className="box-border md:w-128 p-4 border-2 mt-28 mx-10 md:h-128 border-primary rounded-lg w-128 h-115 ">
-        <div className=" md:w-1/3 md:absolute md:top-16 md:right-20 w-56 mx-10 mt-10">
-          <img src={heropic} alt="hero" />
-        </div>
-        <div className="font-roboto md:text-7xl font-semibold md:mx-10 md:mt-5 text-primary leading-tight text-4xl mt-5 ">
-          <h1 className="text-center md:text-left">
-            Your Premier <br /> Student{" "}
-            <span className="text-secondary">Housing</span> <br /> Solution
-          </h1>
-        </div>
-        <div className="box-border border-2 border-secondary md:w-100 h-14 md:mx-10 md:mt-20 rounded-lg relative w-46  mx-10 mt-10">
-          <div className="absolute top-0 right-0 mt-4 mr-5 text-secondary">
-            <Search className="" />
-          </div>
-          <input
-            type="text"
-            placeholder="Search by university..."
-            className="w-96 bg-transparent border-none outline-none h-11 p-3"
-          />
-        </div>
-      </div> */}
+   <div className="">
+   <div className="flex justify-left md:mx-72 md:mt-40">
+  <div className="flex flex-col md:flex-row items-center md:items-start">
+    <div className="md:flex-1 flex flex-col items-center md:items-start">
+      <h1 className="font-roboto text-3xl md:text-5xl text-primary font-medium text-center ">
+        Find Your University
+      </h1>
+      <p className="mt-10 md:mt-20 mx-5 md:mx-0 md:text-3xl text-lg text-center md:text-left">
+        We’ve collected dorm reviews from over<br />
+        2000 Sri Lankan dorms. Search for your<br />
+        university to get started.
+      </p>
+    </div>
+    <div className="md:w-96 w-40 mt-10 md:mt-96 md:absolute md:top-96 md:right-40 mx-32 md:mx-20">
+      <img src={sticker} alt="sticker" />
+    </div>
+  </div>
+</div>
 
-      <div className="md:mt-72 mt-64 ">
-        <div className="md:mx-40 font-roboto">
-          <h1 className=" md:text-5xl text-primary font-medium md:text-left text-3xl text-center">
-            Find Your university
-          </h1>
-          <p className="mt-20 mx-20 md:text-3xl md:text-left  text-lg text-center ">
-            We’ve collected dorm reviews from over
-            <br />
-            2000 Sri lankan dorms. Searh for your
-            <br /> university to get started.
-          </p>
-        </div>
-        <div className=" md:w-96 md:absolute md:top-120 md:right-10 w-40 mx-32 mt-10 ">
-          <img src={sticker} alt="sticker" />
-        </div>
-      </div>
 
-      <div className="md:mt-120 ">
-        <div className=" md:absolute md:top-110 md:mt-120 md:right-56 font-roboto ">
-          <h1 className="md:text-5xl text-primary font-medium md:text-left text-center mt-40 text-3xl">
-            Add reviews, Share with
-            <br /> others
-          </h1>
-          <p className="mt-20 md:mx-20 md:text-3xl md:text-left text-center text-lg">
-            Share your experience at your Bodima <br /> by writing a review.
-            Help your friend by <br /> sharing an Ad.
-          </p>
-        </div>
-        <div className="md:w-80 md:absolute md:top-125 md:left-0 w-40 mx-36 mt-10 ">
-          <img src={sticker1} alt="sticker1" />
-        </div>
-      </div>
+<div className="flex justify-center md:justify-end mt-20  md:mr-64 md:mt-72">
+  <div className="flex flex-col md:flex-row items-center  md:items-start ">
+    <div className="md:flex-1 flex flex-col items-center  md:items-start ">
+      <h1 className="font-roboto text-3xl md:mt-28 md:text-5xl text-primary font-medium text-center md:text-left">
+        Add reviews, Share with<br />others
+      </h1>
+      <p className="mt-10 md:mt-20 text-lg md:text-3xl text-center md:text-left">
+        Share your experience at your Bodima <br /> by writing a review.
+        Help your friend by <br /> sharing an Ad.
+      </p>
+      <div className="md:w-80 w-40 mt-10 -md:mt-96  md:absolute  -md:top-96 -md:bottom-10  md:left-96 -mx-20 md:mr-56">
+      <img src={sticker1} alt="sticker1" className="" />
+    </div>
+    </div>
+    
+  </div>
+</div>
+ 
+ </div>
 
-      <div className="mt-20 font-roboto md:text-5xl mx-10 font-semibold text-primary md:text-left text-center text-3xl">
-        <h1>Top Ads</h1>
+        <div className=" md:x-8 md:mx-20  my-8">
+       <div className=" md:mt-80 mt-20 font-roboto md:text-5xl mx-10 font-semibold text-primary md:text-left text-center text-3xl">
+        <h1 className="md:top-40">Top Ads</h1>
       </div>
       <div className=" md:flex">
         <div className=" md:mx-24 md:mt-20 my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-10 mx-11 mt-20">
@@ -142,22 +130,13 @@ const Home = () => {
           <br />
           <img src={about} alt="about" />
         </div>
-      </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
+        </div> 
 
-      {/* <Footer /> */}
+        </div>
+
+        
+
+      
     </div>
   );
 };
