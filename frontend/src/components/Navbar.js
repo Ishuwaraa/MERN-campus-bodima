@@ -11,7 +11,7 @@ const Navbar = () => {
     }    
     
     return(
-        <nav className=' flex items-center justify-between border border-b-1 border-b-gray-200 font-roboto h-14'>
+        <nav className=' flex items-center justify-between border border-b-1 border-b-gray-200 font-roboto h-14 fixed top-0 bg-white w-full z-50'>
             <div className=' mx-10 pt-4'>
             <a href="/"><img className=' w-30 h-20' src={logoDark} alt="campus bodima" /></a>
             </div>
@@ -39,7 +39,7 @@ const Navbar = () => {
             </div>
 
             {menuVisible && (
-            <div className={`absolute top-14 left-0 w-full bg-white z-10 pb-4 md:hidden transition-all duration-300 ease-in-out ${menuVisible ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className={`absolute top-14 left-0 w-full bg-white border border-b-gray-200  pb-4 md:hidden transition-all duration-300 ease-in-out ${menuVisible ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
                 <ul className='flex flex-col items-center space-y-4 py-4 text-cusGray'>
                 <li><a href="/" className='block w-full text-center'>Home</a></li>
                 <li><a href="" className='block w-full text-center'>Map</a></li>

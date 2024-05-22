@@ -1,57 +1,45 @@
-import fimage from "../assets/footer.png";
-import { Facebook } from "lucide-react";
-import { Instagram } from "lucide-react";
+import logo from '../assets/logo/campus_bodima.png';
+import { Facebook, Instagram } from 'lucide-react'
 
 const Footer = () => {
-  return (
-    <div>
-      <div className="box-content md:w-128 p-4 border-2 -mb-96 md:h-128 bg-footerb -mx-0.5  ">
-        <div className="md:w-56 md:mx-10 w-40 mx-28">
-          <img src={fimage} alt="footer" />
-        </div>
-        <div className="md:mx-10 md:w-20 text-white cursor-pointer mx-32">
-          <Facebook size={32} />
-          <Instagram size={32} className="md:mx-10  md:top-10  -mt-8 mx-20" />
-        </div>
+    return(
+        <div className="bg-footerb text-ashGray pb-3 mt-20">
+            <div className="flex flex-col md:grid md:grid-cols-4 text-lg md:text-base">
+                
+                <div className="  md:col-span-2 md:pl-20">
+                    <div className="flex flex-col ">
+                        <div className=' flex justify-center md:justify-start'>
+                            <img src={logo} alt="campus bodima" className=" h-52 hover:cursor-pointer" onClick={() => window.location.href = '/'}/>
+                        </div>
+                        <div className="flex justify-center md:justify-start flex-row">
+                            <Instagram className=" text-white mr-2"/>
+                            <Facebook className=" text-white"/>
+                        </div>
+                    </div>
+                </div>
 
-        <div className="border border-b-1 hidden md:block border-ashGray md:rotate-90 md:w-64 md:mx-115 md:mt-10 "></div>
+                <div className=" flex items-center my-7 md:my-0 pl-8 md:pl-0">
+                    <ul className=" space-y-1">
+                        <li className=" hover:cursor-pointer hover:underline">All Ads</li>
+                        <li className=" hover:cursor-pointer hover:underline">Abous us</li>
+                        <li className=" hover:cursor-pointer hover:underline">Help</li>
+                        <li className=" hover:cursor-pointer hover:underline">Privacy policy</li>
+                    </ul>
+                </div>
 
-        <div className="text-ashGray md:absolute md:right-96 md:w-101 md:-mt-28 mt-10 font-roboto md:text-left text-center md:text-2xl text-lg">
-          <a href="#">All Ads</a>
-          <br />
-          <br />
-          <a href="#">About us</a>
-          <br />
-          <br />
-          <a href="#">Help</a>
-          <br />
-          <br />
-          <a href="#">Privacy policy</a>
+                <div className=" flex items-center mb-3 md:my-0 pl-8 md:pl-0">
+                    <ul>
+                        <li className=" mb-2">Contact us</li>
+                        <li className=" text-sm">34, flower Rd, Colombo 5, Sri Lanka</li>
+                        <li className=" text-sm">0112224448</li>
+                        <li className=" text-sm">campusbodima@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p className=" flex justify-center text-sm text-gray-400 mt-3">© 2024 Campus Bodima. All rights reserved.</p>
         </div>
-
-        <div className="border border-b-1 border-ashGray md:rotate-90 md:w-64 md:mx-121 md:mt-0 mt-5 "></div>
-
-        <div className="text-ashGray  md:mx-122 md:-mt-32 md:mr-56 font-roboto text-lg mt-10 md:text-left text-center">
-          <a className="text-2xl" href="#">
-            Contact us
-          </a>
-          <br />
-          <br />
-          <a href="#">34, flower Rd, Colombo5, Sri Lanka</a>
-          <br />
-          <br />
-          <a href="#">0112224448</a>
-          <br />
-          <br />
-          <a href="#">campusbodima@gmail.com</a>
-        </div>
-
-        <div className=" text-gray-400 md:mt-24 text-center font-roboto text-base">
-          <h1>© 2024 Campus Bodima. All rights reserved.</h1>
-        </div>
-      </div>
-    </div>
-  );
-};
+    )
+}
 
 export default Footer;

@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Navbar from "../components/Navbar"
 import { Plus } from 'lucide-react'
 import { useForm } from "react-hook-form";
+import Footer from "../components/Footer";
 
 const PostUpdate = () => {
     const [images , setImages] = useState(Array(4).fill(null)); //initializing array with 4 null elements
@@ -38,7 +39,7 @@ const PostUpdate = () => {
         <div>
             <Navbar />
 
-            <div className="mx-8 md:mx-10 my-8 font-roboto">
+            <div className="mx-8 md:mx-10 mt-20 mb-8 font-roboto">
                 
                 <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     
@@ -104,16 +105,16 @@ const PostUpdate = () => {
                         </div>  */}
                         <div className=" lg:px-20 mb-3">
                             <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Gender</p>
-                            <input type="radio" name="gender" id="male" required value='male' checked={gender === 'male'} onChange={(e) => setGender(e.target.value)} className=' ml-4 mr-2'/>
-                            <label htmlFor="male" className=' mr-8 text-cusGray '>male</label>
+                            <input type="radio" name="gender" id="male" required value='male' checked={gender === 'male'} onChange={(e) => setGender(e.target.value)} className=' ml-4 mr-2 cursor-pointer'/>
+                            <label htmlFor="male" className=' mr-8 text-cusGray  cursor-pointer'>male</label>
 
-                            <input type="radio" name="gender" id="female" required value='female' checked={gender === 'female'} onChange={(e) => setGender(e.target.value)} className=' mr-2'/>
-                            <label htmlFor="female" className="text-cusGray ">female</label>
+                            <input type="radio" name="gender" id="female" required value='female' checked={gender === 'female'} onChange={(e) => setGender(e.target.value)} className=' mr-2 cursor-pointer'/>
+                            <label htmlFor="female" className="text-cusGray  cursor-pointer">female</label>
                         </div>
                         <div className="grid grid-cols-2 mb-3 lg:px-20">
                             <div>
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Beds</p>
-                                <select name="beds" required onChange={(e) => setBed(e.target.value)} className=" w-20 md:w-32 border border-cusGray rounded-lg ml-3">
+                                <select name="beds" required onChange={(e) => setBed(e.target.value)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
                                     <option value="" className=" text-gray-500">beds</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -124,7 +125,7 @@ const PostUpdate = () => {
                             </div>
                             <div>
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Bathrooms</p>
-                                <select name="bathrooms" required onChange={(e) => setBathroom(e.target.value)} className=" w-20 md:w-32 border border-cusGray rounded-lg ml-3">
+                                <select name="bathrooms" required onChange={(e) => setBathroom(e.target.value)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
                                     <option value="" className=" text-gray-500">bathrooms</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -156,6 +157,8 @@ const PostUpdate = () => {
                 </form>
                 
             </div>
+
+            <Footer />
         </div>
     )
 }

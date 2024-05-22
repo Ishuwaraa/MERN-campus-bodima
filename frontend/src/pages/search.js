@@ -3,13 +3,14 @@ import uni from '../assets/unis/nsbm.png';
 import card from '../assets/card.png'
 import SearchPageHero from "../components/SearchPageHero";
 import AdDetail from "../components/AdDetail";
+import Footer from "../components/Footer";
 
 const Search = () => {
     return (
         <div>
             <Navbar />
 
-            <div className=" mx-8 md:mx-10 my-8 ">
+            <div className=" mx-8 md:mx-10 mt-20 mb-8 ">
                 <SearchPageHero image={uni} title='NSBM Green University' />
 
                 <div>
@@ -42,6 +43,8 @@ const Search = () => {
                     </div>
                 </div>
             </div>
+
+            <Footer />
         </div>
     )
 }
