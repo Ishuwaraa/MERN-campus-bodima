@@ -19,7 +19,7 @@ const Navbar = () => {
             <ul className=' hidden md:flex flex-grow justify-evenly mx-16 lg:px-32 text-cusGray'>
             <li><a href="/" className=' hover:border-b-2 border-cusGray'>Home</a></li>
             <li><a href="">Map</a></li>
-            <li><a href="">Post Ad</a></li>
+            <li><a href="/postAd">Post Ad</a></li>
             <li><a href="">About Us</a></li>
             <li><a href="">Profile</a></li>
             </ul>
@@ -43,7 +43,7 @@ const Navbar = () => {
                 <ul className='flex flex-col items-center space-y-4 py-4 text-cusGray'>
                 <li><a href="/" className='block w-full text-center'>Home</a></li>
                 <li><a href="" className='block w-full text-center'>Map</a></li>
-                <li><a href="" className='block w-full text-center'>Post Ad</a></li>
+                <li><a href="/postAd" className='block w-full text-center'>Post Ad</a></li>
                 <li><a href="" className='block w-full text-center'>About Us</a></li>
                 <li><a href="" className='block w-full text-center'>Profile</a></li>
                 </ul>

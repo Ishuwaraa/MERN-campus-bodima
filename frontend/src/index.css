@@ -9,3 +9,7 @@
 .card {
     @apply w-80 rounded-lg overflow-hidden shadow-md relative cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200;
 }
+
+.input {
+    @apply border border-cusGray rounded-lg w-full h-8 p-2
+}
