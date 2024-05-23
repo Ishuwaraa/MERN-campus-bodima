@@ -5,6 +5,7 @@ import Login from './pages/login';
 import Search from './pages/search';
 import PostAd from './pages/postAd';
 import PostUpdate from './pages/postUpdate';
+import Profile from './pages/profile';
 
 function App() {
 
@@ -17,6 +18,7 @@ function App() {
         <Route path='/search' element={<Search />} />
         <Route path='/postAd' element={<PostAd />} />
         <Route path='/postUpdate' element={<PostUpdate />} />
+        <Route path='/profile' element={<Profile />} />
       </Routes>
     </BrowserRouter>
 

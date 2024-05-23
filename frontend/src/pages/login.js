@@ -47,7 +47,11 @@ const Login = () => {
                         {errors.email && <span className=" text-red-600 text-sm">max character limit is 100</span>}
 
                         <p className=' mt-3 mb-1'>Password</p>
-                        <input type="password" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='*******'/>
+                        <input type="password" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' 
+                        {...register('password', { maxLength: 15, minLength: 8, pattern: /^[a-zA-Z0-9@_-]+$/})}/>
+                        {errors.password && errors.password.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 15</span> : 
+                        errors.password && errors.password.type === 'minLength' ? <span className=' text-sm text-red-600'>min character limit is 8</span> :
+                        errors.password && <span className=' text-sm text-red-600'>Password must contain only letters, numbers, @, _, and -'</span>}
                                                 
                         <div className="flex justify-center mt-6">
                             <div className="relative w-64 border border-gray-500 rounded-full">

@@ -39,7 +39,7 @@ const PostUpdate = () => {
         <div>
             <Navbar />
 
-            <div className="mx-8 md:mx-10 mt-20 mb-8 font-roboto">
+            <div className="page">
                 
                 <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                     
