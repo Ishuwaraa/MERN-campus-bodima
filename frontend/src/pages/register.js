@@ -28,10 +28,10 @@ const Register = () => {
                 <div className=' flex justify-center'>                    
                     <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
                         <p className=' mb-1'>Acc Type</p>
-                        <input type="radio" name="accType" id="student" required value='student' checked={accType === 'student'} onChange={onAccChange} className=' ml-4 mr-2'/>
+                        <input type="radio" name="accType" id="student" required value='student' checked={accType === 'student'} onChange={(e) => onAccChange(e)} className=' ml-4 mr-2'/>
                         <label htmlFor="student" className=' mr-8'>student</label>
 
-                        <input type="radio" name="accType" id="landlord" required value='landlord' checked={accType === 'landlord'} onChange={onAccChange} className=' mr-2'/>
+                        <input type="radio" name="accType" id="landlord" required value='landlord' checked={accType === 'landlord'} onChange={(e) => onAccChange(e)} className=' mr-2'/>
                         <label htmlFor="landlord">landlord</label>
 
                         <p className=' mt-3 mb-1'>Name</p>
