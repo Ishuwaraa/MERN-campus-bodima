@@ -10,7 +10,7 @@ const Search = () => {
         <div>
             <Navbar />
 
-            <div className=" mx-8 md:mx-10 mt-20 mb-8 ">
+            <div className="page">
                 <SearchPageHero image={uni} title='NSBM Green University' />
 
                 <div>

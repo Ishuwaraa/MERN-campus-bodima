@@ -13,3 +13,7 @@
 .input {
     @apply border border-cusGray rounded-lg w-full h-8 p-2
 }
+
+.page {
+    @apply mx-8 md:mx-10 mt-20 mb-8 font-roboto
+}

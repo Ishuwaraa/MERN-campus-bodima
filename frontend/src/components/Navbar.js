@@ -21,7 +21,7 @@ const Navbar = () => {
             <li><a href="">Map</a></li>
             <li><a href="/postAd">Post Ad</a></li>
             <li><a href="">About Us</a></li>
-            <li><a href="">Profile</a></li>
+            <li><a href="/profile">Profile</a></li>
             </ul>
 
             <div className=' mx-10 block md:hidden' onClick={toggleBurgerIcon}>
@@ -45,7 +45,7 @@ const Navbar = () => {
                 <li><a href="" className='block w-full text-center'>Map</a></li>
                 <li><a href="/postAd" className='block w-full text-center'>Post Ad</a></li>
                 <li><a href="" className='block w-full text-center'>About Us</a></li>
-                <li><a href="" className='block w-full text-center'>Profile</a></li>
+                <li><a href="/profile" className='block w-full text-center'>Profile</a></li>
                 </ul>
                 <div className=' flex justify-center'>
                     <button className='btn bg-primary' onClick={() => window.location.href = '/login'}>Log in</button>
