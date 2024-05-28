@@ -15,6 +15,8 @@ const AdDetail = ({ image, title, location, price, rating }) => {
                     </svg>
                 </div>
             </div>
+
+            
         </div>   
     )
 }

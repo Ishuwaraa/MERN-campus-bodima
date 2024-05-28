@@ -6,6 +6,8 @@ import Search from './pages/search';
 import PostAd from './pages/postAd';
 import PostUpdate from './pages/postUpdate';
 import Profile from './pages/profile';
+import Addetail from './pages/addetail';
+import Map from './pages/map';
 
 function App() {
 
@@ -19,6 +21,8 @@ function App() {
         <Route path='/postAd' element={<PostAd />} />
         <Route path='/postUpdate' element={<PostUpdate />} />
         <Route path='/profile' element={<Profile />} />
+        <Route path='/addetail' element={<Addetail />} />
+        <Route path='/map' element={<Map />} />
       </Routes>
     </BrowserRouter>
 
