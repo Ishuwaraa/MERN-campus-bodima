@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className="  md:col-span-2 md:pl-20">
                     <div className="flex flex-col ">
                         <div className=' flex justify-center md:justify-start'>
-                            <img src={logo} alt="campus bodima" className=" h-52 hover:cursor-pointer" onClick={() => window.location.href = '/'}/>
+                            <img src={logo} alt="campus bodima" className="  h-52 hover:cursor-pointer" onClick={() => window.location.href = '/'}/>
                         </div>
                         <div className="flex justify-center md:justify-start flex-row">
                             <Instagram className=" text-white mr-2"/>
