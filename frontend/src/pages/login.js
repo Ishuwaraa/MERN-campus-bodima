@@ -9,20 +9,20 @@ const Login = () => {
     const email = watch('email');
     const password = watch('password');
 
-    const togglePx = isStudent ? '0px' : '127px';
-    const stdTxtClr = isStudent ? 'white' : 'black';
-    const landlordTxtClr = isStudent ? 'black' : 'white';
+    // const togglePx = isStudent ? '0px' : '127px';
+    // const stdTxtClr = isStudent ? 'white' : 'black';
+    // const landlordTxtClr = isStudent ? 'black' : 'white';
     const accType = isStudent ? 'student' : 'landlord';
 
-    const stdOnClick = (e) => {
-        e.preventDefault();
-        setIsStudent(true);
-    };
+    // const stdOnClick = (e) => {
+    //     e.preventDefault();
+    //     setIsStudent(true);
+    // };
 
-    const landlordOnClick = (e) => {
-        e.preventDefault();
-        setIsStudent(false);
-    };
+    // const landlordOnClick = (e) => {
+    //     e.preventDefault();
+    //     setIsStudent(false);
+    // };
 
     const onSubmit = () => {
         console.log(email, password, accType);
@@ -53,7 +53,7 @@ const Login = () => {
                         errors.password && errors.password.type === 'minLength' ? <span className=' text-sm text-red-600'>min character limit is 8</span> :
                         errors.password && <span className=' text-sm text-red-600'>Password must contain only letters, numbers, @, _, and -'</span>}
                                                 
-                        <div className="flex justify-center mt-6">
+                        {/* <div className="flex justify-center mt-6">
                             <div className="relative w-64 border border-gray-500 rounded-full">
                                 <div className="absolute w-32 h-full bg-gray-500 rounded-full transition-all duration-500" style={{ left: togglePx }}></div>
                                     <button onClick={(e) => stdOnClick(e)} className="relative w-1/2 py-2 bg-transparent border-0 text-center focus:outline-none">
@@ -63,7 +63,7 @@ const Login = () => {
                                         <span style={{ color: landlordTxtClr }}>Landlord</span>
                                     </button>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className=' flex justify-center mt-8'>
                             <button className='btn bg-primary'>Log in</button>
