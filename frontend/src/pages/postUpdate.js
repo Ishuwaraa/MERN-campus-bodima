@@ -116,7 +116,7 @@ const PostUpdate = () => {
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Beds</p>
                                 <select name="beds" required onChange={(e) => setBed(e.target.value)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
                                     <option value="" className=" text-gray-500">beds</option>
-                                    <option value="1 Bedrooms">1</option>
+                                    <option value="1 Bedroom">1</option>
                                     <option value="2 Bedrooms">2</option>
                                     <option value="3 Bedrooms">3</option>
                                     <option value="4 Bedrooms">4</option>
@@ -127,7 +127,7 @@ const PostUpdate = () => {
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Bathrooms</p>
                                 <select name="bathrooms" required onChange={(e) => setBathroom(e.target.value)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
                                     <option value="" className=" text-gray-500">bathrooms</option>
-                                    <option value="1 Bathrooms">1</option>
+                                    <option value="1 Bathroom">1</option>
                                     <option value="2 Bathrooms">2</option>
                                     <option value="3 Bathrooms">3</option>
                                 </select>

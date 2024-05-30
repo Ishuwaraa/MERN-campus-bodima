@@ -37,7 +37,24 @@ const adSchema = new Schema({
     description: {
         type: String,
         required: true
-    }
+    },
+    reviews: [{
+        user: {
+            type: String
+        },
+        room: {
+            type: Number
+        },
+        location: {
+            type: Number
+        },
+        bathroom: {
+            type: Number
+        },
+        review: {
+            type: String
+        }
+    }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Ad', adSchema);

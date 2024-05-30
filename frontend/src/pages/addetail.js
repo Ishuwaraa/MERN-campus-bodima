@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Detail from "../components/Detail";
-import { Star } from "lucide-react";
+import { Facebook, Share2 } from "lucide-react";
 import gender from '../assets/ad/gender.png';
 import Bed from "../assets/ad/bed.png";
 import shower from '../assets/ad/shower.png'
@@ -23,6 +23,32 @@ const Addetail = () => {
   const [roomHover, setRoomHover] = useState(null);
   const [locationHover, setLocationHover] = useState(null);
   const [bathroomHover, setBathroomHover] = useState(null);
+
+  //ad share
+  const link = encodeURI(window.location.href);
+  useEffect(() => {
+    const fb = document.getElementById('fb');
+    const share = document.getElementById('share');
+
+    fb && (fb.href = `https://www.facebook.com/share.php?u=${link}`);
+
+    if(share) {
+      if(navigator.share) {
+        share.addEventListener('click', async (e) => {
+          e.preventDefault();
+          try{
+            await navigator.share({
+              title: 'title',
+              text: 'text',
+              url: window.location.href,
+            });
+          } catch(err) {
+            console.log(err);
+          }
+        })
+      }
+    }
+  })
 
   const images = [addimage, addimage2, addimage3];
 
@@ -71,26 +97,24 @@ const Addetail = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-10 my-10 ">
-            <div className="col-span-2  ">
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-10 my-10 ">
+            <div className="col-span-2  md:col-span-3">
               <p className=" text-2xl md:text-4xl font-bold">NSBM Hostel Lodge</p>
               <p className="md:text-2xl text-gray-600">70, vihara Rd, Homagama</p>
               <p className="text-lg md:text-3xl font-bold text-secondary">Rs. 3500/mo</p>
             </div>
-            <div className="flex justify-end items-center md:gap-5 gap-2">
-              <p className="text-lg md:text-3xl font-semibold text-gray-600">2.7</p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="md:size-10 size-6 text-primary"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"
-                  clipRule="evenodd"
-                />
-              </svg>
+
+            <div className="flex flex-col space-y-5">
+              <div className="flex items-center justify-end space-x-3">
+                <p className="text-xl md:text-3xl font-semibold text-gray-600 pt-1">2.7</p>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="md:size-10 size-6 text-primary">
+                  <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd"/>
+                </svg>
+              </div>
+              <div className="flex items-center justify-end space-x-3 cursor-pointer">
+                <a href="#" id="fb" target="_blank" className=" border border-black p-1 rounded-lg"><Facebook className=" text-gray-700" size={20}/></a>
+                <a href="#" id="share" className=" border border-black p-1 rounded-lg"><Share2 className=" text-gray-700" size={20}/></a>
+              </div>
             </div>
           </div>
         </div>

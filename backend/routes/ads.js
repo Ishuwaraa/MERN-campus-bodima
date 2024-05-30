@@ -14,6 +14,9 @@ router.get('/:id', ads.getAd);
 //create ad
 router.post('/', ads.createAd)
 
+//add review
+router.post('/review/:id', ads.addReview)
+
 //update ad
 router.put('/:id', ads.updateAd);
 
