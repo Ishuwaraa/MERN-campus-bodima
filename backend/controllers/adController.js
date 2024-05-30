@@ -41,6 +41,27 @@ const getAd = async (req, res) => {
     }
 }
 
+//create ad
+const createAd = async (req, res) => {
+    try{
+        const data = req.body;
+        const ad = await Ad.create({
+            title: data.title,
+            location: data.location, 
+            contact: data.contact, 
+            university: data.uniInput, 
+            gender: data.gender, 
+            bed: data.bed, 
+            bathroom: data.bathroom, 
+            price: data.price, 
+            description: data.description
+        });
+        res.status(201).json(ad);
+    }catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //update ad
 const updateAd = async (req, res) => {
     try{
@@ -84,4 +105,4 @@ const deleteAd = async (req, res) => {
     }
 }
 
-module.exports = { getAllAds, getAdsByUniName, getAd, updateAd, deleteAd };
+module.exports = { getAllAds, getAdsByUniName, getAd, createAd, updateAd, deleteAd };

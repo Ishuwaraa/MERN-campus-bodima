@@ -3,7 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const adRoutes = require('./routes/ads')
+const adRoutes = require('./routes/ads');
+const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 
@@ -23,3 +24,4 @@ mongoose.connect(process.env.DB_URI)
 
 //routes
 app.use('/api/ads', adRoutes);
+app.use('/api/review', reviewRoutes);

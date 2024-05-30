@@ -11,6 +11,9 @@ router.get('/uni', ads.getAdsByUniName);
 //get one ad
 router.get('/:id', ads.getAd);
 
+//create ad
+router.post('/', ads.createAd)
+
 //update ad
 router.put('/:id', ads.updateAd);
 
