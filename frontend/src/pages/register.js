@@ -3,7 +3,7 @@ import LoginSideView from '../components/LoginSideView';
 import { useForm } from 'react-hook-form';
 
 const Register = () => {
-    const [accType, setAccType] = useState(null);
+    // const [accType, setAccType] = useState(null);
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
 
     const name = watch('name');
@@ -11,10 +11,10 @@ const Register = () => {
     const contact = watch('contact');
     const password = watch('password');
 
-    const onAccChange = (e) => setAccType(e.target.value);
+    // const onAccChange = (e) => setAccType(e.target.value);
 
     const onSubmit = () => {
-        console.log(accType, name, email, contact, password);
+        console.log( name, email, contact, password);
     }
 
     return(
@@ -22,17 +22,16 @@ const Register = () => {
             <LoginSideView />
 
             <div className=' m-10 font-poppins'>
-                <div className=' flex justify-center mb-10 md:mb-14'>
+                <div className=' flex justify-center mb-10'>
                     <p className=' font-bold text-2xl text-cusGray'>Let's get started</p>
                 </div>
                 <div className=' flex justify-center'>                    
                     <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
-                        <p className=' mb-1'>Acc Type</p>
+                        {/* <p className=' mb-1'>Acc Type</p>
                         <input type="radio" name="accType" id="student" required value='student' checked={accType === 'student'} onChange={(e) => onAccChange(e)} className=' ml-4 mr-2'/>
                         <label htmlFor="student" className=' mr-8'>student</label>
-
                         <input type="radio" name="accType" id="landlord" required value='landlord' checked={accType === 'landlord'} onChange={(e) => onAccChange(e)} className=' mr-2'/>
-                        <label htmlFor="landlord">landlord</label>
+                        <label htmlFor="landlord">landlord</label> */}
 
                         <p className=' mt-3 mb-1'>Name</p>
                         <input type="text" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='John Doyle'

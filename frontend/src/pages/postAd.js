@@ -172,34 +172,35 @@ const PostAd = () => {
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Beds</p>
                                 <select name="beds" required onChange={(e) => setBed(e.target.value)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
                                     <option value="" className=" text-gray-500">beds</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
+                                    <option value="1 Bedrooms">1</option>
+                                    <option value="2 Bedrooms">2</option>
+                                    <option value="3 Bedrooms">3</option>
+                                    <option value="4 Bedrooms">4</option>
+                                    <option value="5 Bedrooms">5</option>
                                 </select>
                             </div>
                             <div>
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Bathrooms</p>
                                 <select name="bathrooms" required onChange={(e) => setBathroom(e.target.value)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
                                     <option value="" className=" text-gray-500">bathrooms</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
+                                    <option value="1 Bathrooms">1</option>
+                                    <option value="2 Bathrooms">2</option>
+                                    <option value="3 Bathrooms">3</option>
                                 </select>
                             </div>
                         </div>
+                        
                         <div className=" lg:px-20 mb-3">
                             <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Price (monthly) Rs.</p>
                             <input type="text" name='price' required className=' input' placeholder='5500'
                             {...register('price', { maxLength: 10, pattern: /^[0-9.]/})}/> 
-                            {errors.price && errors.price.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.price && <span className=' text-sm text-red-600'>enter only numbers from 0-9</span>}                   
+                            {errors.price && errors.price.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.price && <span className=' text-sm text-red-600'>only numbers from 0-9 and period (.) are allowed</span>}                   
                         </div>         
                         <div className=" lg:px-20 mb-3">
                             <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Description</p>
-                            <textarea name="description" rows='4' required className=" p-2 w-full border border-cusGray rounded-lg" placeholder="Details about the bodima" 
-                            {...register('description', {maxLength: 300, pattern: /^[a-zA-Z0-9\s\.,_&@'"\-]+$/i })}/>
-                            {errors.description && errors.description.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 300</span> : errors.description && <span className=' text-sm text-red-600'>only allowed [a-zA-Z0-9.,-_&@'"]</span>}                            
+                            <textarea name="description" rows='4' required className=" p-2 w-full border border-cusGray rounded-lg" placeholder="Details about the bodima" style={{resize: 'none' }}
+                            {...register('description', {maxLength: 300, pattern: /^[a-zA-Z0-9\s\.,_&@'"?!\-]+$/i })}/>
+                            {errors.description && errors.description.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 300</span> : errors.description && <span className=' text-sm text-red-600'>description must contain only letters, numbers, and characters(@ & ' " _ - , . ? !)</span>}                            
                         </div>         
                     </div>
 

@@ -6,137 +6,173 @@ import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
 import about from "../assets/home/about.jpg";
 import { Search } from "lucide-react";
+import Footer from "../components/Footer";
+import data from '../data/uniNames.json';
+import { useRef, useState } from "react";
 
 const Home = () => {
+  const [uniInput, setUniInput] = useState('');
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const fileInputRefs = useRef([]);
+  const handleIconClick = (index) => {
+      fileInputRefs.current[index].click();   //referencing to the input field
+  };
+
+  //uni name input filter
+  const filterData = data.filter((item) => {
+    const searchItem = uniInput.toLowerCase();
+    const fullName = item.title.toLowerCase();
+
+    return(
+      //input field not empty, uni title starts with the input value, ensuring title is not exactly the search term(helps with suggesting)
+      //creating a new array that pass these conditions
+      searchItem && fullName.startsWith(searchItem) && searchItem !== fullName
+    )
+  });
+
+  //removing uni input field data if not in the list onBlur
+  const removeData = () => {
+    if (!data.some(item => item.title === uniInput)) {
+        setUniInput('');
+    }
+  }
+
   return (
     <div>
       <Navbar />
 
-      <div className="flex justify-center mx-8 md:mx-10 my-8">
-  <div className="grid md:grid-cols-2 md:gap-5 md:mx-20 md:mt-20 border border-primary rounded-lg md:w-full mt-10 px-10 py-10 ">
-    <div className="flex flex-col  items-center justify-center md:items-start md:ml-10 order-1 md:order-1">
-      <h1 className="font-roboto text-4xl md:text-7xl font-semibold text-primary leading-tight text-center md:text-left">
-        Your Premier <br /> Student <span className="text-secondary">Housing</span> <br /> Solution
-      </h1>
-      <div className="box-border border-2 border-secondary mt-10 md:mt-20 rounded-lg flex items-center w-full md:w-auto px-4">
-        <input
-          type="text"
-          placeholder="Search by university..."
-          className="bg-transparent border-none outline-none h-11 flex-grow p-3"
-        />
-        <div className="text-secondary ml-4">
-          <Search />
+      <div className="page">
+
+        <div className="border border-primary px-10 py-6 md:py-0 rounded-lg">
+          <div className="flex flex-col md:grid md:grid-cols-2 ">
+            <div className=" flex flex-col justify-center order-2 md:order-1 mb-3 md:mb-0">
+              <div>
+                <p className=" text-primary text-2xl md:text-4xl lg:text-6xl font-bold">Your Premier Student <br /> <span className=" text-secondary">Housing</span> Solution</p>
+              </div>
+
+              <form action="">
+                {/* <div className=" mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg"> */}
+                <div className="relative mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg">
+                  <div className=" col-span-4 md:-mr-10 lg:-mr-16">
+                    <input type="text" name="university" required className=' w-full h-8 p-2' value={uniInput} placeholder="NSBM Green University"
+                        onChange={(e) => setUniInput(e.target.value)}
+                        onFocus={() => setDropdownVisible(true)}
+                        //timeout added to ensures that the click event on the dropdown items is registered before it is hidden.
+                        onBlur={() => { setTimeout(() => { removeData(); setDropdownVisible(false); }, 200); }}
+                    />
+                  </div>
+                  <div className=" flex justify-center md:justify-end ml-1 md:ml-0">
+                    <Search className=" text-secondary hover:cursor-pointer" onClick={(e) => { e.preventDefault(); console.log(uniInput) }}/>
+                  </div>
+
+                  {dropdownVisible && (
+                    <div className=" absolute top-full mt-1 w-full bg-gray-200 rounded-lg z-10">
+                        {
+                          //if filterd array not empty showing results otherwise showing full list
+                          filterData.length > 0 ? (
+                            <div className=" flex flex-col bg-gray-200 hover:cursor-pointer px-3 rounded-lg max-h-40 overflow-y-scroll"> {
+                                filterData.map((item) => (
+                                    <span onMouseDown={() => { setUniInput(item.title); setDropdownVisible(false) }} key={item.title}
+                                    className="text-gray-500 hover:text-black">
+                                        {item.title}
+                                    </span>
+                                )) 
+                            }</div>                                            
+                          ) : (
+                            <div className=" flex flex-col bg-gray-200 hover:cursor-pointer px-3 rounded-bl-lg h-40 overflow-y-scroll"> {
+                            data.map((item) => (
+                                <span onMouseDown={() => { setUniInput(item.title); setDropdownVisible(false)}} key={item.title}
+                                className="text-gray-500 hover:text-black">
+                                    {item.title}
+                                </span>
+                            ))
+                            }</div>
+                          )
+                        }
+                    </div>   
+                  )}
+                </div>
+              </form>
+
+            </div>
+
+            <div className=" flex justify-center md:justify-end order-1 md:order-2 mb-5 md:mb-0">
+              <img src={heropic} alt="campus bodima" className="w-56 md:w-96" />
+            </div>
+          </div>
+        </div>
+
+        <div className="  md:px-20  mt-16 w-full ">
+          <div className=" flex flex-col md:grid md:grid-cols-3 md:gap-5">
+            <div className=" md:col-span-2 mb-5 md:mb-0">
+              <p className=" flex justify-center md:justify-start text-primary text-xl font-semibold">Find Your University</p>
+              <p className="flex justify-center md:justify-start px-10 md:px-0 md:pl-12 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
+            </div>
+            <div className=" flex justify-center md:justify-end md:pl-20">
+              <img src={sticker} alt="Find your university" className=" w-40 md:w-52"/>
+            </div>
+          </div>
+
+          <div className=" flex flex-col md:grid md:grid-cols-3 md:gap-5 mt-20">
+            <div className="flex justify-center md:justify-start md:pl-20 mb-5 md:mb-0 order-2 md:order-1">
+              <img src={sticker1} alt="Find your university" className=" w-32 md:w-48"/>
+            </div>
+            <div className=" md:col-span-2 order-1 md:order-2 mb-5 md:mb-0">
+              <p className="flex justify-center md:justify-start text-primary text-xl font-semibold">Add reviews, Share with others</p>
+              <p className="flex justify-center md:justify-start px-10 md:px-0 pl-12 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className=" mt-20">
+          <p className="mb-8 text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
+
+          <div className="flex justify-center">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <a href="/addetail">
+                  <AdDetail 
+                      image={card} 
+                      title='NSBM Hostel Lodge' 
+                      location='76, Vihara rd, Homagama'
+                      price='4500'
+                      rating='2.5'                  
+                  />
+                </a> 
+                <a href="/addetail">
+                  <AdDetail 
+                      image={card} 
+                      title='NSBM Hostel Lodge' 
+                      location='76, Vihara rd, Homagama'
+                      price='4500'
+                      rating='2.5'                  
+                  />
+                </a> 
+                <a href="/addetail">
+                  <AdDetail 
+                      image={card} 
+                      title='NSBM Hostel Lodge' 
+                      location='76, Vihara rd, Homagama'
+                      price='4500'
+                      rating='2.5'                  
+                  />
+                </a> 
+            </div>
+          </div>
+        </div>
+
+        <div className=" flex flex-col md:grid md:grid-cols-2 mt-20 md:px-10">
+          <div className=" mb-5 md:mb-0" id="about-us">
+            <p className=" flex justify-center md:justify-start text-2xl md:text-4xl text-primary font-bold">About Us</p>
+            <p className="flex justify-center md:justify-start px-10 md:px-0 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
+          </div>
+          <div className=" flex justify-center md:justify-end md:pl-20">
+            <img src={about} alt="Find your university" className=" w-60 md:w-64"/>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="flex justify-center md:justify-end mb-10 md:mb-0 -order-2 md:order-1">
-      <img src={heropic} alt="hero" className="w-56 md:w-96" />
-    </div>
-  </div>
-</div>
 
-
-   <div className="">
-   <div className="flex justify-left md:mx-72 md:mt-40">
-  <div className="flex flex-col md:flex-row items-center md:items-start">
-    <div className="md:flex-1 flex flex-col items-center md:items-start">
-      <h1 className="font-roboto text-3xl md:text-5xl text-primary font-medium text-center ">
-        Find Your University
-      </h1>
-      <p className="mt-10 md:mt-20 mx-5 md:mx-0 md:text-3xl text-lg text-center md:text-left">
-        We’ve collected dorm reviews from over<br />
-        2000 Sri Lankan dorms. Search for your<br />
-        university to get started.
-      </p>
-    </div>
-    <div className="md:w-96 w-40 mt-10 md:mt-96 md:absolute md:top-96 md:right-40 mx-32 md:mx-20">
-      <img src={sticker} alt="sticker" />
-    </div>
-  </div>
-</div>
-
-
-<div className="flex justify-center md:justify-end mt-20  md:mr-64 md:mt-72">
-  <div className="flex flex-col md:flex-row items-center  md:items-start ">
-    <div className="md:flex-1 flex flex-col items-center  md:items-start ">
-      <h1 className="font-roboto text-3xl md:mt-28 md:text-5xl text-primary font-medium text-center md:text-left">
-        Add reviews, Share with<br />others
-      </h1>
-      <p className="mt-10 md:mt-20 text-lg md:text-3xl text-center md:text-left">
-        Share your experience at your Bodima <br /> by writing a review.
-        Help your friend by <br /> sharing an Ad.
-      </p>
-      <div className="md:w-80 w-40 mt-10 -md:mt-96  md:absolute  -md:top-96 -md:bottom-10  md:left-96 -mx-20 md:mr-56">
-      <img src={sticker1} alt="sticker1" className="" />
-    </div>
-    </div>
-    
-  </div>
-</div>
- 
- </div>
-
-        <div className=" md:x-8 md:mx-20  my-8">
-       <div className=" md:mt-80 mt-20 font-roboto md:text-5xl mx-10 font-semibold text-primary md:text-left text-center text-3xl">
-        <h1 className="md:top-40">Top Ads</h1>
-      </div>
-      <div className=" md:flex">
-        <div className=" md:mx-24 md:mt-20 my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-10 mx-11 mt-20">
-          <AdDetail
-            image={card}
-            title="NSBM Hostel Lodge"
-            location="76, Vihara rd, Homagama"
-            price="4500"
-            rating="3.5"
-          />
-        </div>
-        <div className=" md:mx-24 md:mt-20 my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-10 mx-11 mt-20">
-          <AdDetail
-            image={card}
-            title="NSBM Hostel Lodge"
-            location="76, Vihara rd, Homagama"
-            price="4500"
-            rating="3.5"
-          />
-        </div>
-        <div className=" md:mx-24 md:mt-20 my-8 grid md:grid-cols-2 lg:grid-cols-3 gap-10 mx-11 mt-20">
-          <AdDetail
-            image={card}
-            title="NSBM Hostel Lodge"
-            location="76, Vihara rd, Homagama"
-            price="4500"
-            rating="3.5"
-          />
-        </div>
-      </div>
-
-      <div>
-        <div className="mx-10 font-roboto mt-40">
-          <h1 className="md:text-5xl font-semibold text-primary md:text-left text-center text-3xl ">
-            About Us
-          </h1>
-          <p className=" text-balance mt-20 md:text-3xl md:mx-10 md:text-left text-center">
-            Lorem ipsum dolor sit amet consectetur Tortor tincidunt netus <br />{" "}
-            egestas scelerisque . Consectetur risus interdum integer <br />{" "}
-            ullamcorper duis. Et quis amet at viverra vitae.
-            <br />
-            Consectetur risus interdum integer ullamcorper duis.
-            <br />
-            Et quis amet at viverra vitae.{" "}
-          </p>
-        </div>
-
-        <div className="md:w-100 md:absolute md:top-125 md:right-10 mx-10 md:mt-125 mt-10">
-          <br />
-          <img src={about} alt="about" />
-        </div>
-        </div> 
-
-        </div>
-
-        
-
-      
+      <Footer />      
     </div>
   );
 };
