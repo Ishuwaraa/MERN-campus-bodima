@@ -1,10 +1,6 @@
-import Navbar from "../components/Navbar";
-import MapCard from "../components/MapCard";
-import addimage2 from "../assets/ad/adimage2.jpg";
-import Footer from "../components/Footer";
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-
+import TestCard from "../components/Testcard";
 
 const Map = () => {
   const [ads, setAds] = useState([]);
@@ -72,15 +68,12 @@ const Map = () => {
   };
 
   return (
-    <div>
-      <Navbar/>
-
     <div className="page">
       <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
         <div className="flex flex-row md:flex-col border border-red-500 rounded-lg px-5 py-8 md:px-2 min-w-64 h-56 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
           <div className="flex flex-row md:flex-col">
             {ads.map((ad, index) => (
-              <MapCard
+              <TestCard
                 key={index}
                 image={ad.image}
                 title={ad.title}
@@ -96,8 +89,6 @@ const Map = () => {
           <div ref={mapRef} style={{ width: '100%', height: '100%' }}></div>
         </div>
       </div>
-    </div>
-    <Footer/>
     </div>
   );
 };

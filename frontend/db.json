@@ -1,0 +1,54 @@
+{
+  "map": [
+    {
+      "id": "4fb8",
+      "image": "/path/to/image1.jpg",
+      "title": "Kiribathgoda",
+      "gender": "Male",
+      "bed": "2 Beds",
+      "price": "5000",
+      "latitude": "6.97929653892213",
+      "longitude": "79.93004797254542"
+    },
+    {
+      "id": "130b",
+      "image": "/path/to/image1.jpg",
+      "title": "Green House",
+      "gender": "Male",
+      "bed": "2 Beds",
+      "price": "5000",
+      "latitude": "6.823056954127117",
+      "longitude": "80.04099547560752"
+    },
+    {
+      "id": "64c1",
+      "image": "/path/to/image1.jpg",
+      "title": "Ishuwara House",
+      "gender": "Male",
+      "bed": "3 Beds",
+      "price": "5000",
+      "latitude": "6.815523795338195",
+      "longitude": "79.9468566650061"
+    },
+    {
+      "id": "523f",
+      "title": "SLIIT House",
+      "location": "44, vihara mawatha, Malabe ",
+      "uniInput": "SLIIT",
+      "contact": "0718186425",
+      "price": "5000",
+      "description": "Hyyyyyy",
+      "gender": "female",
+      "bed": "3 Bedrooms",
+      "bathroom": "2 Bathrooms",
+      "images": [
+        "blob:http://localhost:3001/4547e54d-1209-423d-8899-a7633080ddc9",
+        "blob:http://localhost:3001/27f80d52-9be9-4cf2-9f97-be0200d39d24",
+        "blob:http://localhost:3001/6a27f120-a45d-4c11-a925-4881dfadd297",
+        "blob:http://localhost:3001/31b43e84-a955-4bb4-8913-0d124d6ee33e"
+      ],
+      "latitude": "6.9136619281109635",
+      "longitude": "79.97264162967132"
+    }
+  ]
+}

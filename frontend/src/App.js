@@ -8,24 +8,33 @@ import PostUpdate from './pages/postUpdate';
 import Profile from './pages/profile';
 import Addetail from './pages/addetail';
 import Map from './pages/map';
+import Testmap from './pages/testmap';
+import Adpost from './pages/adpots';
+
+
 
 function App() {
 
   return (
+
+    
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />}/>
         <Route path='/register' element={<Register />} />
         <Route path='/login' element={<Login />} />
         <Route path='/search' element={<Search />} />
-        <Route path='/postAd' element={<PostAd />} />
+        <Route path='/postAd' element={<PostAd />} /> 
         <Route path='/postUpdate' element={<PostUpdate />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/addetail' element={<Addetail />} />
         <Route path='/map' element={<Map />} />
+        <Route path='/testmap' element={<Testmap />} />
+        <Route path='/adpost' element={<Adpost />} />
+        
       </Routes>
     </BrowserRouter>
-
+   
     // <div>
     // </div>
   );

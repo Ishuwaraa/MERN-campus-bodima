@@ -257,6 +257,7 @@ const Addetail = () => {
 
         </div>
         
+<<<<<<< Updated upstream
         <div className=" w-full h-115 border border-cusGray rounded-lg my-20 overflow-hidden">
           <iframe
             width="100%"
@@ -266,6 +267,11 @@ const Addetail = () => {
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.229678747617!2d80.03966!3d6.82092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae247f82e67f285%3A0x446d8a7e211d7b77!2sNSBM%20Green%20University!5e0!3m2!1sen!2slk!4v1621357486734!5m2!1sen!2slk"
             allowFullScreen
           ></iframe>
+=======
+        <div className=" w-full h-115 border border-cusGray rounded-lg mb-40 mt-40 overflow-hidden">
+         
+         
+>>>>>>> Stashed changes
         </div>
       </div>
       <Footer />
