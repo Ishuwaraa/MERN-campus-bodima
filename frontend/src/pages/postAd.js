@@ -4,12 +4,14 @@ import { Plus } from 'lucide-react'
 import { useForm } from "react-hook-form";
 import data from '../data/uniNames.json';
 import Footer from "../components/Footer";
+import axios from "axios";
 
 const PostAd = () => {
     const [uniInput, setUniInput] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
 
     const [images , setImages] = useState(Array(4).fill(null)); //initializing array with 4 null elements
+    const [backendImg, setBackendImg] = useState([]);
     const [gender, setGender] = useState(null);
     const [bed, setBed] = useState(null);
     const [bathroom, setBathroom] = useState(null);
@@ -30,27 +32,69 @@ const PostAd = () => {
     }
 
     const handleChange = (e, index) => {
+        const file = e.target.files[0];
+        if (file && !file.type.match('image.*')) {
+            alert('Please upload only image files (png, jpg, jpeg).');
+            e.target.value = ''; // Reset the input field
+            return;
+        }
+
         const newImage = [...images];
+        const newBackendImage = [...backendImg];
         newImage[index] = (URL.createObjectURL(e.target.files[0]));
+        newBackendImage[index] = file;
         setImages(newImage);
-        console.log(e.target.files, images);
+        setBackendImg(newBackendImage);
+        console.log(e.target.files, images, backendImg);
     }    
 
     const onSubmit = async () => {
-        // if(images.length !== 4) setImagesAdded(true);
         if (images.some(image => image === null)) {
             alert('Please add 4 images');
             return;
         }
 
-        // try {
-        //     await axios.post('http://localhost:3000/map', newAd);
-        //     alert('Ad posted successfully!');
-        // } catch (error) {
-        //     console.error('Error posting ad:', error);
-        // }
+        const formData = new FormData();
+        formData.append('userId', "123");
+        formData.append('title', title);
+        formData.append('location', location);
+        formData.append('uniInput', uniInput);
+        formData.append('contact', contact);
+        formData.append('price', price);
+        formData.append('description', description);
+        formData.append('gender', gender);
+        formData.append('bed', bed);
+        formData.append('bathroom', bathroom);
+        formData.append('lat', lat);
+        formData.append('long', long);
 
-        console.log(title, location, uniInput, contact, price, description, gender, bed, bathroom, images, lat, long)
+        backendImg.forEach((image, index) => {
+            formData.append('photos', image);
+        });
+
+        try {
+            const response = await axios.post('http://localhost:4000/api/ads/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            alert('Ad posted successfully!');
+            setImages(Array(4).fill(null));
+            setBackendImg([]);
+            setGender(null);
+            setBed(null);
+            setBathroom(null);
+            setValue('title', '');
+            setValue('location', '');
+            setValue('contact', '');
+            setValue('price', '');
+            setValue('description', '');
+            setValue('lat', '');
+            setValue('long', '');
+            console.log('ad posted', response);
+        } catch (error) {
+            console.error('Error posting ad:', error);
+        }
     }
 
     //uni name input filter

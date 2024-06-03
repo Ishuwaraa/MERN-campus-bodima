@@ -14,6 +14,14 @@ const adSchema = new Schema({
         type: String,
         required: true
     },
+    latitude: {
+        type: Number,
+        required: true
+    },
+    longitude: {
+        type: Number,
+        required: true
+    },
     contact: {
         type: Number,
         required: true
@@ -42,6 +50,7 @@ const adSchema = new Schema({
         type: String,
         required: true
     },
+    images: [String],
     reviews: [{
         user: {
             type: String

@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Ad = require('../models/adModel');
 const { S3Client, ListBucketsCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+
 
 const s3 = new S3Client({
     credentials: {
@@ -9,6 +12,20 @@ const s3 = new S3Client({
     },
     region: process.env.S3_BUCKET_REGION
 });
+
+//uploading to the bucket
+const upload = multer({
+    storage: multerS3({
+        s3,
+        bucket: process.env.S3_BUCKET_NAME,
+        metadata: function (req, file, nextFunc) {
+            nextFunc(null, { fieldName: file.fieldname })
+        },
+        key: function (req, file, nextFunc) {
+            nextFunc(null, `${Date.now().toString()}-${file.originalname}`);    //generating a unique image name
+        }
+    })
+}).array('photos', 4);
 
 //get all ads
 const getAllAds = async (req, res) => {
@@ -70,27 +87,24 @@ const getAd = async (req, res) => {
 const createAd = async (req, res) => {
     try{
         const data = req.body;
+        const files = req.files;
+        res.status(201).json({ text: data, files});
 
-        // const params = {
-        //     Bucket: process.env.S3_BUCKET_NAME,
-        //     key: req.file.originalname,
-        //     body: req.file.buffer,
-        //     ContentType: req.file.mimetype,
-        // }
-
-        const ad = await Ad.create({
-            user: data.userId,
-            title: data.title,
-            location: data.location, 
-            contact: data.contact, 
-            university: data.uniInput, 
-            gender: data.gender, 
-            bed: data.bed, 
-            bathroom: data.bathroom, 
-            price: data.price, 
-            description: data.description,
-        });
-        res.status(201).json(ad);
+        // const ad = await Ad.create({
+        //     user: data.userId,
+        //     title: data.title,
+        //     location: data.location,
+        //     latitude: data.lat,
+        //     longitude: data.long, 
+        //     contact: data.contact, 
+        //     university: data.uniInput, 
+        //     gender: data.gender, 
+        //     bed: data.bed, 
+        //     bathroom: data.bathroom, 
+        //     price: data.price, 
+        //     description: data.description,
+        // });
+        // res.status(201).json(ad);
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -133,6 +147,8 @@ const updateAd = async (req, res) => {
         const ad = await Ad.findByIdAndUpdate(id, {
             title: data.title,
             location: data.location, 
+            latitude: data.lat,
+            longitude: data.long,
             contact: data.contact, 
             university: data.uniInput, 
             gender: data.gender, 
@@ -165,4 +181,4 @@ const deleteAd = async (req, res) => {
     }
 }
 
-module.exports = { getAllAds, getAdsByUniName, getUserAds, getAd, createAd, addReview, updateAd, deleteAd };
+module.exports = { getAllAds, getAdsByUniName, getUserAds, getAd, createAd, addReview, updateAd, deleteAd, upload };

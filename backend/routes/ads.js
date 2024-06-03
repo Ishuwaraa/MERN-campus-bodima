@@ -15,7 +15,8 @@ router.get('/user', ads.getUserAds);
 router.get('/:id', ads.getAd);
 
 //create ad
-router.post('/', ads.createAd)
+//.upload middleware adds images to the bucket
+router.post('/', ads.upload, ads.createAd);
 
 //add review
 router.post('/review/:id', ads.addReview)
