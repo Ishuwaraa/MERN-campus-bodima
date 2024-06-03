@@ -8,6 +8,9 @@ router.get('/', ads.getAllAds);
 //get ads by uni name
 router.get('/uni', ads.getAdsByUniName);
 
+//get user specific ads
+router.get('/user', ads.getUserAds);
+
 //get one ad
 router.get('/:id', ads.getAd);
 

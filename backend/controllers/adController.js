@@ -33,6 +33,21 @@ const getAdsByUniName = async (req, res) => {
     }
 }
 
+//get user specific ads
+const getUserAds = async (req, res) => {
+    try{
+        // const { id } = req.params;
+        const { id } = req.body;
+        if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid user ID" });
+
+        const ads = await Ad.find({ user: id }).sort({ createdAd: -1 });
+        if(ads.length == 0) return res.status(404).json({ msg: "No ads were found for that search"})
+        res.status(200).json(ads);
+    }catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
 //get one ad
 const getAd = async (req, res) => {
     try{
@@ -64,6 +79,7 @@ const createAd = async (req, res) => {
         // }
 
         const ad = await Ad.create({
+            user: data.userId,
             title: data.title,
             location: data.location, 
             contact: data.contact, 
@@ -149,4 +165,4 @@ const deleteAd = async (req, res) => {
     }
 }
 
-module.exports = { getAllAds, getAdsByUniName, getAd, createAd, addReview, updateAd, deleteAd };
+module.exports = { getAllAds, getAdsByUniName, getUserAds, getAd, createAd, addReview, updateAd, deleteAd };
