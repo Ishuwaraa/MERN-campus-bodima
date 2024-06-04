@@ -4,7 +4,7 @@ const AdDetail = ({ image, title, location, price, rating }) => {
             <img src={image} alt={title} className=" w-full h-48 object-cover" />
             <div className="m-4">
                 <span className=" text-xl font-bold line-clamp-2 mb-2">{title}</span>
-                <span className="block text-cusGray text-sm">{location}</span>
+                <span className="block text-cusGray text-sm line-clamp-2">{location}</span>
             </div>
             <div className=" grid grid-cols-2 m-4">
                 <div className=" text-lg font-bold">Rs. {price}/mo</div>

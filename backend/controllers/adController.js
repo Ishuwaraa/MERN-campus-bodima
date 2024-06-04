@@ -17,9 +17,10 @@ const getAllAds = async (req, res) => {
 //get ads by university
 const getAdsByUniName = async (req, res) => {
     try{
-        const { uniInput } = req.body;
+        const { uni } = req.params;
+        //gott validate the uni input here
 
-        const ads = await Ad.find({ university: uniInput }).sort({ createdAt: -1 });
+        const ads = await Ad.find({ university: uni }).sort({ createdAt: -1 });
         if(ads.length == 0) return res.status(404).json({ msg: "No ads were found for that search"})
         res.status(200).json(ads);
     }catch(err) {

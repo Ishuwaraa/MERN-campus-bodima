@@ -15,6 +15,7 @@ const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [topAds, setTopAds] = useState([]);
+  const [adRate, setAdRate] = useState(0);
 
   const fileInputRefs = useRef([]);
   const handleIconClick = (index) => {
@@ -40,11 +41,18 @@ const Home = () => {
     }
   }
 
+  const onSearchIconClick = (e) => {
+    e.preventDefault();
+    window.location.href = `/uniSearch?uni=${uniInput}`
+  }
+
   useEffect(() => {
     const fetchTopAds = async () => {
       try{
         const response = await axios.get('http://localhost:4000/api/ads/');
         setTopAds(response.data);
+
+        //calculating rating
       }catch(err) {
         console.log(err.message);
       }
@@ -78,7 +86,7 @@ const Home = () => {
                     />
                   </div>
                   <div className=" flex justify-center md:justify-end ml-1 md:ml-0">
-                    <Search className=" text-secondary hover:cursor-pointer" onClick={(e) => { e.preventDefault(); console.log(uniInput) }}/>
+                    <Search className=" text-secondary hover:cursor-pointer" onClick={(e) => onSearchIconClick(e)}/>
                   </div>
 
                   {dropdownVisible && (
@@ -153,7 +161,7 @@ const Home = () => {
                         title={ad.title} 
                         location={ad.location}
                         price={ad.price}
-                        rating='2.5'                  
+                        rating={adRate}                  
                     />
                   </a> 
                 )) :
