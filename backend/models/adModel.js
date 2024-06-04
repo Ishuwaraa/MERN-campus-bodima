@@ -1,6 +1,25 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+//adding this as a schema to get the auto created timestamp
+const reviewSchema = new Schema({
+    user: {
+        type: String
+    },
+    room: {
+        type: Number
+    },
+    location: {
+        type: Number
+    },
+    bathroom: {
+        type: Number
+    },
+    review: {
+        type: String
+    }
+}, { timestamps: true });
+
 const adSchema = new Schema({
     user: {
         type: String,
@@ -51,23 +70,24 @@ const adSchema = new Schema({
         required: true
     },
     images: [String],
-    reviews: [{
-        user: {
-            type: String
-        },
-        room: {
-            type: Number
-        },
-        location: {
-            type: Number
-        },
-        bathroom: {
-            type: Number
-        },
-        review: {
-            type: String
-        }
-    }]
+    reviews: [reviewSchema]
+    // reviews: [{
+    //     user: {
+    //         type: String
+    //     },
+    //     room: {
+    //         type: Number
+    //     },
+    //     location: {
+    //         type: Number
+    //     },
+    //     bathroom: {
+    //         type: Number
+    //     },
+    //     review: {
+    //         type: String
+    //     }
+    // }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Ad', adSchema);

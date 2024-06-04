@@ -9,7 +9,7 @@ import Profile from './pages/profile';
 import Addetail from './pages/addetail';
 import Map from './pages/map';
 import Testmap from './pages/testmap';
-import Adpost from './pages/adpots';
+import TestAdPost from './pages/testAdPost';
 
 
 
@@ -30,7 +30,7 @@ function App() {
         <Route path='/addetail' element={<Addetail />} />
         <Route path='/map' element={<Map />} />
         <Route path='/testmap' element={<Testmap />} />
-        <Route path='/adpost' element={<Adpost />} />
+        <Route path='/testAdPost' element={<TestAdPost />} />
         
       </Routes>
     </BrowserRouter>

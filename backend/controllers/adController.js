@@ -4,29 +4,6 @@ const { S3Client, ListBucketsCommand, PutObjectCommand } = require("@aws-sdk/cli
 const multer = require('multer');
 const multerS3 = require('multer-s3');
 
-
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: process.env.BUCKET_ACCESS_KEY,
-        secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY,
-    },
-    region: process.env.S3_BUCKET_REGION
-});
-
-//uploading to the bucket
-const upload = multer({
-    storage: multerS3({
-        s3,
-        bucket: process.env.S3_BUCKET_NAME,
-        metadata: function (req, file, nextFunc) {
-            nextFunc(null, { fieldName: file.fieldname })
-        },
-        key: function (req, file, nextFunc) {
-            nextFunc(null, `${Date.now().toString()}-${file.originalname}`);    //generating a unique image name
-        }
-    })
-}).array('photos', 4);
-
 //get all ads
 const getAllAds = async (req, res) => {
     try{
@@ -83,28 +60,57 @@ const getAd = async (req, res) => {
     }
 }
 
-//create ad
+//create ad -
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: process.env.BUCKET_ACCESS_KEY,
+        secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY,
+    },
+    region: process.env.S3_BUCKET_REGION
+});
+
+//uploading to the bucket
+const upload = multer({
+    storage: multerS3({
+        s3,
+        bucket: process.env.S3_BUCKET_NAME,
+        metadata: function (req, file, nextFunc) {
+            nextFunc(null, { fieldName: file.fieldname })
+        },
+        key: function (req, file, nextFunc) {
+            nextFunc(null, `${Date.now().toString()}-${file.originalname}`);    //generating a unique image name
+        }
+    })
+}).array('photos', 4);
+
 const createAd = async (req, res) => {
     try{
         const data = req.body;
         const files = req.files;
-        res.status(201).json({ text: data, files});
+        const images = [];
+        console.log('type', Array.isArray(files));
+        Object.values(files).forEach((file) => {
+            images.push(file.location);
+        })
+        console.log(images);
+        // res.status(201).json({ text: data, files});
 
-        // const ad = await Ad.create({
-        //     user: data.userId,
-        //     title: data.title,
-        //     location: data.location,
-        //     latitude: data.lat,
-        //     longitude: data.long, 
-        //     contact: data.contact, 
-        //     university: data.uniInput, 
-        //     gender: data.gender, 
-        //     bed: data.bed, 
-        //     bathroom: data.bathroom, 
-        //     price: data.price, 
-        //     description: data.description,
-        // });
-        // res.status(201).json(ad);
+        const ad = await Ad.create({
+            user: data.userId,
+            title: data.title,
+            location: data.location,
+            latitude: data.lat,
+            longitude: data.long, 
+            contact: data.contact, 
+            university: data.uniInput, 
+            gender: data.gender, 
+            bed: data.bed, 
+            bathroom: data.bathroom, 
+            price: data.price, 
+            description: data.description,
+            images: images
+        });
+        res.status(201).json(ad);
     }catch(err) {
         res.status(500).json({ error: err.message });
     }

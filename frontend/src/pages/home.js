@@ -8,11 +8,13 @@ import about from "../assets/home/about.jpg";
 import { Search } from "lucide-react";
 import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [topAds, setTopAds] = useState([]);
 
   const fileInputRefs = useRef([]);
   const handleIconClick = (index) => {
@@ -37,6 +39,19 @@ const Home = () => {
         setUniInput('');
     }
   }
+
+  useEffect(() => {
+    const fetchTopAds = async () => {
+      try{
+        const response = await axios.get('http://localhost:4000/api/ads/');
+        setTopAds(response.data);
+      }catch(err) {
+        console.log(err.message);
+      }
+    }
+
+    fetchTopAds();
+  }, [])
 
   return (
     <div>
@@ -130,33 +145,20 @@ const Home = () => {
 
           <div className="flex justify-center">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <a href="/addetail">
-                  <AdDetail 
-                      image={card} 
-                      title='NSBM Hostel Lodge' 
-                      location='76, Vihara rd, Homagama'
-                      price='4500'
-                      rating='2.5'                  
-                  />
-                </a> 
-                <a href="/addetail">
-                  <AdDetail 
-                      image={card} 
-                      title='NSBM Hostel Lodge' 
-                      location='76, Vihara rd, Homagama'
-                      price='4500'
-                      rating='2.5'                  
-                  />
-                </a> 
-                <a href="/addetail">
-                  <AdDetail 
-                      image={card} 
-                      title='NSBM Hostel Lodge' 
-                      location='76, Vihara rd, Homagama'
-                      price='4500'
-                      rating='2.5'                  
-                  />
-                </a> 
+              {topAds.length > 0?
+                topAds.map((ad, index) => (
+                  <a href={`/addetail?id=${ad._id}`} key={index}>
+                    <AdDetail 
+                        image={card} 
+                        title={ad.title} 
+                        location={ad.location}
+                        price={ad.price}
+                        rating='2.5'                  
+                    />
+                  </a> 
+                )) :
+                <div>no ads</div>
+              }
             </div>
           </div>
         </div>
