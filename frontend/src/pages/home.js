@@ -43,7 +43,7 @@ const Home = () => {
 
   const onSearchIconClick = (e) => {
     e.preventDefault();
-    window.location.href = `/uniSearch?uni=${uniInput}`
+    if(uniInput !== '') window.location.href = `/search?uni=${uniInput}`
   }
 
   useEffect(() => {

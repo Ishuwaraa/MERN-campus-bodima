@@ -28,6 +28,7 @@ const Addetail = () => {
   const [loading, setLoading] = useState(false);
   const [adDate, setAdDate] = useState('');
   const [adRate, setAdRate] = useState(0);
+  const [errMessage, setErrMessage] = useState(false);
 
   const [roomHover, setRoomHover] = useState(null);
   const [locationHover, setLocationHover] = useState(null);
@@ -109,7 +110,15 @@ const Addetail = () => {
         setAdRate(finalRate.toFixed(1));
       }
     }catch(err) {
-      console.log(err.message);
+      if(err.response) {
+        setLoading(false);
+        console.log(err.response.data);
+        setErrMessage(err.response.data.msg);
+      } else if(err.request) {
+        console.log(err.request);
+      } else {
+        console.log(err.message);
+      }
     }
   }
 
@@ -132,7 +141,14 @@ const Addetail = () => {
       fetchData();
       setValue('review', '');
     }catch(err) {
-      console.log(err.message);
+      if(err.response) {
+        console.log(err.response.data);
+        alert(err.response.data.msg);
+      } else if(err) {
+        console.log(err.request);
+      } else {
+        console.log(err.message);
+      }
     }
   }
 
@@ -141,7 +157,13 @@ const Addetail = () => {
       <Navbar />
 
       <div className="page">
-        {loading? <Loading /> : 
+        {loading? (
+          <Loading /> 
+        ) : errMessage? (
+          <div className=" flex justify-center">
+            <p className=" text-cusGray text-lg">{errMessage}</p>
+          </div>
+        ) :
         <>      
           <div className=" ">
             <div className=" border border-primary rounded-lg md:w-full overflow-hidden relative  ">
