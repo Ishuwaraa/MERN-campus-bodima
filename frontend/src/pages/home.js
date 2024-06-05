@@ -36,6 +36,7 @@ const Home = () => {
 
   //removing uni input field data if not in the list onBlur
   const removeData = () => {
+    //checking if any element in the array matches the uniinput
     if (!data.some(item => item.title === uniInput)) {
         setUniInput('');
     }
@@ -51,8 +52,6 @@ const Home = () => {
       try{
         const response = await axios.get('http://localhost:4000/api/ads/');
         setTopAds(response.data);
-
-        //calculating rating
       }catch(err) {
         console.log(err.message);
       }
@@ -78,7 +77,7 @@ const Home = () => {
                 {/* <div className=" mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg"> */}
                 <div className="relative mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg">
                   <div className=" col-span-4 md:-mr-10 lg:-mr-16">
-                    <input type="text" name="university" required className=' w-full h-8 p-2' value={uniInput} placeholder="NSBM Green University"
+                    <input type="text" name="university" required className=' w-full h-8 p-2' value={uniInput} placeholder="Search ads related to your university"
                         onChange={(e) => setUniInput(e.target.value)}
                         onFocus={() => setDropdownVisible(true)}
                         //timeout added to ensures that the click event on the dropdown items is registered before it is hidden.
@@ -161,11 +160,13 @@ const Home = () => {
                         title={ad.title} 
                         location={ad.location}
                         price={ad.price}
-                        rating={adRate}                  
+                        reviews={ad.reviews}                  
                     />
                   </a> 
                 )) :
-                <div>no ads</div>
+                <div className=" flex justify-center md:col-span-2 lg:col-span-3">
+                  <p>No ads</p>
+                </div>
               }
             </div>
           </div>

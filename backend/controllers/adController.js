@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const Ad = require('../models/adModel');
-const { S3Client, ListBucketsCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { S3Client, ListBucketsCommand, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const multer = require('multer');
 const multerS3 = require('multer-s3');
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
 //get all ads
 const getAllAds = async (req, res) => {
@@ -50,12 +51,46 @@ const getAd = async (req, res) => {
 
         //checking if the id is a mongoose object id type
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
-
+    
         const ad = await Ad.findById(id);
+        // const imageUrls = [];
+        const images = ad.images;
+        // console.log('type', Array.isArray(ad.images));
 
+        //doesnt work????!!!!!!!!
+        // for(const image of images){
+        //     const getObjectParams = {
+        //         Bucket: process.env.S3_BUCKET_NAME,
+        //         key: image
+        //     }
+        //     const command = new GetObjectCommand(getObjectParams);
+        //     const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
+        //     imageUrls.push(url);
+        // }
+
+        //creating urls parallely
+        //.map creates an array of promisses. promise.all waits for all them to resolve or reject
+        const imageUrls = await Promise.all(images.map(async (image) => {
+            const getObjectParams = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: image
+            };
+
+            try {
+                const command = new GetObjectCommand(getObjectParams);
+                const url = await getSignedUrl(s3, command, { expiresIn: 1800 });   //exp in 30mins
+                return url;
+            } catch (error) {
+                console.log(`Error getting signed URL for image ${image}:`, error);
+                throw error;
+            }
+        }));
+
+        // console.log(imageUrls);                
+        
         if(!ad) res.status(404).json({ msg: "No such Ad was found" });
         
-        res.status(200).json(ad);
+        res.status(200).json({ad, imageUrls});
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -89,9 +124,9 @@ const createAd = async (req, res) => {
         const data = req.body;
         const files = req.files;
         const images = [];
-        console.log('type', Array.isArray(files));
+        // console.log('type', Array.isArray(files));
         Object.values(files).forEach((file) => {
-            images.push(file.location);
+            images.push(file.key);
         })
         console.log(images);
         // res.status(201).json({ text: data, files});

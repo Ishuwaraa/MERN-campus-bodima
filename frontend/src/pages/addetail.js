@@ -6,9 +6,6 @@ import gender from '../assets/ad/gender.png';
 import Bed from "../assets/ad/bed.png";
 import shower from '../assets/ad/shower.png'
 import Phone from "../assets/ad/phone.png";
-import addimage from "../assets/ad/adimage.jpeg";
-import addimage2 from "../assets/ad/adimage2.jpg";
-import addimage3 from "../assets/ad/adimage3.jpg";
 import ReviewCard from "../components/ReviewCard";
 import Footer from "../components/Footer";
 import { useForm } from "react-hook-form";
@@ -29,6 +26,7 @@ const Addetail = () => {
   const [adDate, setAdDate] = useState('');
   const [adRate, setAdRate] = useState(0);
   const [errMessage, setErrMessage] = useState(false);
+  const [imageUrls, setImageUrls] = useState([]);
 
   const [roomHover, setRoomHover] = useState(null);
   const [locationHover, setLocationHover] = useState(null);
@@ -61,15 +59,14 @@ const Addetail = () => {
   // })
 
   //image slider
-  const images = [addimage, addimage2, addimage3];
   const [currentIndex, setcurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setcurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
   };
   const prevSlide = () => {
     setcurrentIndex(
-      (prevIndex) => (prevIndex - 1 + images.length) % images.length
+      (prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length
     );
   };
   const goToSlide = (index) => {
@@ -87,25 +84,26 @@ const Addetail = () => {
 
       setLoading(true);
       const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
-      setAdDetails(response.data);
-      setAdReviews(response.data.reviews);
+      setAdDetails(response.data.ad);
+      setAdReviews(response.data.ad.reviews);
+      setImageUrls(response.data.imageUrls);      
       setLoading(false);
-      const date = response.data.createdAt;
+      const date = response.data.ad.createdAt;
       const formatted = new Date(date);
       setAdDate(formatted.toLocaleDateString())
 
       //calculating rating
-      if(response.data.reviews.length !== 0) {
-        const reviewRatings = response.data.reviews;
+      if(response.data.ad.reviews.length !== 0) {
+        const reviewRatings = response.data.ad.reviews;
         console.log(reviewRatings);
         let wholeRate = 0;
 
         reviewRatings.forEach((rate) => {
           const individualRate = rate.bathroom + rate.location + rate.room;
           wholeRate += individualRate;
-          console.log(individualRate, rate.user, response.data.reviews.length)          
+          console.log(individualRate, rate.user, response.data.ad.reviews.length)          
         })
-        const finalRate = wholeRate / (response.data.reviews.length * 3);
+        const finalRate = wholeRate / (response.data.ad.reviews.length * 3);
         console.log(finalRate.toFixed(2));
         setAdRate(finalRate.toFixed(1));
       }
@@ -168,7 +166,7 @@ const Addetail = () => {
           <div className=" ">
             <div className=" border border-primary rounded-lg md:w-full overflow-hidden relative  ">
               <div className=" ">
-                <img src={images[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
+                <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
               </div>
               
               <button onClick={prevSlide} className="absolute top-1/2 md:left-5 left-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
@@ -179,7 +177,7 @@ const Addetail = () => {
               </button>
 
               <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                {images.map((_, index) => (
+                {imageUrls.map((_, index) => (
                   <div key={index} className={`w-3 h-3 rounded-full ${ index === currentIndex ? "bg-gray-700" : "bg-gray-400"} cursor-pointer`}onClick={() => goToSlide(index)}/>
                 ))}
               </div>

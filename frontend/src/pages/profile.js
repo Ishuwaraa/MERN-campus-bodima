@@ -2,7 +2,6 @@ import { useState } from "react"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import { useForm } from "react-hook-form";
-import AdDetail from "../components/AdDetail";
 import card from '../assets/card.png'
 
 const Profile = () => {
@@ -145,27 +144,7 @@ const Profile = () => {
 
                 <div className="flex justify-center">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <AdDetail 
-                            image={card} 
-                            title='NSBM Hostel Lodge' 
-                            location='76, Vihara rd, Homagama'
-                            price='4500'
-                            rating='3.5' 
-                        /> 
-                        <AdDetail 
-                            image={card} 
-                            title='NSBM Hostel Lodge' 
-                            location='76, Vihara rd, Homagama'
-                            price='4500'
-                            rating='3.5' 
-                        /> 
-                        <AdDetail 
-                            image={card} 
-                            title='NSBM Hostel Lodge' 
-                            location='76, Vihara rd, Homagama'
-                            price='4500'
-                            rating='3.5' 
-                        /> 
+                        
                     </div>
                 </div>
             </div>

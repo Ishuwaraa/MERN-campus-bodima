@@ -26,7 +26,7 @@ router.post('/', ads.upload, ads.createAd);
 router.post('/review/:id', ads.addReview)
 
 //update ad
-router.put('/:id', ads.updateAd);
+router.patch('/:id', ads.updateAd);
 
 //delete ad
 router.delete('/:id', ads.deleteAd);
