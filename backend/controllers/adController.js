@@ -5,11 +5,48 @@ const multer = require('multer');
 const multerS3 = require('multer-s3');
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: process.env.BUCKET_ACCESS_KEY,
+        secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY,
+    },
+    region: process.env.S3_BUCKET_REGION
+});
+
+const getImageUrls = async (imageArray, expTime) => {
+    const urls = await Promise.all(imageArray.map(async (image) => {
+        const getObjectParams = {
+            Bucket: process.env.S3_BUCKET_NAME,
+            Key: image
+        };
+    
+        try {
+            const command = new GetObjectCommand(getObjectParams);
+            const url = await getSignedUrl(s3, command, { expiresIn: expTime });   //exp in 15mins
+            return url;
+        } catch (error) {
+            console.log(`Error getting signed URL for image ${image}:`, error);
+            throw error;
+        }
+    }));
+    // console.log(Array.isArray(urls))
+    return urls;
+}
+
 //get all ads
 const getAllAds = async (req, res) => {
     try{
         const ads = await Ad.find({}).sort({ createdAt: -1 });  //latest first
-        res.status(200).json(ads);
+        const adImages = [];
+
+        ads.forEach((ad) => {
+            adImages.push(ad.images[0])
+        })
+        // console.log(adImages);
+
+        const imageUrls = await getImageUrls(adImages, 900);
+
+        res.status(200).json({ads, imageUrls});
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -22,8 +59,16 @@ const getAdsByUniName = async (req, res) => {
         //gott validate the uni input here
 
         const ads = await Ad.find({ university: uni }).sort({ createdAt: -1 });
-        if(ads.length == 0) return res.status(404).json({ msg: "No ads were found for that search"})
-        res.status(200).json(ads);
+        if(ads.length == 0) return res.status(404).json({ msg: "No ads were found for that search"})        
+
+        const adImages = [];
+        ads.forEach((ad) => {
+            adImages.push(ad.images[0])
+        });
+
+        const imageUrls = await getImageUrls(adImages, 900);        
+
+        res.status(200).json({ ads, imageUrls });
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -97,14 +142,6 @@ const getAd = async (req, res) => {
 }
 
 //create ad -
-const s3 = new S3Client({
-    credentials: {
-        accessKeyId: process.env.BUCKET_ACCESS_KEY,
-        secretAccessKey: process.env.BUCKET_SECRET_ACCESS_KEY,
-    },
-    region: process.env.S3_BUCKET_REGION
-});
-
 //uploading to the bucket
 const upload = multer({
     storage: multerS3({
@@ -214,10 +251,13 @@ const deleteAd = async (req, res) => {
         const id = req.params.id;
 
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
-        const ad = await Ad.findByIdAndDelete(id);
+        const ad = await Ad.find(id); 
 
         if(!ad) return res.status(404).json({ msg: "Delete request failed" });
-        res.status(200).json({ msg: "Workout deleted", ad});
+        
+        //get the image names and delete from s3 then delete the ad here
+
+        // res.status(200).json({ msg: "Workout deleted", ad});
     }catch(err) {
         res.status(500).json({ error: err.message });
     }

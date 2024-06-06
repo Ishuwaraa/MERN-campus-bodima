@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import AdDetail from "../components/AdDetail";
-import card from "../assets/card.png";
 import heropic from "../assets/home/heropic.png";
 import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
@@ -15,12 +14,12 @@ const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [topAds, setTopAds] = useState([]);
-  const [adRate, setAdRate] = useState(0);
+  const [imageUrls, setImageUrls] = useState([]);
 
-  const fileInputRefs = useRef([]);
-  const handleIconClick = (index) => {
-      fileInputRefs.current[index].click();   //referencing to the input field
-  };
+  // const fileInputRefs = useRef([]);
+  // const handleIconClick = (index) => {
+  //     fileInputRefs.current[index].click();   //referencing to the input field
+  // };
 
   //uni name input filter
   const filterData = data.filter((item) => {
@@ -51,7 +50,8 @@ const Home = () => {
     const fetchTopAds = async () => {
       try{
         const response = await axios.get('http://localhost:4000/api/ads/');
-        setTopAds(response.data);
+        setTopAds(response.data.ads);
+        setImageUrls(response.data.imageUrls);
       }catch(err) {
         console.log(err.message);
       }
@@ -151,19 +151,23 @@ const Home = () => {
           <p className="mb-8 text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
 
           <div className="flex justify-center">
+            {/* {imageUrls.map((image) => (<p>{image}</p>))} */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {topAds.length > 0?
-                topAds.map((ad, index) => (
-                  <a href={`/addetail?id=${ad._id}`} key={index}>
-                    <AdDetail 
-                        image={card} 
-                        title={ad.title} 
-                        location={ad.location}
-                        price={ad.price}
-                        reviews={ad.reviews}                  
-                    />
-                  </a> 
-                )) :
+                topAds.map((ad, index) => {
+                  return (
+                    imageUrls.map((image) => (
+                      <a href={`/addetail?id=${ad._id}`} key={index}>
+                        <AdDetail 
+                            image={image} 
+                            title={ad.title} 
+                            location={ad.location}
+                            price={ad.price}
+                            reviews={ad.reviews}                  
+                        />
+                      </a> 
+                    ))
+                )}) :
                 <div className=" flex justify-center md:col-span-2 lg:col-span-3">
                   <p>No ads</p>
                 </div>

@@ -23,6 +23,9 @@ const Addetail = () => {
   const [adDetails, setAdDetails] = useState([]);
   const [adReviews, setAdReviews] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [firstImageClick, setFirstImageClick] = useState(true);
+  const [timeoutId, setTimeoutId] = useState(null);
   const [adDate, setAdDate] = useState('');
   const [adRate, setAdRate] = useState(0);
   const [errMessage, setErrMessage] = useState(false);
@@ -61,17 +64,43 @@ const Addetail = () => {
   //image slider
   const [currentIndex, setcurrentIndex] = useState(0);
 
-  const nextSlide = () => {
-    setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-  };
-  const prevSlide = () => {
-    setcurrentIndex(
-      (prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length
-    );
-  };
-  const goToSlide = (index) => {
-    setcurrentIndex(index);
-  };
+  const nextSlide = () => setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+  const prevSlide = () => setcurrentIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length);
+  const goToSlide = (index) => setcurrentIndex(index);
+
+  //some abracadabara stuff cuz image loading takes a while -_-
+  // const nextSlide = () => {
+  //   setImageLoading(true);
+  //   if(!firstImageClick){
+  //     if(timeoutId){
+  //       clearTimeout(timeoutId);
+  //       setTimeoutId(null);
+  //     }
+  //     setImageLoading(false);
+  //     setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+  //   }
+  //   const newTimeoutId = setTimeout(() => {
+  //     setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
+  //     setImageLoading(false);
+  //     setFirstImageClick(false);
+  //   }, 2000); 
+    
+  //   setTimeoutId(newTimeoutId);
+  // };
+  // const prevSlide = () => {
+  //   setImageLoading(true);
+  //   setTimeout(() => {
+  //     setcurrentIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length);
+  //     setImageLoading(false);
+  //   }, 1000); 
+  // };
+  // const goToSlide = (index) => {    
+  //   setImageLoading(true);
+  //   setTimeout(() => {
+  //     setcurrentIndex(index);
+  //     setImageLoading(false);
+  //   }, 1000); 
+  // };
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -165,7 +194,12 @@ const Addetail = () => {
         <>      
           <div className=" ">
             <div className=" border border-primary rounded-lg md:w-full overflow-hidden relative  ">
-              <div className=" ">
+              <div className="">
+                {/* {imageLoading? (
+                  <div className=" w-full h-72 md:h-96 flex justify-center items-center"> loading</div>
+                ) : (
+                  <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
+                )} */}
                 <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
               </div>
               

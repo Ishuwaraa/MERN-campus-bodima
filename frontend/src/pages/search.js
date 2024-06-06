@@ -14,6 +14,7 @@ import uniData from '../data/uniNames.json';
 
 const Search = () => {
     const [uniAds, setUniAds] = useState([]);
+    const [imageUrls, setImageUrls] = useState([]);
     const [errMessage, setErrMessage] = useState(false);
     const [loading, setLoading] = useState(false);
     const [uniImage, setUniImage] = useState('');
@@ -37,7 +38,8 @@ const Search = () => {
                 // setLoading(true);
                 const response = await axios.get(`http://localhost:4000/api/ads/uni/${uni}`);
                 console.log(response.data);
-                setUniAds(response.data);
+                setUniAds(response.data.ads);
+                setImageUrls(response.data.imageUrls);
 
                 //getting hero image dynamically
                 //getting the first item that matches the name
@@ -84,17 +86,21 @@ const Search = () => {
 
                         <div className="flex justify-center">
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {uniAds.map((ad, index) => (
-                                <a href={`/addetail?id=${ad._id}`} key={index}>
-                                    <AdDetail 
-                                        image={card} 
-                                        title={ad.title} 
-                                        location={ad.location}
-                                        price={ad.price}
-                                        rating="3"                 
-                                    />
-                                </a>
-                            ))}
+                            {uniAds.map((ad, index) => {
+                                return(
+                                    imageUrls.map((image) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={index}>
+                                            <AdDetail 
+                                                image={image} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                reviews={ad.reviews}                  
+                                            />
+                                        </a>
+                                    ))
+                                )
+                            })}
                             </div>
                         </div>
                     </div>
