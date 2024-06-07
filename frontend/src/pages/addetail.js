@@ -124,16 +124,16 @@ const Addetail = () => {
       //calculating rating
       if(response.data.ad.reviews.length !== 0) {
         const reviewRatings = response.data.ad.reviews;
-        console.log(reviewRatings);
+        // console.log(reviewRatings);
         let wholeRate = 0;
 
         reviewRatings.forEach((rate) => {
           const individualRate = rate.bathroom + rate.location + rate.room;
           wholeRate += individualRate;
-          console.log(individualRate, rate.user, response.data.ad.reviews.length)          
+          // console.log(individualRate, rate.user, response.data.ad.reviews.length)          
         })
         const finalRate = wholeRate / (response.data.ad.reviews.length * 3);
-        console.log(finalRate.toFixed(2));
+        // console.log(finalRate.toFixed(2));
         setAdRate(finalRate.toFixed(1));
       }
     }catch(err) {
@@ -154,6 +154,11 @@ const Addetail = () => {
   }, [])
 
   const onSubmit = async () => {
+    if(roomRate === '' || locationRate === '' || bathroomRate === ''){
+      alert('Please add a rating for all the fields');
+      return
+    }
+
     const formData = {
       username: 'Anonymous user',
       roomRate,
@@ -164,7 +169,7 @@ const Addetail = () => {
 
     try{
       const response = await axios.post(`http://localhost:4000/api/ads/review/${adId}`, formData);
-      console.log(response);
+      // console.log(response);
       fetchData();
       setValue('review', '');
     }catch(err) {
@@ -200,7 +205,7 @@ const Addetail = () => {
                 ) : (
                   <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
                 )} */}
-                <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
+                <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-contain transition-transform duration-500 ease-in-out "/>
               </div>
               
               <button onClick={prevSlide} className="absolute top-1/2 md:left-5 left-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
@@ -219,8 +224,9 @@ const Addetail = () => {
 
             <div className="grid grid-cols-3 md:grid-cols-4 gap-10 my-10 ">
               <div className="col-span-2  md:col-span-3">
-                <p className=" text-2xl md:text-4xl font-bold">{adDetails.title}</p>
+                <p className=" text-2xl md:text-4xl font-bold mb-1">{adDetails.title}</p>
                 <p className="md:text-2xl text-gray-600">{adDetails.location}</p>
+                <p className="md:text-lg text-gray-600">{adDetails.university}</p>
                 <p className="text-lg md:text-3xl font-bold text-secondary">Rs. {adDetails.price}/mo</p>
               </div>
 

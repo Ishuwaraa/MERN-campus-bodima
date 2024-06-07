@@ -10,6 +10,7 @@ import Addetail from './pages/addetail';
 import Map from './pages/map';
 import Testmap from './pages/testmap';
 import TestAdPost from './pages/testAdPost';
+import AllAds from './pages/allAds';
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path='/map' element={<Map />} />
         <Route path='/testmap' element={<Testmap />} />
         <Route path='/testAdPost' element={<TestAdPost />} />
+        <Route path='/allAds' element={<AllAds />} />
         
       </Routes>
     </BrowserRouter>

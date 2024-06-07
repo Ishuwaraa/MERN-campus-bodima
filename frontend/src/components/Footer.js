@@ -20,7 +20,7 @@ const Footer = () => {
 
                 <div className=" flex items-center my-7 md:my-0 pl-8 md:pl-0">
                     <ul className=" space-y-1">
-                        <li className=" hover:cursor-pointer hover:underline">All Ads</li>
+                        <li className=" hover:cursor-pointer hover:underline"><a href="/allAds">All Ads</a></li>
                         <li className=" hover:cursor-pointer hover:underline">Abous us</li>
                         <li className=" hover:cursor-pointer hover:underline">Help</li>
                         <li className=" hover:cursor-pointer hover:underline">Privacy policy</li>

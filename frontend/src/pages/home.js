@@ -9,6 +9,7 @@ import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import card from '../assets/card.png'
 
 const Home = () => {
   const [uniInput, setUniInput] = useState('');
@@ -148,26 +149,42 @@ const Home = () => {
         </div>
 
         <div className=" mt-20">
-          <p className="mb-8 text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
+          <div className="mb-8 flex justify-between">
+            <p className=" text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
+            <p onClick={() => window.location.href = '/allAds'} className=" text-secondary text-lg cursor-pointer hover:underline">view all</p>
+          </div>
 
           <div className="flex justify-center">
-            {/* {imageUrls.map((image) => (<p>{image}</p>))} */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {topAds.length > 0?
-                topAds.map((ad, index) => {
+                // topAds.map((ad, index) => {
+                //   return (
+                //     imageUrls.map((image) => (
+                //       <a href={`/addetail?id=${ad._id}`} key={index}>
+                //         <AdDetail 
+                //             image={image} 
+                //             title={index} 
+                //             location={ad.location}
+                //             price={ad.price}
+                //             reviews={ad.reviews}                  
+                //         />
+                //       </a> 
+                //     ))
+                // )}) :
+                topAds.slice(0, 3).map((ad, index) => {
+                  const image = imageUrls[index % imageUrls.length];
                   return (
-                    imageUrls.map((image) => (
-                      <a href={`/addetail?id=${ad._id}`} key={index}>
-                        <AdDetail 
-                            image={image} 
-                            title={ad.title} 
-                            location={ad.location}
-                            price={ad.price}
-                            reviews={ad.reviews}                  
-                        />
+                      <a href={`/addetail?id=${ad._id}`} key={ad._id}>
+                          <AdDetail 
+                              image={image} 
+                              title={ad.title} 
+                              location={ad.location}
+                              price={ad.price}
+                              reviews={ad.reviews}                  
+                          />
                       </a> 
-                    ))
-                )}) :
+                  );
+                }) :            
                 <div className=" flex justify-center md:col-span-2 lg:col-span-3">
                   <p>No ads</p>
                 </div>
