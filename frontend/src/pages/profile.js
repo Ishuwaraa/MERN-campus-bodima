@@ -2,7 +2,6 @@ import { useState } from "react"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import { useForm } from "react-hook-form";
-import AdDetail from "../components/AdDetail";
 import card from '../assets/card.png'
 
 const Profile = () => {
@@ -99,8 +98,8 @@ const Profile = () => {
                                     <p className=" mb-1 w-full text-secondary font-semibold">Current password</p>
                                     <input type="password" className="input" required
                                     {...register('currPass', { maxLength: 15, minLength: 8, pattern: /^[a-zA-Z0-9@_-]+$/})}/>
-                                    {errors.currPass && errors.currPass.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 15</span> : 
-                                    errors.currPass && errors.currPass.type === 'minLength' ? <span className=' text-sm text-red-600'>min character limit is 8</span> :
+                                    {errors.currPass && errors.currPass.type === 'maxLength' ? <span className=' text-sm text-red-600'>incorrect password</span> : 
+                                    errors.currPass && errors.currPass.type === 'minLength' ? <span className=' text-sm text-red-600'>incorrect password</span> :
                                     errors.currPass && <span className=' text-sm text-red-600'>Password must contain only letters, numbers, @, _, and -'</span>}
 
                                     <p className=" mt-3 mb-1 w-full text-secondary font-semibold">New password</p>
@@ -128,8 +127,8 @@ const Profile = () => {
                                     <p className=" mb-1 w-full text-secondary font-semibold">Current password</p>
                                     <input type="password" className="input" required
                                     {...register('delPass', { maxLength: 15, minLength: 8, pattern: /^[a-zA-Z0-9@_-]+$/})}/>
-                                    {errors.delPass && errors.delPass.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 15</span> : 
-                                    errors.delPass && errors.delPass.type === 'minLength' ? <span className=' text-sm text-red-600'>min character limit is 8</span> :
+                                    {errors.delPass && errors.delPass.type === 'maxLength' ? <span className=' text-sm text-red-600'>incorrect password</span> : 
+                                    errors.delPass && errors.delPass.type === 'minLength' ? <span className=' text-sm text-red-600'>incorrect password</span> :
                                     errors.delPass && <span className=' text-sm text-red-600'>Password must contain only letters, numbers, @, _, and -'</span>}
 
                                     <div className=" flex justify-end mt-8">
@@ -145,27 +144,7 @@ const Profile = () => {
 
                 <div className="flex justify-center">
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <AdDetail 
-                            image={card} 
-                            title='NSBM Hostel Lodge' 
-                            location='76, Vihara rd, Homagama'
-                            price='4500'
-                            rating='3.5' 
-                        /> 
-                        <AdDetail 
-                            image={card} 
-                            title='NSBM Hostel Lodge' 
-                            location='76, Vihara rd, Homagama'
-                            price='4500'
-                            rating='3.5' 
-                        /> 
-                        <AdDetail 
-                            image={card} 
-                            title='NSBM Hostel Lodge' 
-                            location='76, Vihara rd, Homagama'
-                            price='4500'
-                            rating='3.5' 
-                        /> 
+                        
                     </div>
                 </div>
             </div>

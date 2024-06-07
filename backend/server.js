@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const adRoutes = require('./routes/ads');
-const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
 
 const app = express();
 
@@ -22,6 +22,8 @@ mongoose.connect(process.env.DB_URI)
     })
     .catch((err) => console.log(err));
 
+app.use(express.json());    //getting the data from the request body
+
 //routes
 app.use('/api/ads', adRoutes);
-app.use('/api/review', reviewRoutes);
+app.use('/api/user', userRoutes);

@@ -1,6 +1,5 @@
 import Navbar from "../components/Navbar";
 import AdDetail from "../components/AdDetail";
-import card from "../assets/card.png";
 import heropic from "../assets/home/heropic.png";
 import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
@@ -8,16 +7,19 @@ import about from "../assets/home/about.jpg";
 import { Search } from "lucide-react";
 import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [topAds, setTopAds] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
 
-  const fileInputRefs = useRef([]);
-  const handleIconClick = (index) => {
-      fileInputRefs.current[index].click();   //referencing to the input field
-  };
+  // const fileInputRefs = useRef([]);
+  // const handleIconClick = (index) => {
+  //     fileInputRefs.current[index].click();   //referencing to the input field
+  // };
 
   //uni name input filter
   const filterData = data.filter((item) => {
@@ -33,10 +35,30 @@ const Home = () => {
 
   //removing uni input field data if not in the list onBlur
   const removeData = () => {
+    //checking if any element in the array matches the uniinput
     if (!data.some(item => item.title === uniInput)) {
         setUniInput('');
     }
   }
+
+  const onSearchIconClick = (e) => {
+    e.preventDefault();
+    if(uniInput !== '') window.location.href = `/search?uni=${uniInput}`
+  }
+
+  useEffect(() => {
+    const fetchTopAds = async () => {
+      try{
+        const response = await axios.get('http://localhost:4000/api/ads/');
+        setTopAds(response.data.ads);
+        setImageUrls(response.data.imageUrls);
+      }catch(err) {
+        console.log(err.message);
+      }
+    }
+
+    fetchTopAds();
+  }, [])
 
   return (
     <div>
@@ -55,7 +77,7 @@ const Home = () => {
                 {/* <div className=" mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg"> */}
                 <div className="relative mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg">
                   <div className=" col-span-4 md:-mr-10 lg:-mr-16">
-                    <input type="text" name="university" required className=' w-full h-8 p-2' value={uniInput} placeholder="NSBM Green University"
+                    <input type="text" name="university" required className=' w-full h-8 p-2' value={uniInput} placeholder="Search ads related to your university"
                         onChange={(e) => setUniInput(e.target.value)}
                         onFocus={() => setDropdownVisible(true)}
                         //timeout added to ensures that the click event on the dropdown items is registered before it is hidden.
@@ -63,7 +85,7 @@ const Home = () => {
                     />
                   </div>
                   <div className=" flex justify-center md:justify-end ml-1 md:ml-0">
-                    <Search className=" text-secondary hover:cursor-pointer" onClick={(e) => { e.preventDefault(); console.log(uniInput) }}/>
+                    <Search className=" text-secondary hover:cursor-pointer" onClick={(e) => onSearchIconClick(e)}/>
                   </div>
 
                   {dropdownVisible && (
@@ -129,34 +151,27 @@ const Home = () => {
           <p className="mb-8 text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
 
           <div className="flex justify-center">
+            {/* {imageUrls.map((image) => (<p>{image}</p>))} */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                <a href="/addetail">
-                  <AdDetail 
-                      image={card} 
-                      title='NSBM Hostel Lodge' 
-                      location='76, Vihara rd, Homagama'
-                      price='4500'
-                      rating='2.5'                  
-                  />
-                </a> 
-                <a href="/addetail">
-                  <AdDetail 
-                      image={card} 
-                      title='NSBM Hostel Lodge' 
-                      location='76, Vihara rd, Homagama'
-                      price='4500'
-                      rating='2.5'                  
-                  />
-                </a> 
-                <a href="/addetail">
-                  <AdDetail 
-                      image={card} 
-                      title='NSBM Hostel Lodge' 
-                      location='76, Vihara rd, Homagama'
-                      price='4500'
-                      rating='2.5'                  
-                  />
-                </a> 
+              {topAds.length > 0?
+                topAds.map((ad, index) => {
+                  return (
+                    imageUrls.map((image) => (
+                      <a href={`/addetail?id=${ad._id}`} key={index}>
+                        <AdDetail 
+                            image={image} 
+                            title={ad.title} 
+                            location={ad.location}
+                            price={ad.price}
+                            reviews={ad.reviews}                  
+                        />
+                      </a> 
+                    ))
+                )}) :
+                <div className=" flex justify-center md:col-span-2 lg:col-span-3">
+                  <p>No ads</p>
+                </div>
+              }
             </div>
           </div>
         </div>
