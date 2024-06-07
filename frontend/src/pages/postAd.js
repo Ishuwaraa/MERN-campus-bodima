@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Navbar from "../components/Navbar"
 import { Plus } from 'lucide-react'
 import { useForm } from "react-hook-form";
@@ -17,6 +17,8 @@ const PostAd = () => {
     const [bed, setBed] = useState(null);
     const [bathroom, setBathroom] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [lat, setLat] = useState(null);
+    const [long, setLong] = useState(null);
 
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
     const title = watch('title');
@@ -24,9 +26,7 @@ const PostAd = () => {
     const contact = watch('contact');
     const price = watch('price');
     const description = watch('description');
-    const lat = watch('lat');
-    const long = watch('long');
-
+    
     const fileInputRefs = useRef([]);
     const handleIconClick = (index) => {
         fileInputRefs.current[index].click();   //referencing to the input field
@@ -92,8 +92,8 @@ const PostAd = () => {
             setValue('contact', '');
             setValue('price', '');
             setValue('description', '');
-            setValue('lat', '');
-            setValue('long', '');
+            setLat(null);
+            setLong(null);
             console.log('ad posted', response);
         } catch (error) {
             console.error('Error posting ad:', error);
@@ -118,6 +118,58 @@ const PostAd = () => {
             setUniInput('');
         }
     }
+
+    // Google Maps integration
+    const mapRef = useRef(null);
+    const markerRef = useRef(null);
+
+    useEffect(() => {
+        const loadGoogleMapsScript = (callback) => {
+            if (!window.google) {
+                const script = document.createElement('script');
+                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc`;
+                script.async = true;
+                script.defer = true;
+                script.onload = callback;
+                script.onerror = () => {
+                    console.error("Error loading Google Maps script");
+                    alert("Error loading Google Maps. Please check your API key.");
+                };
+                document.body.appendChild(script);
+            } else {
+                callback();
+            }
+        };
+
+        const initMap = () => {
+            if (window.google && mapRef.current) {
+                const map = new window.google.maps.Map(mapRef.current, {
+                    center: { lat: 6.9271, lng: 79.8612 },
+                    zoom: 10,
+                });
+
+                map.addListener('click', (e) => {
+                    const lat = e.latLng.lat();
+                    const lng = e.latLng.lng();
+                    setLat(lat);
+                    setLong(lng);
+
+                    if (markerRef.current) {
+                        markerRef.current.setMap(null);
+                    }
+
+                    const marker = new window.google.maps.Marker({
+                        position: { lat, lng },
+                        map: map,
+                    });
+
+                    markerRef.current = marker;
+                });
+            }
+        };
+
+        loadGoogleMapsScript(initMap);
+    }, []);
     
 
     return (
@@ -177,19 +229,7 @@ const PostAd = () => {
                                 <input type="text" name='location' required className=' input' placeholder='77, vihara Rd, Pitipana, Homagama'
                                 {...register('location', { maxLength: 100, pattern: /^[a-zA-z0-9\s,'"\.\/]+$/i})}/>
                                 {errors.location && errors.location.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 100</span> : errors.location && <span className=' text-sm text-red-600'>description must contain only letters, numbers, and characters(' " , . /)</span>} 
-                            </div>                   
-                            <div className=" lg:px-20 mb-3">
-                                <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Latitude <span className=" text-red-500">*</span></p>
-                                <input type="text" name='lat' required className=' input' placeholder='6.809335223496089'
-                                {...register('lat', { maxLength: 30, pattern: /^[0-9\s\.]+$/})}/>
-                                {errors.lat && errors.lat.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 30</span> : errors.lat && <span className=' text-sm text-red-600'>only allowed numbers from 0-9 and period (.)</span>} 
-                            </div>                   
-                            <div className=" lg:px-20 mb-3">
-                                <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Longitude <span className=" text-red-500">*</span></p>
-                                <input type="text" name='long' required className=' input' placeholder='79.95582673983847'
-                                {...register('long', { maxLength: 30, pattern: /^[0-9\s\.]+$/})}/>
-                                {errors.long && errors.long.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 30</span> : errors.long && <span className=' text-sm text-red-600'>only allowed numbers from 0-9 and period (.)</span>} 
-                            </div>                   
+                            </div>                                    
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Contact <span className=" text-red-500">*</span></p>
                                 <input type="text" name='contact' required className=' input' placeholder='0772345123'
@@ -278,8 +318,8 @@ const PostAd = () => {
                             </div>         
                         </div>
 
-                        {/* <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your location</p>
-                        <div className=" w-full h-48 border border-cusGray rounded-lg mb-20"></div>*/}
+                        <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your location</p>
+                    <div className=" w-full h-110 border border-cusGray rounded-lg mb-20" ref={mapRef}></div>
 
                         <div className=" flex justify-between md:mx-20 lg:mx-48">
                             <button onClick={(e) => {e.preventDefault(); window.location.href = '/'}} className="text-xl font-bold px-3 py-1 rounded-lg text-center border border-primary text-primary">GO BACK</button>
