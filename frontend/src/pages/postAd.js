@@ -10,7 +10,7 @@ import Loading from '../components/Loading'
 const PostAd = () => {
     const [uniInput, setUniInput] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
-
+    
     const [images , setImages] = useState(Array(4).fill(null)); //initializing array with 4 null elements
     const [backendImg, setBackendImg] = useState([]);
     const [gender, setGender] = useState(null);
@@ -19,7 +19,7 @@ const PostAd = () => {
     const [loading, setLoading] = useState(false);
     const [lat, setLat] = useState(null);
     const [long, setLong] = useState(null);
-
+    
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
     const title = watch('title');
     const location = watch('location');
@@ -31,6 +31,10 @@ const PostAd = () => {
     const handleIconClick = (index) => {
         fileInputRefs.current[index].click();   //referencing to the input field
     }
+        
+    // Google Maps integration
+    const mapRef = useRef(null);
+    const markerRef = useRef(null);
 
     const handleChange = (e, index) => {
         const file = e.target.files[0];
@@ -39,7 +43,7 @@ const PostAd = () => {
             e.target.value = ''; // Reset the input field
             return;
         }
-
+            
         const newImage = [...images];
         const newBackendImage = [...backendImg];
         newImage[index] = (URL.createObjectURL(e.target.files[0]));
@@ -48,10 +52,15 @@ const PostAd = () => {
         setBackendImg(newBackendImage);
         // console.log(e.target.files, images, backendImg);
     }    
-
+                
     const onSubmit = async () => {
         if (images.some(image => image === null)) {
             alert('Please add 4 images');
+            return;
+        }
+
+        if(lat === null || long === null) {
+            alert('Please add your location on the map');
             return;
         }
 
@@ -119,26 +128,72 @@ const PostAd = () => {
         }
     }
 
-    // Google Maps integration
-    const mapRef = useRef(null);
-    const markerRef = useRef(null);
 
+    // useEffect(() => {
+    //     const loadGoogleMapsScript = (callback) => {
+    //         if (!window.google) {
+    //             const script = document.createElement('script');
+    //             script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc`;
+    //             script.async = true;
+    //             script.defer = true;
+    //             script.onload = callback;
+    //             script.onerror = () => {
+    //                 console.error("Error loading Google Maps script");
+    //                 alert("Error loading Google Maps. Please check your API key.");
+    //             };
+    //             document.body.appendChild(script);
+    //         } else {
+    //             callback();
+    //         }
+    //     };
+
+    //     const initMap = () => {
+    //         if (window.google && mapRef.current) {
+    //             const map = new window.google.maps.Map(mapRef.current, {
+    //                 center: { lat: 6.9271, lng: 79.8612 },
+    //                 zoom: 10,
+    //             });
+
+    //             map.addListener('click', (e) => {
+    //                 const lat = e.latLng.lat();
+    //                 const lng = e.latLng.lng();
+    //                 setLat(lat);
+    //                 setLong(lng);
+
+    //                 if (markerRef.current) {
+    //                     markerRef.current.setMap(null);
+    //                 }
+
+    //                 const marker = new window.google.maps.Marker({
+    //                     position: { lat, lng },
+    //                     map: map,
+    //                 });
+
+    //                 markerRef.current = marker;
+    //             });
+    //         }
+    //     };
+
+    //     loadGoogleMapsScript(initMap);
+    // }, []);
+    
     useEffect(() => {
         const loadGoogleMapsScript = (callback) => {
-            if (!window.google) {
-                const script = document.createElement('script');
-                script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc`;
-                script.async = true;
-                script.defer = true;
-                script.onload = callback;
-                script.onerror = () => {
-                    console.error("Error loading Google Maps script");
-                    alert("Error loading Google Maps. Please check your API key.");
-                };
-                document.body.appendChild(script);
-            } else {
+            if (document.querySelector('script[src^="https://maps.googleapis.com/maps/api/js"]')) {
                 callback();
+                return;
             }
+
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc`;
+            script.async = true;
+            script.defer = true;
+            script.onload = callback;
+            script.onerror = () => {
+                console.error("Error loading Google Maps script");
+                alert("Error loading Google Maps. Please check your API key.");
+            };
+            document.body.appendChild(script);
         };
 
         const initMap = () => {
@@ -169,8 +224,13 @@ const PostAd = () => {
         };
 
         loadGoogleMapsScript(initMap);
+
+        return () => {
+            if (markerRef.current) {
+                markerRef.current.setMap(null);
+            }
+        };
     }, []);
-    
 
     return (
         <div>
@@ -180,13 +240,13 @@ const PostAd = () => {
 
                 {loading? <Loading /> :
 
-                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">                        
+                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">                      
                         <div className="flex justify-center">
                             <div className=" grid grid-cols-2 gap-5 md:gap-15">
                                 {
                                     images.map((image, index) => (
                                         <div key={index} className="relative w-32 h-32 md:w-60 md:h-60 border border-cusGray rounded-xl bg-cusGray bg-opacity-30">
-                                            {image && <img src={image} alt="" className="w-full h-full rounded-xl" />}
+                                            {image && <img src={image} alt="" className="w-full h-full rounded-xl object-cover" />}
                                             <div className=" absolute inset-0 flex items-center justify-center">
                                                 {!image && (
                                                     <>
@@ -208,21 +268,14 @@ const PostAd = () => {
                                 }                            
                             </div>    
                         </div>
-                        <span className="flex justify-center text-sm text-red-600 mt-3"> all 4 images are required to post the ad*</span>
-
-                        {/* { imagesAdded && 
-                            <div className="flex justify-center mt-3">
-                                <p>hey</p>                    
-                            </div>
-                        } */}
-                        
+                        <span className="flex justify-center text-sm text-red-600 mt-3"> all 4 images are required to post the ad*</span>                                                
 
                         <div className=" flex flex-col justify-center mx-5 md:mx-20 lg:mx-40 mt-3 mb-10"> 
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Title <span className=" text-red-500">*</span></p>
                                 <input type="text" name='title' required className=' input' placeholder='NSBM Hostel Lodge'
-                                {...register('title', { maxLength: 100, pattern: /^[a-zA-z\s]+$/i})}/> 
-                                {errors.title && errors.title.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 100</span> : errors.title && <span className=' text-sm text-red-600'>enter only letters</span>}                
+                                {...register('title', { maxLength: 100, pattern: /^[a-zA-z0-9\s]+$/i})}/> 
+                                {errors.title && errors.title.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 100</span> : errors.title && <span className=' text-sm text-red-600'>enter only letters and numbers</span>}                
                             </div>                   
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Location <span className=" text-red-500">*</span></p>
@@ -319,7 +372,7 @@ const PostAd = () => {
                         </div>
 
                         <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your location</p>
-                    <div className=" w-full h-110 border border-cusGray rounded-lg mb-20" ref={mapRef}></div>
+                        <div className=" w-full h-110 border border-cusGray rounded-lg mb-20" ref={mapRef}></div>
 
                         <div className=" flex justify-between md:mx-20 lg:mx-48">
                             <button onClick={(e) => {e.preventDefault(); window.location.href = '/'}} className="text-xl font-bold px-3 py-1 rounded-lg text-center border border-primary text-primary">GO BACK</button>
