@@ -1,10 +1,18 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import { useForm } from "react-hook-form";
 import card from '../assets/card.png'
+import Loading from "../components/Loading";
+import axios from "axios";
+import AdDetail from "../components/AdDetail";
 
 const Profile = () => {
+    const [ads, setAds] = useState([]);
+    const [imageUrls, setImageUrls] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [errMessage, setErrMessage] = useState(null);
+
     const [activeForm, setActiveForm] = useState('profile');
     const [activeLink, setActiveLink] = useState('profile');
     const onActiveFormClick = (type) => {
@@ -31,6 +39,31 @@ const Profile = () => {
     
     //delete form
     const delPass = watch('delPass');
+
+    useEffect(() => {
+        const fetchAds = async () => {
+            try{                
+                // setLoading(true);
+                const id = 123;
+                const response = await axios.get(`http://localhost:4000/api/ads/user/${id}`);
+                // setLoading(false);
+                setAds(response.data.ads);
+                setImageUrls(response.data.imageUrls);
+                setErrMessage(null);
+            }catch (err) {
+                if(err.response){
+                    // setLoading(false);
+                    setErrMessage(err.response.data.msg)
+                } else if(err.request) {
+                    console.log(err.request);
+                } else {
+                    console.log(err.message);
+                }
+            }
+        }
+
+        fetchAds();
+    }, [])
     
     const onSubmit = (type) => {
         if(type === 'edit') {
@@ -140,13 +173,34 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <p className=" mt-20 mb-8 text-2xl md:text-4xl text-primary font-bold">My Ads</p>
-
-                <div className="flex justify-center">
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        
+                {errMessage !== null? (
+                    <div className=" flex justify-center mt-20">
+                        <p className=" text-lg text-cusGray">{errMessage}</p>
                     </div>
-                </div>
+                ) : ads.length > 0 && (
+                    <>
+                        <p className=" mt-20 mb-8 text-2xl md:text-4xl text-primary font-bold">My Ads</p>
+                        <div className="flex justify-center">
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                {ads.map((ad, index) => {
+                                    const image = imageUrls[index];
+
+                                    return (
+                                        <a href={`/postUpdate?id=${ad._id}`} key={ad._id}>
+                                            <AdDetail 
+                                                image={image} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                reviews={ad.reviews}                  
+                                            />
+                                        </a> 
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </>
+                )}
             </div>
 
             <Footer />

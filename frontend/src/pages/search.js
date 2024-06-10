@@ -37,7 +37,7 @@ const Search = () => {
             try{
                 // setLoading(true);
                 const response = await axios.get(`http://localhost:4000/api/ads/uni/${uni}`);
-                console.log(response.data);
+                // console.log(response.data);
                 setUniAds(response.data.ads);
                 setImageUrls(response.data.imageUrls);
 
@@ -87,18 +87,18 @@ const Search = () => {
                         <div className="flex justify-center">
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                             {uniAds.map((ad, index) => {
+                                const image = imageUrls[index];
+
                                 return(
-                                    imageUrls.map((image) => (
-                                        <a href={`/addetail?id=${ad._id}`} key={index}>
-                                            <AdDetail 
-                                                image={image} 
-                                                title={ad.title} 
-                                                location={ad.location}
-                                                price={ad.price}
-                                                reviews={ad.reviews}                  
-                                            />
-                                        </a>
-                                    ))
+                                    <a href={`/addetail?id=${ad._id}`} key={index}>
+                                        <AdDetail 
+                                            image={image} 
+                                            title={ad.title} 
+                                            location={ad.location}
+                                            price={ad.price}
+                                            reviews={ad.reviews}                  
+                                        />
+                                    </a>
                                 )
                             })}
                             </div>

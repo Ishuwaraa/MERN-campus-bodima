@@ -74,7 +74,7 @@ const Home = () => {
                 <p className=" text-primary text-2xl md:text-4xl lg:text-6xl font-bold">Your Premier Student <br /> <span className=" text-secondary">Housing</span> Solution</p>
               </div>
 
-              <form action="">
+              <form action="" autoComplete="off">
                 {/* <div className=" mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg"> */}
                 <div className="relative mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg">
                   <div className=" col-span-4 md:-mr-10 lg:-mr-16">
@@ -157,20 +157,6 @@ const Home = () => {
           <div className="flex justify-center">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {topAds.length > 0?
-                // topAds.map((ad, index) => {
-                //   return (
-                //     imageUrls.map((image) => (
-                //       <a href={`/addetail?id=${ad._id}`} key={index}>
-                //         <AdDetail 
-                //             image={image} 
-                //             title={index} 
-                //             location={ad.location}
-                //             price={ad.price}
-                //             reviews={ad.reviews}                  
-                //         />
-                //       </a> 
-                //     ))
-                // )}) :
                 topAds.slice(0, 3).map((ad, index) => {
                   const image = imageUrls[index % imageUrls.length];
                   return (

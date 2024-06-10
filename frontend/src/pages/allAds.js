@@ -40,9 +40,9 @@ const AllAds = () => {
                     <div className="mb-8  flex justify-between">
                         <p className="text-2xl md:text-4xl text-primary font-bold">All Ads</p>
                         <select name="sort" onChange={(e) => {setSort(e.target.value); console.log(sort)}} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
-                            <option value="" className=" text-gray-500">sort by</option>
-                            <option value="rating">rating</option>
-                            <option value="date">date added</option>
+                            <option value="" className=" text-gray-500">Sort by</option>
+                            <option value="rating" disabled>Rating</option>
+                            <option value="date" disabled>Date added</option>
                         </select>
                     </div>
                     <div className="flex justify-center">
