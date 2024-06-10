@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const adRoutes = require('./routes/ads');
 const userRoutes = require('./routes/users');
+const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 
@@ -27,3 +28,4 @@ app.use(express.json());    //getting the data from the request body
 //routes
 app.use('/api/ads', adRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/review', reviewRoutes);

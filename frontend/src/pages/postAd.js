@@ -103,8 +103,9 @@ const PostAd = () => {
             setValue('description', '');
             setLat(null);
             setLong(null);
-            console.log('ad posted', response);
+            // console.log('ad posted', response);
         } catch (error) {
+            setLoading(false);
             console.error('Error posting ad:', error);
         }
     }
@@ -127,55 +128,6 @@ const PostAd = () => {
             setUniInput('');
         }
     }
-
-
-    // useEffect(() => {
-    //     const loadGoogleMapsScript = (callback) => {
-    //         if (!window.google) {
-    //             const script = document.createElement('script');
-    //             script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc`;
-    //             script.async = true;
-    //             script.defer = true;
-    //             script.onload = callback;
-    //             script.onerror = () => {
-    //                 console.error("Error loading Google Maps script");
-    //                 alert("Error loading Google Maps. Please check your API key.");
-    //             };
-    //             document.body.appendChild(script);
-    //         } else {
-    //             callback();
-    //         }
-    //     };
-
-    //     const initMap = () => {
-    //         if (window.google && mapRef.current) {
-    //             const map = new window.google.maps.Map(mapRef.current, {
-    //                 center: { lat: 6.9271, lng: 79.8612 },
-    //                 zoom: 10,
-    //             });
-
-    //             map.addListener('click', (e) => {
-    //                 const lat = e.latLng.lat();
-    //                 const lng = e.latLng.lng();
-    //                 setLat(lat);
-    //                 setLong(lng);
-
-    //                 if (markerRef.current) {
-    //                     markerRef.current.setMap(null);
-    //                 }
-
-    //                 const marker = new window.google.maps.Marker({
-    //                     position: { lat, lng },
-    //                     map: map,
-    //                 });
-
-    //                 markerRef.current = marker;
-    //             });
-    //         }
-    //     };
-
-    //     loadGoogleMapsScript(initMap);
-    // }, []);
     
     useEffect(() => {
         const loadGoogleMapsScript = (callback) => {
@@ -246,7 +198,7 @@ const PostAd = () => {
                                 {
                                     images.map((image, index) => (
                                         <div key={index} className="relative w-32 h-32 md:w-60 md:h-60 border border-cusGray rounded-xl bg-cusGray bg-opacity-30">
-                                            {image && <img src={image} alt="" className="w-full h-full rounded-xl object-cover" />}
+                                            {image && <img src={image} alt="" className="w-full h-full rounded-xl object-fill" />}
                                             <div className=" absolute inset-0 flex items-center justify-center">
                                                 {!image && (
                                                     <>
@@ -281,7 +233,7 @@ const PostAd = () => {
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Location <span className=" text-red-500">*</span></p>
                                 <input type="text" name='location' required className=' input' placeholder='77, vihara Rd, Pitipana, Homagama'
                                 {...register('location', { maxLength: 100, pattern: /^[a-zA-z0-9\s,'"\.\/]+$/i})}/>
-                                {errors.location && errors.location.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 100</span> : errors.location && <span className=' text-sm text-red-600'>description must contain only letters, numbers, and characters(' " , . /)</span>} 
+                                {errors.location && errors.location.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 100</span> : errors.location && <span className=' text-sm text-red-600'>must contain only letters, numbers, and characters(' " , . /)</span>} 
                             </div>                                    
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Contact <span className=" text-red-500">*</span></p>
