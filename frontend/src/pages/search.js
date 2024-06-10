@@ -23,7 +23,6 @@ const Search = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const uni = searchParams.get('uni');
-    console.log(uni);
 
     //mapping uni names to images
     const imageMap = {
@@ -96,7 +95,7 @@ const Search = () => {
                                             title={ad.title} 
                                             location={ad.location}
                                             price={ad.price}
-                                            reviews={ad.reviews}                  
+                                            rate={ad.rating}                  
                                         />
                                     </a>
                                 )

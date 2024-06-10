@@ -22,9 +22,6 @@ router.get('/:id', ads.getAd);
 router.post('/', upload, ads.createAd);
 // router.post('/', upload.array('photos', 4), ads.createAd);
 
-//add review
-router.post('/review/:id', ads.addReview)
-
 //update ad
 router.patch('/:id', ads.updateAd);
 

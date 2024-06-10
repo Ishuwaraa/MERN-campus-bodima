@@ -166,7 +166,7 @@ const Home = () => {
                               title={ad.title} 
                               location={ad.location}
                               price={ad.price}
-                              reviews={ad.reviews}                  
+                              rate={ad.rating}                  
                           />
                       </a> 
                   );

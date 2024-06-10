@@ -22,13 +22,14 @@ const Addetail = () => {
   const [bathroomRate, setBathroomRate] = useState('');
   const [adDetails, setAdDetails] = useState([]);
   const [adReviews, setAdReviews] = useState([]);
+  const [adRating, setAdRating] = useState(null);
   const [loading, setLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
   const [firstImageClick, setFirstImageClick] = useState(true);
   const [timeoutId, setTimeoutId] = useState(null);
   const [adDate, setAdDate] = useState('');
-  const [adRate, setAdRate] = useState(0);
-  const [errMessage, setErrMessage] = useState(false);
+  // const [adRate, setAdRate] = useState(0);
+  const [errMessage, setErrMessage] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
 
   const [roomHover, setRoomHover] = useState(null);
@@ -113,29 +114,18 @@ const Addetail = () => {
 
       setLoading(true);
       const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
+      const reviews = await axios.get(`http://localhost:4000/api/review/${adId}`);
       setAdDetails(response.data.ad);
-      setAdReviews(response.data.ad.reviews);
-      setImageUrls(response.data.imageUrls);      
+      setImageUrls(response.data.imageUrls);
+      setAdRating(response.data.ad.rating);
+      setAdReviews(reviews.data);
+      setErrMessage(null);      
       setLoading(false);
+      // console.log(response.data.ad)
+      // console.log(reviews.data);
       const date = response.data.ad.createdAt;
       const formatted = new Date(date);
       setAdDate(formatted.toLocaleDateString())
-
-      //calculating rating
-      if(response.data.ad.reviews.length !== 0) {
-        const reviewRatings = response.data.ad.reviews;
-        // console.log(reviewRatings);
-        let wholeRate = 0;
-
-        reviewRatings.forEach((rate) => {
-          const individualRate = rate.bathroom + rate.location + rate.room;
-          wholeRate += individualRate;
-          // console.log(individualRate, rate.user, response.data.ad.reviews.length)          
-        })
-        const finalRate = wholeRate / (response.data.ad.reviews.length * 3);
-        // console.log(finalRate.toFixed(2));
-        setAdRate(finalRate.toFixed(1));
-      }
     }catch(err) {
       if(err.response) {
         setLoading(false);
@@ -160,7 +150,7 @@ const Addetail = () => {
     }
 
     const formData = {
-      username: 'Anonymous user',
+      userId: '123',
       roomRate,
       locationRate,
       bathroomRate,
@@ -168,15 +158,14 @@ const Addetail = () => {
     }
 
     try{
-      const response = await axios.post(`http://localhost:4000/api/ads/review/${adId}`, formData);
+      const response = await axios.post(`http://localhost:4000/api/review/${adId}`, formData);
       // console.log(response);
       fetchData();
       setValue('review', '');
     }catch(err) {
       if(err.response) {
-        console.log(err.response.data);
         alert(err.response.data.msg);
-      } else if(err) {
+      } else if(err.request) {
         console.log(err.request);
       } else {
         console.log(err.message);
@@ -200,11 +189,6 @@ const Addetail = () => {
           <div className=" ">
             <div className=" border border-primary rounded-lg md:w-full overflow-hidden relative  ">
               <div className="">
-                {/* {imageLoading? (
-                  <div className=" w-full h-72 md:h-96 flex justify-center items-center"> loading</div>
-                ) : (
-                  <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-cover transition-transform duration-500 ease-in-out "/>
-                )} */}
                 <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-contain transition-transform duration-500 ease-in-out "/>
               </div>
               
@@ -232,7 +216,7 @@ const Addetail = () => {
 
               <div className="flex flex-col space-y-5">
                 <div className="flex items-center justify-end space-x-3">
-                  <p className="text-xl md:text-3xl font-semibold text-gray-600 pt-1">{adRate}</p>
+                  <p className="text-xl md:text-3xl font-semibold text-gray-600 pt-1">{adRating}</p>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="md:size-10 size-6 text-primary">
                     <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clipRule="evenodd"/>
                   </svg>
@@ -278,7 +262,7 @@ const Addetail = () => {
 
                       return (
                         <ReviewCard
-                          name={review.user}
+                          name={review.userId}
                           date={formatted.toLocaleDateString()}
                           review={review.review}
                           room={review.room}

@@ -128,37 +128,12 @@ const createAd = async (req, res) => {
             bathroom: data.bathroom, 
             price: data.price, 
             description: data.description,
-            images: images
+            images: images,
+            rating: 0
         });
         res.status(201).json(ad);
     }catch(err) {
         res.status(500).json({ error: err.message });
-    }
-}
-
-//add review
-const addReview = async (req, res) => {
-    try{
-        const id = req.params.id;
-        const { username, roomRate, locationRate, bathroomRate, review } = req.body;
-
-        if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
-
-        const data = await Ad.findByIdAndUpdate(id, {    
-            $push: {
-                reviews: {
-                    user: username,
-                    room: roomRate,
-                    location: locationRate,
-                    bathroom: bathroomRate,
-                    review
-                }
-            }                                                
-        }, { new: true });
-        if(!data) return res.status(404).json({ msg: "Unable to add review"})
-        res.status(201).json(data);
-    }catch(err) {
-        res.status(500).json({ error: err.message })
     }
 }
 
@@ -236,7 +211,7 @@ const updateAd = async (req, res) => {
     }
 }
 
-//delete ad
+//delete ad - delete reviews here
 const deleteAd = async (req, res) => {
     try{
         const id = req.params.id;
@@ -259,4 +234,4 @@ const deleteAd = async (req, res) => {
     }
 }
 
-module.exports = { getAllAds, getAdsByUniName, getUserAds, getAd, createAd, addReview, updateAdwNewImgs, updateAd, deleteAd };
+module.exports = { getAllAds, getAdsByUniName, getUserAds, getAd, createAd, updateAdwNewImgs, updateAd, deleteAd };
