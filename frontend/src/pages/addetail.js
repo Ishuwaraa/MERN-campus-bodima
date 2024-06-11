@@ -13,6 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "../components/Loading";
 import noReviews from '../assets/noReviews.png';
+import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 
 const Addetail = () => {
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
@@ -31,6 +32,8 @@ const Addetail = () => {
   // const [adRate, setAdRate] = useState(0);
   const [errMessage, setErrMessage] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
+  const [lat, setLat] = useState(null);
+  const [long, setLong] = useState(null);
 
   const [roomHover, setRoomHover] = useState(null);
   const [locationHover, setLocationHover] = useState(null);
@@ -108,6 +111,9 @@ const Addetail = () => {
   const searchParams = new URLSearchParams(location.search);
   const adId = searchParams.get('id');
 
+  //map
+  const position = (lat === null || long === null) ? {lat: 6.884504262718018, lng: 79.91861383804526} : {lat: lat, lng: long};
+
   const fetchData = async () => {
     try{
       if(adId === '') return navigate('/');
@@ -118,6 +124,8 @@ const Addetail = () => {
       setAdDetails(response.data.ad);
       setImageUrls(response.data.imageUrls);
       setAdRating(response.data.ad.rating);
+      setLat(response.data.ad.latitude);
+      setLong(response.data.ad.longitude);
       setAdReviews(reviews.data);
       setErrMessage(null);      
       setLoading(false);
@@ -373,16 +381,13 @@ const Addetail = () => {
 
           </div>
           
-          {/* <div className=" w-full h-115 border border-cusGray rounded-lg my-20 overflow-hidden">
-            <iframe
-              width="100%"
-              height="100%"
-              frameBorder=""
-              style={{ border: 0 }}
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.229678747617!2d80.03966!3d6.82092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae247f82e67f285%3A0x446d8a7e211d7b77!2sNSBM%20Green%20University!5e0!3m2!1sen!2slk!4v1621357486734!5m2!1sen!2slk"
-              allowFullScreen
-            ></iframe>
-          </div> */}
+          <div className=" w-full h-115 border border-cusGray rounded-lg my-20 overflow-hidden">
+            <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
+              <Map defaultCenter={position} defaultZoom={10} mapId={'bf51a910020fa25a'}>
+                <AdvancedMarker position={position} />
+              </Map>
+            </APIProvider>
+          </div> 
         </>
         }
       </div>

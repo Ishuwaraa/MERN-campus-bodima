@@ -7,7 +7,7 @@ import PostAd from './pages/postAd';
 import PostUpdate from './pages/postUpdate';
 import Profile from './pages/profile';
 import Addetail from './pages/addetail';
-import Map from './pages/map';
+import MapPage from './pages/map';
 import Testmap from './pages/testmap';
 import TestAdPost from './pages/testAdPost';
 import AllAds from './pages/allAds';
@@ -28,7 +28,7 @@ function App() {
         <Route path='/postUpdate' element={<PostUpdate />} />
         <Route path='/profile' element={<Profile />} />
         <Route path='/addetail' element={<Addetail />} />
-        <Route path='/map' element={<Map />} />
+        <Route path='/map' element={<MapPage />} />
         <Route path='/testmap' element={<Testmap />} />
         <Route path='/testAdPost' element={<TestAdPost />} />
         <Route path='/allAds' element={<AllAds />} />

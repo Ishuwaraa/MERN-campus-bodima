@@ -7,8 +7,15 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import data from '../data/uniNames.json';
+import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 
 const PostUpdate = () => {
+    const navigate = useNavigate();
+    const searchLocation = useLocation();
+    const searchParams = new URLSearchParams(searchLocation.search);
+    const adId = searchParams.get('id');
+
+    //form input
     const [uniInput, setUniInput] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [images , setImages] = useState(Array(4).fill(null)); //initializing array with 4 null elements
@@ -17,6 +24,7 @@ const PostUpdate = () => {
     const [bed, setBed] = useState('');
     const [bathroom, setBathroom] = useState('');    
 
+    //storing fetched data
     const [loading, setLoading] = useState(false);
     const [ad, setAd] = useState([]);
     const [imageNames, setImageNames] = useState([]);
@@ -26,6 +34,7 @@ const PostUpdate = () => {
     const [lat, setLat] = useState(null);
     const [long, setLong] = useState(null);
 
+    //use form inputs
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
     const title = watch('title');
     const location = watch('location');
@@ -33,15 +42,10 @@ const PostUpdate = () => {
     const price = watch('price');
     const description = watch('description');
 
-    // Google Maps integration
-    const mapRef = useRef(null);
-    const markerRef = useRef(null);
-
     const fileInputRefs = useRef([]);
     const handleIconClick = (index) => {
         fileInputRefs.current[index].click();   //referencing to the input field
     }
-
     const handleChange = (e, index) => {
         const file = e.target.files[0];
         if (file && !file.type.match('image.*')) {
@@ -70,18 +74,29 @@ const PostUpdate = () => {
             searchItem && fullName.startsWith(searchItem) && searchItem !== fullName
         )
     });
-
     //removing uni input field data if not in the list onBlur
     const removeData = () => {
         if (!data.some(item => item.title === uniInput)) {
             setUniInput('');
         }
-    }
+    }    
 
-    const navigate = useNavigate();
-    const searchLocation = useLocation();
-    const searchParams = new URLSearchParams(searchLocation.search);
-    const adId = searchParams.get('id');
+    //map variables
+    const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
+    // const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
+    // const [newMarker, setNewMarker] = useState(false);
+    const [clickedPosition, setClickedPosition] = useState(null);
+
+    const handleMapClick = (event) => {
+        console.log('Map clicked', event);
+        setClickedPosition(event.detail.latLng);
+        const lat = event.detail.latLng.lat;
+        const lng = event.detail.latLng.lng;
+        setLat(lat);
+        setLong(lng);
+        console.log(lat, lng);
+        // setNewMarker(true);
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -105,6 +120,7 @@ const PostUpdate = () => {
                 setBathroom(response.data.ad.bathroom || '');
                 setLat(response.data.ad.latitude || '');
                 setLong(response.data.ad.longitude || '');
+                // setOldMarkr({lat: response.data.ad.latitude, long: response.data.ad.longitude});
             } catch(err) {
                 if(err.response) {
                     setLoading(false);
@@ -171,10 +187,6 @@ const PostUpdate = () => {
                 formData.append('photos', image);
             });
 
-            //delete old images
-            // console.log(formData);
-            // console.log(title, location, contact, price, description, gender, bed, bathroom, newUni, newImages.length, backendImg)
-
             try{
                 setLoading(true);
                 const response = await axios.patch(`http://localhost:4000/api/ads/new/${adId}`, formData, {
@@ -232,64 +244,7 @@ const PostUpdate = () => {
                 }
             }
         }
-    }
-
-    //adding a marker on map
-    useEffect(() => {
-        const loadGoogleMapsScript = (callback) => {
-            if (document.querySelector('script[src^="https://maps.googleapis.com/maps/api/js"]')) {
-                callback();
-                return;
-            }
-
-            const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc`;
-            script.async = true;
-            script.defer = true;
-            script.onload = callback;
-            script.onerror = () => {
-                console.error("Error loading Google Maps script");
-                alert("Error loading Google Maps. Please check your API key.");
-            };
-            document.body.appendChild(script);
-        };
-
-        const initMap = () => {
-            if (window.google && mapRef.current) {
-                const map = new window.google.maps.Map(mapRef.current, {
-                    center: { lat: 6.9271, lng: 79.8612 },
-                    zoom: 10,
-                });
-
-                map.addListener('click', (e) => {
-                    const lat = e.latLng.lat();
-                    const lng = e.latLng.lng();
-                    setLat(lat);
-                    setLong(lng);
-                    console.log(lat, lng);
-
-                    if (markerRef.current) {
-                        markerRef.current.setMap(null);
-                    }
-
-                    const marker = new window.google.maps.Marker({
-                        position: { lat, lng },
-                        map: map,
-                    });
-
-                    markerRef.current = marker;
-                });
-            }
-        };
-
-        loadGoogleMapsScript(initMap);
-
-        return () => {
-            if (markerRef.current) {
-                markerRef.current.setMap(null);
-            }
-        };
-    }, []);
+    }    
 
     return (
         <div>
@@ -448,7 +403,19 @@ const PostUpdate = () => {
 
                         <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your new location</p>
                         <span className="flex justify-center text-sm text-red-600 mt-3 text-justify">Note: If no new pin added your current location will remain unchanged.</span> 
-                        <div className=" w-full h-110 border border-cusGray rounded-lg mb-20" ref={mapRef}></div>                 
+                        {/* <div className=" w-full h-110 border border-cusGray rounded-lg mb-20" ref={mapRef}></div>*/}
+                        <div className=" w-full h-110 border border-cusGray rounded-lg mb-20">
+                            <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
+                                <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>                                    
+                                    (clickedPosition && <AdvancedMarker position={clickedPosition} />)
+                                    {/* {newMarker? (
+                                        clickedPosition && <AdvancedMarker position={clickedPosition} />
+                                    ) : (
+                                        <AdvancedMarker position={oldMarker} />
+                                    )}*/}
+                                </Map>
+                            </APIProvider>
+                        </div>
 
                         <div className=" flex justify-between md:mx-20 lg:mx-48">
                             <button onClick={(e) => deleteAd(e)} className="btn bg-red-500">DELETE AD</button>
