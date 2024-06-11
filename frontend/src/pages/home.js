@@ -15,7 +15,7 @@ const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [topAds, setTopAds] = useState([]);
-  const [imageUrls, setImageUrls] = useState([]);
+  // const [imageUrls, setImageUrls] = useState([]);
 
   // const fileInputRefs = useRef([]);
   // const handleIconClick = (index) => {
@@ -51,8 +51,15 @@ const Home = () => {
     const fetchTopAds = async () => {
       try{
         const response = await axios.get('http://localhost:4000/api/ads/');
-        setTopAds(response.data.ads);
-        setImageUrls(response.data.imageUrls);
+
+        const adsWithImages = response.data.ads.map((ad, index) => ({
+          ...ad,
+          imageUrl: response.data.imageUrls[index]
+        }));
+
+        const sortedAds = [...adsWithImages].sort((a, b) => b.rating - a.rating);
+        setTopAds(sortedAds);
+        // setImageUrls(response.data.imageUrls);
       }catch(err) {
         console.log(err.message);
       }
@@ -128,7 +135,7 @@ const Home = () => {
 
         <div className="  md:px-20  mt-16 w-full ">
           <div className=" flex flex-col md:grid md:grid-cols-3 md:gap-5">
-            <div className=" md:col-span-2 mb-5 md:mb-0">
+            <div className=" md:flex md:flex-col md:justify-center md:col-span-2 mb-5 md:mb-0">
               <p className=" flex justify-center md:justify-start text-primary text-xl font-semibold">Find Your University</p>
               <p className="flex justify-center md:justify-start px-10 md:px-0 md:pl-12 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
             </div>
@@ -141,14 +148,14 @@ const Home = () => {
             <div className="flex justify-center md:justify-start md:pl-20 mb-5 md:mb-0 order-2 md:order-1">
               <img src={sticker1} alt="Find your university" className=" w-32 md:w-48"/>
             </div>
-            <div className=" md:col-span-2 order-1 md:order-2 mb-5 md:mb-0">
+            <div className="md:flex md:flex-col md:justify-center md:col-span-2 order-1 md:order-2 mb-5 md:mb-0">
               <p className="flex justify-center md:justify-start text-primary text-xl font-semibold">Add reviews, Share with others</p>
               <p className="flex justify-center md:justify-start px-10 md:px-0 pl-12 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
             </div>
           </div>
         </div>
 
-        <div className=" mt-20">
+        <div className=" mt-24">
           <div className="mb-8 flex justify-between">
             <p className=" text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
             <p onClick={() => window.location.href = '/allAds'} className=" text-secondary text-lg cursor-pointer hover:underline">view all</p>
@@ -157,20 +164,17 @@ const Home = () => {
           <div className="flex justify-center">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
               {topAds.length > 0?
-                topAds.slice(0, 3).map((ad, index) => {
-                  const image = imageUrls[index % imageUrls.length];
-                  return (
-                      <a href={`/addetail?id=${ad._id}`} key={ad._id}>
-                          <AdDetail 
-                              image={image} 
-                              title={ad.title} 
-                              location={ad.location}
-                              price={ad.price}
-                              rate={ad.rating}                  
-                          />
-                      </a> 
-                  );
-                }) :            
+                topAds.slice(0, 3).map((ad) => (
+                    <a href={`/addetail?id=${ad._id}`} key={ad._id}>
+                        <AdDetail 
+                            image={ad.imageUrl} 
+                            title={ad.title} 
+                            location={ad.location}
+                            price={ad.price}
+                            rate={ad.rating}                  
+                        />
+                    </a> 
+                )) :            
                 <div className=" flex justify-center md:col-span-2 lg:col-span-3">
                   <p>No ads</p>
                 </div>
@@ -179,12 +183,12 @@ const Home = () => {
           </div>
         </div>
 
-        <div className=" flex flex-col md:grid md:grid-cols-2 mt-20 md:px-10">
+        <div className=" flex flex-col md:grid md:grid-cols-2 mt-24">
           <div className=" mb-5 md:mb-0" id="about-us">
             <p className=" flex justify-center md:justify-start text-2xl md:text-4xl text-primary font-bold">About Us</p>
             <p className="flex justify-center md:justify-start px-10 md:px-0 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
           </div>
-          <div className=" flex justify-center md:justify-end md:pl-20">
+          <div className=" flex justify-center md:justify-end">
             <img src={about} alt="Find your university" className=" w-60 md:w-64"/>
           </div>
         </div>

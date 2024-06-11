@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Ad = require('../models/adModel');
+const Review = require('../models/reviewModel');
 const { getImageUrls, deleteImages } = require('../middleware/awsMiddleware');
 
 //get all ads
@@ -225,6 +226,7 @@ const deleteAd = async (req, res) => {
         const images = ad.images;
 
         await deleteImages(images);
+        await Review.findByIdAndDelete(id);
 
         const deletedAd = await Ad.findByIdAndDelete(id);
 
