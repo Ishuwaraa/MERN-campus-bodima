@@ -70,9 +70,9 @@ const MapPage = () => {
           </div>
         ) : (
           <>
-            <div className="flex justify-center mb-5">
+            {/* <div className="flex justify-center mb-5">
               <p className=" text-sm text-red-400">Click on the card to zoom in on the location.</p>
-            </div>
+            </div> */}
 
             <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
               <div className="flex flex-row md:flex-col border border-red-500 rounded-lg px-5 py-8 md:px-2 min-w-64 h-64 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">

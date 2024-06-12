@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const adRoutes = require('./routes/ads');
 const userRoutes = require('./routes/users');
 const reviewRoutes = require('./routes/reviews');
@@ -24,6 +25,7 @@ mongoose.connect(process.env.DB_URI)
     .catch((err) => console.log(err));
 
 app.use(express.json());    //getting the data from the request body
+app.use(cookieParser());
 
 //routes
 app.use('/api/ads', adRoutes);

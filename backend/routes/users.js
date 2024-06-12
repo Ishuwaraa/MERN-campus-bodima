@@ -9,6 +9,10 @@ router.post('/register', users.registerUser);
 router.post('/login', users.loginUser);
 
 //logout
+router.get('/logout', );
+
+//refresh token
+router.get('/refresh', );
 
 //update user data
 router.post('/update-data', users.updateUserData);

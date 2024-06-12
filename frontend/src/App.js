@@ -15,9 +15,7 @@ import AllAds from './pages/allAds';
 
 function App() {
 
-  return (
-
-    
+  return (    
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />}/>
@@ -34,10 +32,7 @@ function App() {
         <Route path='/allAds' element={<AllAds />} />
         
       </Routes>
-    </BrowserRouter>
-   
-    // <div>
-    // </div>
+    </BrowserRouter>       
   );
 }
 

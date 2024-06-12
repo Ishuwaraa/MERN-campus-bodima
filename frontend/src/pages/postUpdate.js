@@ -26,7 +26,6 @@ const PostUpdate = () => {
 
     //storing fetched data
     const [loading, setLoading] = useState(false);
-    const [ad, setAd] = useState([]);
     const [imageNames, setImageNames] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
     const [errMessage, setErrMessage] = useState(null);
@@ -83,8 +82,7 @@ const PostUpdate = () => {
 
     //map variables
     const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
-    // const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
-    // const [newMarker, setNewMarker] = useState(false);
+    const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
     const [clickedPosition, setClickedPosition] = useState(null);
 
     const handleMapClick = (event) => {
@@ -95,7 +93,6 @@ const PostUpdate = () => {
         setLat(lat);
         setLong(lng);
         console.log(lat, lng);
-        // setNewMarker(true);
     }
 
     useEffect(() => {
@@ -120,7 +117,7 @@ const PostUpdate = () => {
                 setBathroom(response.data.ad.bathroom || '');
                 setLat(response.data.ad.latitude || '');
                 setLong(response.data.ad.longitude || '');
-                // setOldMarkr({lat: response.data.ad.latitude, long: response.data.ad.longitude});
+                setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
             } catch(err) {
                 if(err.response) {
                     setLoading(false);
@@ -403,16 +400,11 @@ const PostUpdate = () => {
 
                         <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your new location</p>
                         <span className="flex justify-center text-sm text-red-600 mt-3 text-justify">Note: If no new pin added your current location will remain unchanged.</span> 
-                        {/* <div className=" w-full h-110 border border-cusGray rounded-lg mb-20" ref={mapRef}></div>*/}
                         <div className=" w-full h-110 border border-cusGray rounded-lg mb-20">
                             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
-                                <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>                                    
-                                    (clickedPosition && <AdvancedMarker position={clickedPosition} />)
-                                    {/* {newMarker? (
-                                        clickedPosition && <AdvancedMarker position={clickedPosition} />
-                                    ) : (
-                                        <AdvancedMarker position={oldMarker} />
-                                    )}*/}
+                                <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>   
+                                    <AdvancedMarker position={oldMarker} title='Current Location'/>                                 
+                                    {clickedPosition && <AdvancedMarker position={clickedPosition} title='New Location'/>}                                    
                                 </Map>
                             </APIProvider>
                         </div>
