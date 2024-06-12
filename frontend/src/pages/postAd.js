@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import axios from "axios";
 import Loading from '../components/Loading';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { Bounce, toast } from 'react-toastify';
 
 const PostAd = () => {
     const [uniInput, setUniInput] = useState('');
@@ -33,10 +34,22 @@ const PostAd = () => {
         fileInputRefs.current[index].click();   //referencing to the input field
     }        
 
+    const errorNotify = (msg) => toast.error(msg, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+    });
     const handleChange = (e, index) => {
         const file = e.target.files[0];
         if (file && !file.type.match('image.*')) {
-            alert('Please upload only image files (png, jpg, jpeg).');
+            // alert('Please upload only image files (png, jpg, jpeg).');
+            errorNotify('Please upload only image files (png, jpg, jpeg)');
             e.target.value = ''; // Reset the input field
             return;
         }
@@ -49,15 +62,28 @@ const PostAd = () => {
         setBackendImg(newBackendImage);
         // console.log(e.target.files, images, backendImg);
     }    
-                
+      
+    const notify = () => toast.success('Ad posted successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });    
     const onSubmit = async () => {
         if (images.some(image => image === null)) {
-            alert('Please add 4 images');
+            // alert('Please add 4 images');
+            errorNotify('All 4 images are required');
             return;
         }
 
         if(lat === null || long === null) {
-            alert('Please add your location on the map');
+            // alert('Please add your location on the map');
+            errorNotify('Please add your location on the map');
             return;
         }
 
@@ -87,7 +113,8 @@ const PostAd = () => {
                 }
             });
             setLoading(false);
-            alert('Ad posted successfully!');
+            // alert('Ad posted successfully!');
+            notify();
             setImages(Array(4).fill(null));
             setBackendImg([]);
             setGender(null);
@@ -100,6 +127,7 @@ const PostAd = () => {
             setValue('description', '');
             setLat(null);
             setLong(null);
+            setClickedPosition(null);
             // console.log('ad posted', response);
         } catch (error) {
             setLoading(false);

@@ -8,6 +8,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import data from '../data/uniNames.json';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { Bounce, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PostUpdate = () => {
     const navigate = useNavigate();
@@ -44,11 +46,23 @@ const PostUpdate = () => {
     const fileInputRefs = useRef([]);
     const handleIconClick = (index) => {
         fileInputRefs.current[index].click();   //referencing to the input field
-    }
+    }    
+    const errorNotify = (msg) => toast.error(msg, {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
+    });
     const handleChange = (e, index) => {
         const file = e.target.files[0];
         if (file && !file.type.match('image.*')) {
-            alert('Please upload only image files (png, jpg, jpeg).');
+            // alert('Please upload only image files (png, jpg, jpeg).');
+            errorNotify('Please upload only image files (png, jpg, jpeg).')
             e.target.value = ''; // Reset the input field
             return;
         }
@@ -95,45 +109,55 @@ const PostUpdate = () => {
         console.log(lat, lng);
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try{
-                if(adId === '') return navigate('/');
+    const fetchData = async () => {
+        try{
+            if(adId === '') return navigate('/');
 
-                // setLoading(true);
-                const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
-                setImageUrls(response.data.imageUrls);
-                setImageNames(response.data.ad.images);
-                // setLoading(false);
-                setErrMessage(null);
-                setValue('title', response.data.ad.title || '');
-                setValue('location', response.data.ad.location || '');
-                setValue('contact', response.data.ad.contact || '');
-                setValue('price', response.data.ad.price || '');
-                setValue('description', response.data.ad.description || '');
-                setUni(response.data.ad.university || '');
-                setGender(response.data.ad.gender || '');
-                setBed(response.data.ad.bed || '');
-                setBathroom(response.data.ad.bathroom || '');
-                setLat(response.data.ad.latitude || '');
-                setLong(response.data.ad.longitude || '');
-                setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
-            } catch(err) {
-                if(err.response) {
-                    setLoading(false);
-                    console.log(err.response.data);
-                    setErrMessage(err.response.data.msg);
-                } else if(err.request) {
-                    console.log(err.request);
-                } else {
-                    console.log(err.message);
-                }
+            // setLoading(true);
+            const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
+            setImageUrls(response.data.imageUrls);
+            setImageNames(response.data.ad.images);
+            // setLoading(false);
+            setErrMessage(null);
+            setValue('title', response.data.ad.title || '');
+            setValue('location', response.data.ad.location || '');
+            setValue('contact', response.data.ad.contact || '');
+            setValue('price', response.data.ad.price || '');
+            setValue('description', response.data.ad.description || '');
+            setUni(response.data.ad.university || '');
+            setGender(response.data.ad.gender || '');
+            setBed(response.data.ad.bed || '');
+            setBathroom(response.data.ad.bathroom || '');
+            setLat(response.data.ad.latitude || '');
+            setLong(response.data.ad.longitude || '');
+            setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
+        } catch(err) {
+            if(err.response) {
+                setLoading(false);
+                console.log(err.response.data);
+                setErrMessage(err.response.data.msg);
+            } else if(err.request) {
+                console.log(err.request);
+            } else {
+                console.log(err.message);
             }
         }
-
+    }
+    useEffect(() => {
         fetchData();
     }, [])
 
+    const deleteNotify = () => toast.success('Ad deleted successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
     const deleteAd = async (e) => {
         e.preventDefault();
 
@@ -142,6 +166,7 @@ const PostUpdate = () => {
                 const response = await axios.delete(`http://localhost:4000/api/ads/${adId}`);
                 console.log(response.data.msg, response.data.deletedAd);
                 navigate('/profile');
+                deleteNotify();
             }
         } catch (err) {
             if(err.response) {
@@ -154,6 +179,17 @@ const PostUpdate = () => {
         }
     }
 
+    const updateNotify = () => toast.success('Ad updated successfully!', {
+        position: "bottom-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+    });
     const onSubmit = async () => {
         const newImages = images.filter(image => image !== null);
 
@@ -163,7 +199,8 @@ const PostUpdate = () => {
         // }       
 
         if(newImages.length > 0 && newImages.length !== 4){
-            alert('Please add 4 images');
+            // alert('Please add 4 images');
+            errorNotify('All 4 images are required');
             return;
         }else if(newImages.length === 4){
             const formData = new FormData();
@@ -194,12 +231,17 @@ const PostUpdate = () => {
                 // console.log(response.data.newAd);
 
                 setLoading(false);
-                alert('Your ad updated successfully');
-                navigate('/profile');
+                setClickedPosition(null);
+                fetchData();
+                // alert('Your ad updated successfully');
+                updateNotify();
+                // navigate('/profile');
             } catch (err) {                
                 if(err.response){
                     setLoading(false);
-                    alert(err.response.data.msg);
+                    // alert(err.response.data.msg);
+                    const msg = err.response.data.msg;
+                    errorNotify(msg)
                 }else if(err.request) {
                     console.log(err.request);
                 }else {
@@ -227,9 +269,12 @@ const PostUpdate = () => {
                 const response = await axios.patch(`http://localhost:4000/api/ads/${adId}`, newData);
 
                 setLoading(false);
-                alert('Your ad updated successfully');
+                setClickedPosition(null);
+                // alert('Your ad updated successfully');
+                fetchData();
+                updateNotify();
                 // console.log(response.data.ad);
-                navigate('/profile');
+                // navigate('/profile');
             } catch (err) {       
                 if(err.response){
                     setLoading(false);

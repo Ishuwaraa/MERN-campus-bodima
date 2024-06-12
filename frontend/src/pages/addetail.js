@@ -14,6 +14,8 @@ import axios from "axios";
 import Loading from "../components/Loading";
 import noReviews from '../assets/noReviews.png';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import card from '../assets/card.png';
+import { Bounce, toast } from 'react-toastify';
 
 const Addetail = () => {
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
@@ -151,9 +153,33 @@ const Addetail = () => {
     fetchData();
   }, [])
 
+  const notify = () => toast.success('Review added successfully!', {
+    position: "bottom-left",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+  });
+  const errorNotify = (msg) => toast.error(msg, {
+    position: "bottom-left",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    transition: Bounce,
+});
   const onSubmit = async () => {
     if(roomRate === '' || locationRate === '' || bathroomRate === ''){
-      alert('Please add a rating for all the fields');
+      // alert('Please add a rating for all the fields');
+      const msg = 'Please add a rating for all the fields'
+      errorNotify(msg);
       return
     }
 
@@ -169,10 +195,13 @@ const Addetail = () => {
       const response = await axios.post(`http://localhost:4000/api/review/${adId}`, formData);
       // console.log(response);
       fetchData();
+      notify();
       setValue('review', '');
     }catch(err) {
       if(err.response) {
-        alert(err.response.data.msg);
+        // alert(err.response.data.msg);
+        const msg = err.response.data.msg;
+        errorNotify(msg);
       } else if(err.request) {
         console.log(err.request);
       } else {
@@ -196,18 +225,19 @@ const Addetail = () => {
         <>      
           <div className=" ">
             <div className=" border border-primary rounded-lg md:w-full overflow-hidden relative  ">
-              <div className="">
-                <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-contain transition-transform duration-500 ease-in-out "/>
+              <div className="absolute inset-0 bg-cover bg-center filter blur-md z-0" style={{ backgroundImage: `url(${imageUrls[currentIndex]})` }}></div>
+              <div className=" relative z-10 ">
+                <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-contain transition-transform duration-500 ease-in-out"/>
               </div>
               
-              <button onClick={prevSlide} className="absolute top-1/2 md:left-5 left-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
+              <button onClick={prevSlide} className="z-20 absolute top-1/2 md:left-5 left-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
                 <span>&#10094;</span>
               </button>
-              <button onClick={nextSlide} className=" absolute top-1/2 md:right-5 right-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
+              <button onClick={nextSlide} className=" z-20 absolute top-1/2 md:right-5 right-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
                 <span>&#10095;</span>
               </button>
 
-              <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2">
+              <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
                 {imageUrls.map((_, index) => (
                   <div key={index} className={`w-3 h-3 rounded-full ${ index === currentIndex ? "bg-gray-700" : "bg-gray-400"} cursor-pointer`}onClick={() => goToSlide(index)}/>
                 ))}

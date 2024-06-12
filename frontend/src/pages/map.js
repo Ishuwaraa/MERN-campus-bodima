@@ -77,7 +77,7 @@ const MapPage = () => {
             <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
               <div className="flex flex-row md:flex-col border border-red-500 rounded-lg px-5 py-8 md:px-2 min-w-64 h-64 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
                 <div className="flex flex-row md:flex-col">
-                  {ads.map((ad, index) => {
+                  {ads.length > 0 && ads.map((ad, index) => {
                     const image = imageUrls[index % imageUrls.length];
                     return (
                       <MapCard
@@ -98,7 +98,7 @@ const MapPage = () => {
               <div className="h-110 md:col-span-2 lg:col-span-3 border border-cusGray rounded-lg">
                 <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
                   <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'}>
-                    {ads.map((ad, index) => {
+                    {ads.length && ads.map((ad, index) => {
                       const position = { lat: ad.latitude, lng: ad.longitude };
 
                       return (
