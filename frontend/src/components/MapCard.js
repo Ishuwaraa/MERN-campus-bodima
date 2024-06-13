@@ -1,12 +1,12 @@
 import React from 'react';
 
 
-const MapCard = ({title, image, gender, bed, price, onClick, viewClick }) => {
+const MapCard = ({title, image, gender, bed, price, viewClick }) => {
   
   const onViewClick = () => window.location.href = `/addetail?id=${viewClick}`;
 
   return (
-    <div onClick={onClick} className="flex flex-row md:flex-col border border-secondary rounded-lg w-80 h-44 md:h-full md:w-full mr-8 md:mr-0 mb-0 md:mb-8 cursor-pointer">
+    <div className="flex flex-row md:flex-col border border-secondary rounded-lg w-80 h-44 md:h-full md:w-full mr-8 md:mr-0 mb-0 md:mb-8 ">
       <div className="">
         <img src={image} alt={title} className="h-full md:h-32 w-52 md:w-full object-cover rounded-tl-lg rounded-bl-lg md:rounded-bl-none md:rounded-tr-lg"
         />

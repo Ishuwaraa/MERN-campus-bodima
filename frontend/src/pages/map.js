@@ -13,8 +13,8 @@ const MapPage = () => {
   const [loading, setLoading] = useState(false);
 
   //map 
-  const [infowindowOpen, setInfowindowOpen] = useState(false);
-  const [markerRef, marker] = useAdvancedMarkerRef();
+  // const [infowindowOpen, setInfowindowOpen] = useState(false);
+  // const [markerRef, marker] = useAdvancedMarkerRef();
   
   //map default positon
   const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
@@ -40,24 +40,6 @@ const MapPage = () => {
     fetchAds();
   }, []);
 
-  // const smoothZoom = (map, max, cnt) => {
-  //   if (cnt >= max) {
-  //     return;
-  //   } else {
-  //     const z = window.google.maps.event.addListener(map, 'zoom_changed', () => {
-  //       window.google.maps.event.removeListener(z);
-  //       smoothZoom(map, max, cnt + 1);
-  //     });
-  //     setTimeout(() => { map.setZoom(cnt) }, 80);
-  //   }
-  // };
-
-  // const zoomInOnLocation = (latitude, longitude) => {
-  //   const latLng = new window.google.maps.LatLng(parseFloat(latitude), parseFloat(longitude));
-  //   googleMapRef.current.panTo(latLng);
-  //   smoothZoom(googleMapRef.current, 15, googleMapRef.current.getZoom());
-  // };
-
   return (
     <div>
       <Navbar/>
@@ -70,9 +52,9 @@ const MapPage = () => {
           </div>
         ) : (
           <>
-            {/* <div className="flex justify-center mb-5">
-              <p className=" text-sm text-red-400">Click on the card to zoom in on the location.</p>
-            </div> */}
+            <div className="flex justify-center mb-5">
+              <p className=" text-sm text-red-400">note: Click on the marker to view the Ad.</p>
+            </div>
 
             <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
               <div className="flex flex-row md:flex-col border border-red-500 rounded-lg px-5 py-8 md:px-2 min-w-64 h-64 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
@@ -87,7 +69,6 @@ const MapPage = () => {
                         gender={ad.gender}
                         bed={ad.bed}
                         price={ad.price}
-                        onClick={() => null}
                         viewClick={ad._id}
                       />
                     )
@@ -102,7 +83,7 @@ const MapPage = () => {
                       const position = { lat: ad.latitude, lng: ad.longitude };
 
                       return (
-                        <AdvancedMarker position={position} key={index} title={ad.title} />
+                        <AdvancedMarker position={position} key={index} title={ad.title} onClick={() => window.location.href = `/addetail?id=${ad._id}`}/>                        
                         // <AdvancedMarker 
                         //   ref={markerRef}
                         //   onClick={() => setInfowindowOpen(true)}

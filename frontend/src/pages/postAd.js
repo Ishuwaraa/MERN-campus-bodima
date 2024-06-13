@@ -308,7 +308,7 @@ const PostAd = () => {
                         </div>
 
                         <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your location</p>
-                        <div className=" w-full h-110 border border-cusGray rounded-lg mb-20">
+                        <div className=" w-full h-96 border border-cusGray rounded-lg mb-20">
                             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
                                 <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>                                    
                                     {clickedPosition && <AdvancedMarker position={clickedPosition} />}

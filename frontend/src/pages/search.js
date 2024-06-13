@@ -27,6 +27,8 @@ const Search = () => {
     const [sortBy, setSortBy] = useState('');
     const [ratingAscSort, setRatingAscSort] = useState([]);
     const [ratingDscSort, setRatingDscSort] = useState([]);
+    const [dateNewSort, setDateNewSort] = useState([]);
+    const [dateOldSort, setDateOldSort] = useState([]);
 
     const sortByRatingAsc = () => {
         if(uniAds.length !== 0){
@@ -62,11 +64,37 @@ const Search = () => {
             console.log('no ads')
         }
     }
+    const sortByDateNew = () => {
+        if(uniAds.length !== 0){
+            const newArray = [...uniAds].sort((a, b) => {
+                const date1 = new Date(a.createdAt);
+                const date2 = new Date(b.createdAt);
+
+                return date2 - date1;
+            })
+
+            setDateNewSort(newArray);
+        }
+    }
+    const sortByDateOld = () => {
+        if(uniAds.length !== 0){
+            const oldArray = [...uniAds].sort((a, b) => {
+                const date1 = new Date(a.createdAt);
+                const date2 = new Date(b.createdAt);
+
+                return date1 - date2;
+            })
+
+            setDateOldSort(oldArray);
+        }
+    }
 
     const dropDownOnChange = (e) => {
         setSortBy(e.target.value);
         sortByRatingAsc();
         sortByRatingDsc();
+        sortByDateNew();
+        sortByDateOld();
     }
 
     //mapping uni names to images
@@ -134,30 +162,19 @@ const Search = () => {
                         {/* <p className=" mt-14 lg:mt-20 mb-8 text-2xl md:text-4xl text-primary font-bold">Search results...</p> */}
                         <div className=" mt-14 lg:mt-20 mb-10 flex justify-between">
                             <p className="text-2xl md:text-4xl text-primary font-bold">Search results...</p>
-                            <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
+                            <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className=" p-1 border border-cusGray rounded-lg">
                                 <option value="" className=" text-gray-500">Sort by</option>
-                                <option value="ratingAsc" >Rating (asc)</option>
-                                <option value="ratingDsc" >Rating (dsc)</option>
-                                <option value="date" >Date added</option>
+                                <option value="ratingAsc" >Rating (Lowest)</option>
+                                <option value="ratingDsc" >Rating (Highest)</option>
+                                <option value="new" >Date added (Newest)</option>
+                                <option value="old" >Date added (Oldest)</option>
                             </select>
                         </div>
 
                         <div className="flex justify-center">
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                             {
-                                (sortBy === 'date' || sortBy === '')? (
-                                    uniAds.map((ad, index) => (
-                                        <a href={`/addetail?id=${ad._id}`} key={index}>
-                                            <AdDetail 
-                                                image={ad.imageUrl} 
-                                                title={ad.title} 
-                                                location={ad.location}
-                                                price={ad.price}
-                                                rate={ad.rating}                  
-                                            />
-                                        </a>
-                                    ))
-                                ) : sortBy === 'ratingAsc'? (
+                                (sortBy === 'ratingAsc')? (
                                     ratingAscSort.map((ad, index) => (
                                         <a href={`/addetail?id=${ad._id}`} key={index}>
                                             <AdDetail 
@@ -169,8 +186,44 @@ const Search = () => {
                                             />
                                         </a>
                                     ))
-                                ) : (
+                                ) : (sortBy === 'ratingDsc')? (
                                     ratingDscSort.map((ad, index) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={index}>
+                                            <AdDetail 
+                                                image={ad.imageUrl} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                rate={ad.rating}                  
+                                            />
+                                        </a>
+                                    ))
+                                ) : (sortBy === 'new')? (
+                                    dateNewSort.map((ad, index) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={index}>
+                                            <AdDetail 
+                                                image={ad.imageUrl} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                rate={ad.rating}                  
+                                            />
+                                        </a>
+                                    ))
+                                ) : (sortBy === 'old')? (
+                                    dateOldSort.map((ad, index) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={index}>
+                                            <AdDetail 
+                                                image={ad.imageUrl} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                rate={ad.rating}                  
+                                            />
+                                        </a>
+                                    ))
+                                ) : (
+                                    uniAds.map((ad, index) => (
                                         <a href={`/addetail?id=${ad._id}`} key={index}>
                                             <AdDetail 
                                                 image={ad.imageUrl} 

@@ -64,7 +64,7 @@ const addReview = async (req, res) => {
                 wholeRate += individualRate;
             })
             const finalRate = wholeRate / (reviewRatings.length * 3);
-            console.log(finalRate.toFixed(1));
+            // console.log(finalRate.toFixed(1));
 
             await Ad.findByIdAndUpdate(adId, {
                 rating: finalRate.toFixed(1)

@@ -13,6 +13,8 @@ const AllAds = () => {
 
     const [ratingAscSort, setRatingAscSort] = useState([]);
     const [ratingDscSort, setRatingDscSort] = useState([]);
+    const [dateNewSort, setDateNewSort] = useState([]);
+    const [dateOldSort, setDateOldSort] = useState([]);
 
     const sortByRatingAsc = () => {
         if(ads.length !== 0){
@@ -27,8 +29,6 @@ const AllAds = () => {
             })
     
             setRatingAscSort(ascArray);
-        }else {
-            console.log('no ads')
         }
     }
     const sortByRatingDsc = () => {
@@ -44,8 +44,30 @@ const AllAds = () => {
             })
     
             setRatingDscSort(dscArray);
-        }else {
-            console.log('no ads')
+        }
+    }
+    const sortByDateNew = () => {
+        if(ads.length !== 0){
+            const newArray = [...ads].sort((a, b) => {
+                const date1 = new Date(a.createdAt);
+                const date2 = new Date(b.createdAt);
+
+                return date2 - date1;
+            })
+
+            setDateNewSort(newArray);
+        }
+    }
+    const sortByDateOld = () => {
+        if(ads.length !== 0){
+            const oldArray = [...ads].sort((a, b) => {
+                const date1 = new Date(a.createdAt);
+                const date2 = new Date(b.createdAt);
+
+                return date1 - date2;
+            })
+
+            setDateOldSort(oldArray);
         }
     }
 
@@ -53,6 +75,8 @@ const AllAds = () => {
         setSortBy(e.target.value);
         sortByRatingAsc();
         sortByRatingDsc();
+        sortByDateNew();
+        sortByDateOld();
     }    
 
     useEffect(() => {
@@ -88,29 +112,18 @@ const AllAds = () => {
                     <>
                     <div className="mb-8  flex justify-between">
                         <p className="text-2xl md:text-4xl text-primary font-bold">All Ads</p>
-                        <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className="h-8 p-1 w-20 md:w-32 border border-cusGray rounded-lg ml-3">
+                        <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className=" p-1 border border-cusGray rounded-lg">
                             <option value="" className=" text-gray-500">Sort by</option>
-                            <option value="ratingAsc" >Rating (asc)</option>
-                            <option value="ratingDsc" >Rating (dsc)</option>
-                            <option value="date" >Date added</option>
+                            <option value="ratingAsc" >Rating (Lowest)</option>
+                            <option value="ratingDsc" >Rating (Highest)</option>
+                            <option value="new" >Date added (Newest)</option>
+                            <option value="old" >Date added (Oldest)</option>
                         </select>
                     </div>
                     <div className="flex justify-center">
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                             {ads.length > 0? (
-                                (sortBy === 'date' || sortBy === '')? (
-                                    ads.map((ad) => (
-                                        <a href={`/addetail?id=${ad._id}`} key={ad._id}>
-                                            <AdDetail 
-                                                image={ad.imageUrl}
-                                                title={ad.title} 
-                                                location={ad.location}
-                                                price={ad.price}
-                                                rate={ad.rating}                  
-                                            />
-                                        </a>
-                                    ))
-                                ) : sortBy === 'ratingAsc'? (
+                                sortBy === 'ratingAsc'? (
                                     ratingAscSort.map((ad) => (
                                         <a href={`/addetail?id=${ad._id}`} key={ad._id}>
                                             <AdDetail 
@@ -122,7 +135,7 @@ const AllAds = () => {
                                             />
                                         </a> 
                                     ))
-                                ) : (
+                                ) : (sortBy === 'ratingDsc')? (
                                     ratingDscSort.map((ad) => (
                                         <a href={`/addetail?id=${ad._id}`} key={ad._id}>
                                             <AdDetail 
@@ -134,7 +147,43 @@ const AllAds = () => {
                                             />
                                         </a> 
                                     ))
-                                ) 
+                                ) : (sortBy === 'new')? (
+                                    dateNewSort.map((ad, index) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={index}>
+                                            <AdDetail 
+                                                image={ad.imageUrl} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                rate={ad.rating}                  
+                                            />
+                                        </a>
+                                    ))
+                                ) : (sortBy === 'old')? (
+                                    dateOldSort.map((ad, index) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={index}>
+                                            <AdDetail 
+                                                image={ad.imageUrl} 
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                rate={ad.rating}                  
+                                            />
+                                        </a>
+                                    ))
+                                ) : (
+                                    ads.map((ad) => (
+                                        <a href={`/addetail?id=${ad._id}`} key={ad._id}>
+                                            <AdDetail 
+                                                image={ad.imageUrl}
+                                                title={ad.title} 
+                                                location={ad.location}
+                                                price={ad.price}
+                                                rate={ad.rating}                  
+                                            />
+                                        </a>
+                                    ))
+                                )
                             ) : (
                                 <div className="flex justify-center">
                                     <p className=" text-cusGray">No ads to display.</p>

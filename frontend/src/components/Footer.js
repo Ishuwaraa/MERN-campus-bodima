@@ -11,17 +11,17 @@ const Footer = () => {
                         <div className=' flex justify-center md:justify-start'>
                             <img src={logo} alt="campus bodima" className="  h-52 hover:cursor-pointer" onClick={() => window.location.href = '/'}/>
                         </div>
-                        <div className="flex justify-center md:justify-start flex-row">
+                        {/* <div className="flex justify-center md:justify-start flex-row">
                             <Instagram className=" text-white mr-2"/>
                             <Facebook className=" text-white"/>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 
                 <div className=" flex items-center my-7 md:my-0 pl-8 md:pl-0">
                     <ul className=" space-y-1">
                         <li className=" hover:cursor-pointer hover:underline"><a href="/allAds">All Ads</a></li>
-                        <li className=" hover:cursor-pointer hover:underline">Abous us</li>
+                        <li className=" hover:cursor-pointer hover:underline">About us</li>
                         <li className=" hover:cursor-pointer hover:underline">Help</li>
                         <li className=" hover:cursor-pointer hover:underline">Privacy policy</li>
                     </ul>
@@ -30,9 +30,9 @@ const Footer = () => {
                 <div className=" flex items-center mb-3 md:my-0 pl-8 md:pl-0">
                     <ul>
                         <li className=" mb-2">Contact us</li>
-                        <li className=" text-sm">34, flower Rd, Colombo 5, Sri Lanka</li>
-                        <li className=" text-sm">0112224448</li>
-                        <li className=" text-sm">campusbodima@gmail.com</li>
+                        {/* <li className=" text-sm">34, flower Rd, Colombo 5, Sri Lanka</li> */}
+                        {/* <li className=" text-sm">0112224448</li> */}
+                        <li className=" text-sm">cbodima@gmail.com</li>
                     </ul>
                 </div>
             </div>

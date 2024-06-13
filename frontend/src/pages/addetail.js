@@ -20,18 +20,20 @@ import { Bounce, toast } from 'react-toastify';
 const Addetail = () => {
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
   const review = watch("review");
+
   const [roomRate, setRoomRate] = useState('');
   const [locationRate, setLocationRate] = useState('');
   const [bathroomRate, setBathroomRate] = useState('');
+  const [anonUser, setAnonUser] = useState(false);
+  const [sortBy, setSortBy] = useState('');
+  const [ascSort, setAscSort] = useState([]);
+  const [dscSort, setDscSort] = useState([]);
+
   const [adDetails, setAdDetails] = useState([]);
   const [adReviews, setAdReviews] = useState([]);
   const [adRating, setAdRating] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [imageLoading, setImageLoading] = useState(false);
-  const [firstImageClick, setFirstImageClick] = useState(true);
-  const [timeoutId, setTimeoutId] = useState(null);
   const [adDate, setAdDate] = useState('');
-  // const [adRate, setAdRate] = useState(0);
   const [errMessage, setErrMessage] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
   const [lat, setLat] = useState(null);
@@ -73,40 +75,6 @@ const Addetail = () => {
   const nextSlide = () => setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
   const prevSlide = () => setcurrentIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length);
   const goToSlide = (index) => setcurrentIndex(index);
-
-  //some abracadabara stuff cuz image loading takes a while -_-
-  // const nextSlide = () => {
-  //   setImageLoading(true);
-  //   if(!firstImageClick){
-  //     if(timeoutId){
-  //       clearTimeout(timeoutId);
-  //       setTimeoutId(null);
-  //     }
-  //     setImageLoading(false);
-  //     setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-  //   }
-  //   const newTimeoutId = setTimeout(() => {
-  //     setcurrentIndex((prevIndex) => (prevIndex + 1) % imageUrls.length);
-  //     setImageLoading(false);
-  //     setFirstImageClick(false);
-  //   }, 2000); 
-    
-  //   setTimeoutId(newTimeoutId);
-  // };
-  // const prevSlide = () => {
-  //   setImageLoading(true);
-  //   setTimeout(() => {
-  //     setcurrentIndex((prevIndex) => (prevIndex - 1 + imageUrls.length) % imageUrls.length);
-  //     setImageLoading(false);
-  //   }, 1000); 
-  // };
-  // const goToSlide = (index) => {    
-  //   setImageLoading(true);
-  //   setTimeout(() => {
-  //     setcurrentIndex(index);
-  //     setImageLoading(false);
-  //   }, 1000); 
-  // };
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -151,7 +119,37 @@ const Addetail = () => {
 
   useEffect(() => {
     fetchData();
-  }, [])
+  }, []);
+
+  const sortByAsc = () => {
+    if(adReviews.length !== 0){
+      const ascOrder = [...adReviews].sort((a, b) => {
+        const date1 = new Date(a.createAt);
+        const date2 = new Date(b.createdAt);
+
+        return date1 - date2
+      });
+      setAscSort(ascOrder);
+    }
+  }
+
+  const sortByDsc = () => {
+    if(adReviews.length !== 0){
+      const dscOrder = [...adReviews].sort((a, b) => {
+        const date1 = new Date(a.createdAt);
+        const date2 = new Date(b.createdAt);
+
+        return date2 - date1;
+      });
+      setDscSort(dscOrder);
+    }
+  }
+
+  const dropdownOnChange = (e) => {
+    setSortBy(e.target.value);
+    sortByAsc();
+    sortByDsc();
+  }
 
   const notify = () => toast.success('Review added successfully!', {
     position: "bottom-left",
@@ -184,7 +182,7 @@ const Addetail = () => {
     }
 
     const formData = {
-      userId: '123',
+      userId: anonUser? 'Anonymous user' : '123',
       roomRate,
       locationRate,
       bathroomRate,
@@ -286,30 +284,73 @@ const Addetail = () => {
           <div className=" flex flex-col md:grid md:grid-cols-2 gap-10 mt-10">
             {/* left col */}
             <div className="flex flex-col justify-center border border-primary rounded-lg">
+              <div className=" flex justify-end mt-5 pr-4 mb-1">
+                <select name="sort" value={sortBy} onChange={(e) => dropdownOnChange(e)} className="h-8 p-1 border border-cusGray rounded-lg">
+                    <option value="" className=" text-gray-500">Sort by</option>
+                    <option value="new" >Date added (Newest)</option>
+                    <option value="old" >Date added (Oldest)</option>
+                </select>
+              </div>            
               <div className="max-h-96 overflow-y-auto p-5 md:py-8">
                 {/* Wrapper for all review cards */}
                 <div className=" space-y-14 ">
-                  {adReviews.length === 0 ? 
+                  {adReviews.length === 0 ? (
                     <div className=" flex flex-col justify-center items-center">
                       <img src={noReviews} alt="no reviews" className=" w-40" />
                       <p className=" text-cusGray md:-ml-8">No reviews yet...</p>
-                    </div> :
-                    adReviews.map((review, index) => {
-                      const date = review.createdAt;
-                      const formatted = new Date(date);
+                    </div> 
+                    ) : (sortBy === 'new') ? (
+                      dscSort.map((review, index) => {
+                        const date = review.createdAt;
+                        const formatted = new Date(date);
 
-                      return (
-                        <ReviewCard
-                          name={review.userId}
-                          date={formatted.toLocaleDateString()}
-                          review={review.review}
-                          room={review.room}
-                          location={review.location}
-                          bathroom={review.bathroom}
-                          key={index}
-                        />
-                      )
-                    })
+                        return (
+                          <ReviewCard
+                            name={review.userId}
+                            date={formatted.toLocaleDateString()}
+                            review={review.review}
+                            room={review.room}
+                            location={review.location}
+                            bathroom={review.bathroom}
+                            key={index}
+                          />
+                        )
+                      })
+                    ) : (sortBy === 'old')? (
+                      ascSort.map((review, index) => {
+                        const date = review.createdAt;
+                        const formatted = new Date(date);
+
+                        return (
+                          <ReviewCard
+                            name={review.userId}
+                            date={formatted.toLocaleDateString()}
+                            review={review.review}
+                            room={review.room}
+                            location={review.location}
+                            bathroom={review.bathroom}
+                            key={index}
+                          />
+                        )
+                      })
+                    ) : (
+                      adReviews.map((review, index) => {
+                        const date = review.createdAt;
+                        const formatted = new Date(date);
+
+                        return (
+                          <ReviewCard
+                            name={review.userId}
+                            date={formatted.toLocaleDateString()}
+                            review={review.review}
+                            room={review.room}
+                            location={review.location}
+                            bathroom={review.bathroom}
+                            key={index}
+                          />
+                        )
+                      })
+                    )                  
                   }
                 </div>
               </div>
@@ -380,18 +421,8 @@ const Addetail = () => {
                 </div>
               </div>
 
-              <textarea
-                name="description"
-                rows="4"
-                required
-                placeholder="tell us what you think about this place..."
-                style={{resize: "none"}}            
-                className=" mt-10 p-2 w-full border border-cusGray rounded-lg"
-                {...register("review", {
-                  maxLength: 300,
-                  pattern: /^[a-zA-Z0-9\s\.,_&@'"?!\-]+$/i,
-                })}
-              />
+              <textarea name="description" rows="4" required placeholder="tell us what you think about this place..." style={{resize: "none"}} className=" mt-10 p-2 w-full border border-cusGray rounded-lg"
+              {...register("review", { maxLength: 300, pattern: /^[a-zA-Z0-9\s\.,_&@'"?!\-]+$/i })}/>
               {errors.review && errors.review.type === "maxLength" ? (
                 <span className=" text-sm text-red-600">
                   max character limit is 300
@@ -403,6 +434,12 @@ const Addetail = () => {
                   </span>
                 )
               )}
+
+              <div className="mt-3">
+                <input type="checkbox" id="anonUser" className=' w-4 h-4 ' onChange={(e) => setAnonUser(e.target.checked)}/>
+                <label htmlFor="anonUser" className=' ml-2 text-cusGray  cursor-pointer text-center'>stay anonymous</label>
+              </div>
+
               <div className="flex justify-end mt-10  ">
                 <button className=" btn bg-primary">Add review</button>
               </div>
@@ -411,9 +448,9 @@ const Addetail = () => {
 
           </div>
           
-          <div className=" w-full h-115 border border-cusGray rounded-lg my-20 overflow-hidden">
+          <div className=" w-full h-96 border border-cusGray rounded-lg my-20 overflow-hidden">
             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
-              <Map defaultCenter={position} defaultZoom={10} mapId={'bf51a910020fa25a'}>
+              <Map defaultCenter={position} defaultZoom={12} mapId={'bf51a910020fa25a'}>
                 <AdvancedMarker position={position} />
               </Map>
             </APIProvider>

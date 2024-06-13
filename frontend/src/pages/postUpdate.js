@@ -34,6 +34,8 @@ const PostUpdate = () => {
     const [uni, setUni] = useState('');
     const [lat, setLat] = useState(null);
     const [long, setLong] = useState(null);
+    const [oldLat, setOldLat] = useState(null);
+    const [oldLng, setOldLng] = useState(null);
 
     //use form inputs
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
@@ -96,7 +98,8 @@ const PostUpdate = () => {
 
     //map variables
     const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
-    const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
+    const oldMarker = (oldLat === null || oldLng === null) ? {lat: 6.884504262718018, lng: 79.91861383804526} : {lat: oldLat, lng: oldLng};
+    // const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
     const [clickedPosition, setClickedPosition] = useState(null);
 
     const handleMapClick = (event) => {
@@ -130,7 +133,9 @@ const PostUpdate = () => {
             setBathroom(response.data.ad.bathroom || '');
             setLat(response.data.ad.latitude || '');
             setLong(response.data.ad.longitude || '');
-            setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
+            // setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
+            setOldLat(response.data.ad.latitude || '');
+            setOldLng(response.data.ad.longitude || '');
         } catch(err) {
             if(err.response) {
                 setLoading(false);
@@ -191,12 +196,7 @@ const PostUpdate = () => {
         transition: Bounce,
     });
     const onSubmit = async () => {
-        const newImages = images.filter(image => image !== null);
-
-        // if(lat === null || long === null) {
-        //     alert('Please add your location on the map');
-        //     return;
-        // }       
+        const newImages = images.filter(image => image !== null);            
 
         if(newImages.length > 0 && newImages.length !== 4){
             // alert('Please add 4 images');
@@ -231,6 +231,7 @@ const PostUpdate = () => {
                 // console.log(response.data.newAd);
 
                 setLoading(false);
+                setImages(Array(4).fill(null));
                 setClickedPosition(null);
                 fetchData();
                 // alert('Your ad updated successfully');
@@ -445,9 +446,9 @@ const PostUpdate = () => {
 
                         <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your new location</p>
                         <span className="flex justify-center text-sm text-red-600 mt-3 text-justify">Note: If no new pin added your current location will remain unchanged.</span> 
-                        <div className=" w-full h-110 border border-cusGray rounded-lg mb-20">
+                        <div className=" w-full h-96 border border-cusGray rounded-lg mb-20">
                             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
-                                <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>   
+                                <Map defaultCenter={defPosition} defaultZoom={12} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>   
                                     <AdvancedMarker position={oldMarker} title='Current Location'/>                                 
                                     {clickedPosition && <AdvancedMarker position={clickedPosition} title='New Location'/>}                                    
                                 </Map>
