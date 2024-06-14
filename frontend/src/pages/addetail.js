@@ -159,7 +159,7 @@ const Addetail = () => {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-    theme: "light",
+    theme: "colored",
     transition: Bounce,
   });
   const errorNotify = (msg) => toast.error(msg, {
@@ -272,7 +272,7 @@ const Addetail = () => {
             <Detail name={adDetails.bed} image={Bed} />
 
             <Detail name={adDetails.bathroom} image={shower} />
-
+            
             <Detail name={`0${adDetails.contact}`} image={Phone} />
           </div>
 
@@ -284,13 +284,16 @@ const Addetail = () => {
           <div className=" flex flex-col md:grid md:grid-cols-2 gap-10 mt-10">
             {/* left col */}
             <div className="flex flex-col justify-center border border-primary rounded-lg">
-              <div className=" flex justify-end mt-5 pr-4 mb-1">
-                <select name="sort" value={sortBy} onChange={(e) => dropdownOnChange(e)} className="h-8 p-1 border border-cusGray rounded-lg">
-                    <option value="" className=" text-gray-500">Sort by</option>
-                    <option value="new" >Date added (Newest)</option>
-                    <option value="old" >Date added (Oldest)</option>
-                </select>
-              </div>            
+              {adReviews.length > 0 && 
+                <div className=" flex justify-between mt-5 px-5 items-center mb-1">
+                  <p className=" text-cusGray">{adReviews.length} reviews</p>
+                  <select name="sort" value={sortBy} onChange={(e) => dropdownOnChange(e)} className="h-8 p-1 border border-cusGray rounded-lg">
+                      <option value="" className=" text-gray-500">Sort by</option>
+                      <option value="new" >Date added (Newest)</option>
+                      <option value="old" >Date added (Oldest)</option>
+                  </select>
+                </div>                          
+              }
               <div className="max-h-96 overflow-y-auto p-5 md:py-8">
                 {/* Wrapper for all review cards */}
                 <div className=" space-y-14 ">
@@ -435,7 +438,7 @@ const Addetail = () => {
                 )
               )}
 
-              <div className="mt-3">
+              <div className="mt-3 flex items-center">
                 <input type="checkbox" id="anonUser" className=' w-4 h-4 ' onChange={(e) => setAnonUser(e.target.checked)}/>
                 <label htmlFor="anonUser" className=' ml-2 text-cusGray  cursor-pointer text-center'>stay anonymous</label>
               </div>

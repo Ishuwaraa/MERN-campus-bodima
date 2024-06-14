@@ -19,7 +19,7 @@ root.render(
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="colored"
         transition={Bounce}
     />
   </React.StrictMode>

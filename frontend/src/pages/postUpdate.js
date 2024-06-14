@@ -160,7 +160,7 @@ const PostUpdate = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "colored",
         transition: Bounce,
     });
     const deleteAd = async (e) => {
@@ -192,7 +192,7 @@ const PostUpdate = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "colored",
         transition: Bounce,
     });
     const onSubmit = async () => {

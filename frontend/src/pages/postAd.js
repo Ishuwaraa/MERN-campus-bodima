@@ -71,7 +71,7 @@ const PostAd = () => {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "light",
+        theme: "colored",
         transition: Bounce,
     });    
     const onSubmit = async () => {
@@ -204,7 +204,7 @@ const PostAd = () => {
                                 }                            
                             </div>    
                         </div>
-                        <span className="flex justify-center text-sm text-red-600 mt-3"> all 4 images are required to post the ad*</span>                                                
+                        <span className="flex justify-center text-sm text-red-600 mt-3"> all 4 images are required to post the ad. (.png, .jpg, .jpeg)*</span>                                                
 
                         <div className=" flex flex-col justify-center mx-5 md:mx-20 lg:mx-40 mt-3 mb-10"> 
                             <div className=" lg:px-20 mb-3">
