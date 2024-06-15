@@ -9,7 +9,6 @@ import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import card from '../assets/card.png'
 
 const Home = () => {
   const [uniInput, setUniInput] = useState('');

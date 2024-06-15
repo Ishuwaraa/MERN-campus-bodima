@@ -10,12 +10,12 @@ const reviewRoutes = require('./routes/reviews');
 
 const app = express();
 
-app.use(cors());
-// app.use(cors({
-//     origin: ["http://localhost:4000"],
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     credentials: true,
-// }));
+// app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    // methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+}));
 
 //connecting to db
 mongoose.connect(process.env.DB_URI)
