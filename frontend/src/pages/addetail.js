@@ -9,15 +9,18 @@ import Phone from "../assets/ad/phone.png";
 import ReviewCard from "../components/ReviewCard";
 import Footer from "../components/Footer";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "../components/Loading";
 import noReviews from '../assets/noReviews.png';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import card from '../assets/card.png';
 import { Bounce, toast } from 'react-toastify';
+import useAuth from "../hooks/useAuth";
 
 const Addetail = () => {
+  const { auth } = useAuth();
+
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
   const review = watch("review");
 
@@ -132,7 +135,6 @@ const Addetail = () => {
       setAscSort(ascOrder);
     }
   }
-
   const sortByDsc = () => {
     if(adReviews.length !== 0){
       const dscOrder = [...adReviews].sort((a, b) => {
@@ -144,7 +146,6 @@ const Addetail = () => {
       setDscSort(dscOrder);
     }
   }
-
   const dropdownOnChange = (e) => {
     setSortBy(e.target.value);
     sortByAsc();
@@ -172,8 +173,14 @@ const Addetail = () => {
     progress: undefined,
     theme: "colored",
     transition: Bounce,
-});
+  });
   const onSubmit = async () => {
+    if(!auth?.accessToken){
+      // navigate('/login', { state: { from: location.pathname + location.search } });
+      navigate('/login');
+      return 
+    }
+
     if(roomRate === '' || locationRate === '' || bathroomRate === ''){
       // alert('Please add a rating for all the fields');
       const msg = 'Please add a rating for all the fields'
@@ -438,6 +445,7 @@ const Addetail = () => {
                 )
               )}
 
+              <span className=" text-sm text-red-600">note: You need to be logged in to add a review</span>
               <div className="mt-3 flex items-center">
                 <input type="checkbox" id="anonUser" className=' w-4 h-4 ' onChange={(e) => setAnonUser(e.target.checked)}/>
                 <label htmlFor="anonUser" className=' ml-2 text-cusGray  cursor-pointer text-center'>stay anonymous</label>

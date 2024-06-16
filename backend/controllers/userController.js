@@ -103,9 +103,9 @@ const refreshAccessToken = (req, res) => {
         if(err) return res.status(403).json({ error: err.message, msg: 'Forbidden'})
 
         const accessToken = genAccessToken(data.id);
-        const newRefreshToken = genRefreshToken(data.id);
+        // const newRefreshToken = genRefreshToken(data.id);
 
-        res.cookie('jwt', newRefreshToken, cookieOptions)
+        // res.cookie('jwt', newRefreshToken, cookieOptions)
 
         res.status(200).json({ accessToken });
     });

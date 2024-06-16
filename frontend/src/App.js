@@ -9,26 +9,33 @@ import Profile from './pages/profile';
 import Addetail from './pages/addetail';
 import MapPage from './pages/map';
 import AllAds from './pages/allAds';
+import ErrorPage from './pages/404';
+
+import { AuthProvider } from './context/AuthProvider';
+import PrivateRoute from './components/PrivateRoute';
 
 
 function App() {
 
-  return (    
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<Home />}/>
-        <Route path='/register' element={<Register />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/search' element={<Search />} />
-        <Route path='/postAd' element={<PostAd />} /> 
-        <Route path='/postUpdate' element={<PostUpdate />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/addetail' element={<Addetail />} />
-        <Route path='/map' element={<MapPage />} />
-        <Route path='/allAds' element={<AllAds />} />
-        
-      </Routes>
-    </BrowserRouter>       
+  return ( 
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Home />}/>
+          <Route path='/register' element={<Register />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/search' element={<Search />} />
+          <Route path='/map' element={<MapPage />} />
+          <Route path='/allAds' element={<AllAds />} />
+          <Route path='/addetail' element={<Addetail />} />        
+                  
+          <Route path='/postAd' element={<PrivateRoute element={<PostAd />} />} />
+          <Route path='/postUpdate' element={<PrivateRoute element={<PostUpdate />} />} />
+          <Route path='/profile' element={<PrivateRoute element={<Profile />} />} />          
+          <Route path='*' element={<ErrorPage />} />
+        </Routes>
+      </BrowserRouter>       
+    </AuthProvider>  
   );
 }
 

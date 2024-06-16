@@ -5,9 +5,17 @@ import { useForm } from "react-hook-form";
 import card from '../assets/card.png'
 import Loading from "../components/Loading";
 import axios from "axios";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import AdDetail from "../components/AdDetail";
+import useAuth from "../hooks/useAuth";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Profile = () => {
+    const { auth } = useAuth();
+    const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [ads, setAds] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -21,9 +29,9 @@ const Profile = () => {
     }
 
     //data form
-    const [name, setName] = useState('ishuwara');
-    const [email, setEmail] = useState('example@gmail.com');
-    const [phone, setPhone] = useState('0711345234');
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
 
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
 
@@ -40,7 +48,34 @@ const Profile = () => {
     //delete form
     const delPass = watch('delPass');
 
-    useEffect(() => {
+    useEffect(() => {  
+        const fetchUserData = async () => {
+            try{
+                // const response = await axios.get('http://localhost:4000/api/user/', { 
+                //     withCredentials: true,
+                //     headers: {
+                //         'Authorization': `Bearer ${auth?.accessToken}`
+                //     }
+                // });
+                const response = await axiosPrivate.get('/api/user/')
+                setName(response.data.name || '');
+                setEmail(response.data.email || '');
+                setPhone(response.data.contact || '');
+                setValue('editName', response.data.name || '');
+                setValue('editEmail', response.data.email || '');
+                setValue('editPhone', response.data.contact || '');
+            } catch (err) {
+                if(err.response.status === 400) console.log(err.response.data.msg);
+                else if(err.response.status === 401) {
+                    console.log(err.response.data.msg);
+                    navigate('/login', { state: { from: location }, replace: true });
+                }
+                else if(err.response.status === 403) console.log(err.response.data.error);
+                else if(err.response.status === 404) console.log(err.response.data.msg);
+                else console.log(err.message);
+            }
+        }   
+
         const fetchAds = async () => {
             try{                
                 // setLoading(true);
@@ -62,7 +97,8 @@ const Profile = () => {
             }
         }
 
-        fetchAds();
+        // fetchAds();
+        fetchUserData();
     }, [])
     
     const onSubmit = (type) => {

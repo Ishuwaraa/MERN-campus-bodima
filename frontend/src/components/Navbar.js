@@ -1,14 +1,33 @@
 import { useState } from 'react';
 import logoDark from '../assets/logo/campus_bodima_dark.png';
+import useAuth from '../hooks/useAuth';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [burgerIcon, setBurgerIcon] = useState(true);
     const [menuVisible, setMenuVisible] = useState(false);
+    const { auth } = useAuth();
+    const navigate = useNavigate();
 
     const toggleBurgerIcon = () => {
         setBurgerIcon(!burgerIcon);
         setMenuVisible(!menuVisible);
-    }    
+    }   
+    
+    const logout = async () => {
+        try{
+            await axios.get('http://localhost:4000/api/user/logout', { withCredentials: true });
+            localStorage.removeItem('auth');
+            navigate('/login');
+        } catch (err) {
+            if(err.response.status === 204){
+                navigate('/login');
+            } else {
+                console.log(err.message);
+            }
+        }
+    }
     
     return(
         <nav className=' flex items-center justify-between border border-b-1 border-b-gray-200 font-roboto h-14 fixed top-0 bg-white w-full z-50'>
@@ -35,7 +54,11 @@ const Navbar = () => {
             </div>       
 
             <div className=' mx-10 hidden md:block'>
-                <button className='btn bg-primary' onClick={() => window.location.href = '/login'}>Log in</button>
+                {auth?.accessToken ? (
+                    <button className='btn bg-primary' onClick={logout}>Log out</button>
+                ) : (
+                    <button className='btn bg-primary' onClick={() => navigate('/login')}>Log in</button>
+                )}
             </div>
 
             {menuVisible && (
@@ -48,7 +71,12 @@ const Navbar = () => {
                 <li><a href="/profile" className='block w-full text-center'>Profile</a></li>
                 </ul>
                 <div className=' flex justify-center'>
-                    <button className='btn bg-primary' onClick={() => window.location.href = '/login'}>Log in</button>
+                    {/*this doesnt change yet when the refresh token get expired */}
+                    {auth?.accessToken ? (
+                        <button className='btn bg-primary' onClick={logout}>Log out</button>
+                    ) : (
+                        <button className='btn bg-primary' onClick={() => navigate('/login')}>Log in</button>
+                    )}
                 </div>
             </div>
             )}
