@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const ads = require('../controllers/adController');
-const { upload } = require('../middleware/awsMiddleware')
+const { upload } = require('../middleware/awsMiddleware');
+const { verifyJWT } = require('../middleware/authMiddleware');
 // const multer = require('multer');
 // const upload = multer();
 
@@ -19,7 +20,7 @@ router.get('/:id', ads.getAd);
 
 //create ad
 //.upload middleware adds images to the bucket
-router.post('/', upload, ads.createAd);
+router.post('/', verifyJWT, upload, ads.createAd);
 // router.post('/', upload.array('photos', 4), ads.createAd);
 
 //update ad

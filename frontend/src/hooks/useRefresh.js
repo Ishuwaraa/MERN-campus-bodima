@@ -10,8 +10,9 @@ const useRefreshToken = () => {
         });
 
         setAuth((prevState) => {
-            console.log(prevState);
-            console.log(response.data.accessToken);
+            console.log('prev auth state: ', prevState);
+            console.log('new access token: ', response.data.accessToken);
+            //spreading prevState to let the other properties of the auth object staty the same and override the access token only
             return { ...prevState, accessToken: response.data.accessToken }
         });
 

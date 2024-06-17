@@ -1,5 +1,6 @@
 const Review = require('../models/reviewModel');
 const Ad = require('../models/adModel');
+const User = require('../models/userModel');
 const mongoose = require('mongoose');
 
 //get all reviews
@@ -12,11 +13,28 @@ const getReviews = async (req, res) => {
         const adExists = await Ad.findById(adId);
         if(!adExists) return res.status(404).json({ msg: "No such ad was found" });
 
-        const reviews = await Review.findById(adId).sort({ createdAt: -1 });
+        const reviewDoc = await Review.findById(adId).sort({ createdAt: -1 });
 
-        const reviewsArray = reviews? reviews.reviews : [];
+        const reviewsArray = reviewDoc? reviewDoc.reviews : [];
+        const usernameArray = []
 
-        res.status(200).json(reviewsArray);
+        for(const review of reviewsArray){
+            if(review.anonUser){
+                usernameArray.push('Anonymous user');
+            }else {
+                try{
+                    const user = await User.findById(review.userId);
+                    usernameArray.push(user.name);
+                } catch (err) {
+                    return res.status(500).json({ msg: 'Error fetching user names' });
+                }
+            }
+        }
+        // console.log('reviews', reviewDoc);
+        // console.log('reviewsarray', reviewsArray);
+        // console.log('usernames', usernameArray);
+
+        res.status(200).json({ reviewsArray, usernameArray });
     }catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -24,14 +42,19 @@ const getReviews = async (req, res) => {
 
 //add review
 const addReview = async (req, res) => {
-    try{
-        const adId = req.params.id;
-        const { userId, roomRate, locationRate, bathroomRate, review } = req.body;
+    const userId = req.user;
+    const adId = req.params.id;
+    const { anonUser, roomRate, locationRate, bathroomRate, review } = req.body;
 
+    try{
         if(!mongoose.Types.ObjectId.isValid(adId)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
+        if(!mongoose.Types.ObjectId.isValid(userId)) return res.status(404).json({ msg: "Invalid ID" });
 
         const adExists = await Ad.findById(adId);
         if(!adExists) return res.status(404).json({ msg: "No such ad was found" });
+
+        const user = await User.findById(userId);
+        if(!user) return res.status(404).json({ msg: 'No user found' });
 
         let reviewDoc = await Review.findById(adId);
 
@@ -46,6 +69,7 @@ const addReview = async (req, res) => {
         //pushing to the doc
         reviewDoc.reviews.push({
             userId: userId,
+            anonUser,
             room: roomRate,
             location: locationRate,
             bathroom: bathroomRate,

@@ -18,13 +18,16 @@ router.get('/refresh', users.refreshAccessToken);
 //get user data
 router.get('/', verifyJWT, users.getUserData);
 
+//check ad ids
+router.post('/check-id', verifyJWT, users.checkAdIds);
+
 //update user data
-router.post('/update-data', users.updateUserData);
+router.patch('/update-data', verifyJWT, users.updateUserData);
 
 //update password
-router.post('/update-pass', users.updatePass);
+router.patch('/update-pass', verifyJWT, users.updatePass);
 
 //delete acc
-router.post('/del', users.deleteAcc);
+router.delete('/del', verifyJWT, users.deleteAcc);
 
 module.exports = router;

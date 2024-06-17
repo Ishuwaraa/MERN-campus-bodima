@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import axios from "axios";
 import Loading from '../components/Loading';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import { Bounce, toast } from 'react-toastify';
+import { notify, errorNotify } from "../toastify/notifi";
 
 const PostAd = () => {
     const [uniInput, setUniInput] = useState('');
@@ -33,18 +33,7 @@ const PostAd = () => {
     const handleIconClick = (index) => {
         fileInputRefs.current[index].click();   //referencing to the input field
     }        
-
-    const errorNotify = (msg) => toast.error(msg, {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-    });
+    
     const handleChange = (e, index) => {
         const file = e.target.files[0];
         if (file && !file.type.match('image.*')) {
@@ -62,18 +51,7 @@ const PostAd = () => {
         setBackendImg(newBackendImage);
         // console.log(e.target.files, images, backendImg);
     }    
-      
-    const notify = () => toast.success('Ad posted successfully!', {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-    });    
+             
     const onSubmit = async () => {
         if (images.some(image => image === null)) {
             // alert('Please add 4 images');
@@ -114,7 +92,7 @@ const PostAd = () => {
             });
             setLoading(false);
             // alert('Ad posted successfully!');
-            notify();
+            notify('Ad posted successfully!');
             setImages(Array(4).fill(null));
             setBackendImg([]);
             setGender(null);
@@ -222,7 +200,7 @@ const PostAd = () => {
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Contact <span className=" text-red-500">*</span></p>
                                 <input type="text" name='contact' required className=' input' placeholder='0772345123'
-                                {...register('contact', { maxLength: 10, pattern: /^[0-9]/ })}/>
+                                {...register('contact', { maxLength: 10, pattern: /^\d{1,10}$/ })}/>
                                 {errors.contact && errors.contact.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.contact && <span className=' text-sm text-red-600'>enter only numbers from 0-9</span> }
                             </div>                   
                             <div className=" lg:px-20 mb-3">
@@ -296,7 +274,7 @@ const PostAd = () => {
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Price (monthly) Rs. <span className=" text-red-500">*</span></p>
                                 <input type="text" name='price' required className=' input' placeholder='5500'
-                                {...register('price', { maxLength: 10, pattern: /^[0-9.]/})}/> 
+                                {...register('price', { maxLength: 10, pattern: /^[0-9.]*$/ })}/> 
                                 {errors.price && errors.price.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.price && <span className=' text-sm text-red-600'>only numbers from 0-9 and period (.) are allowed</span>}                   
                             </div>         
                             <div className=" lg:px-20 mb-3">

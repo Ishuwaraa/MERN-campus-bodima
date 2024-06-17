@@ -1,9 +1,17 @@
 import { useState } from 'react';
 import LoginSideView from '../components/LoginSideView';
 import { useForm } from 'react-hook-form';
+// import axios from "axios";
+import axios from '../api/axios';
+import useAuth from "../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+    const { setAuth } = useAuth();
+    const navigate = useNavigate();
+
     // const [accType, setAccType] = useState(null);
+    const [errMessage, setErrMessage] = useState(null);
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
 
     const name = watch('name');
@@ -13,8 +21,26 @@ const Register = () => {
 
     // const onAccChange = (e) => setAccType(e.target.value);
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         console.log( name, email, contact, password);
+        const formData = { name, email, contact, password };
+        try{
+            const response = await axios.post('/api/user/register', formData, { withCredentials: true });
+            const accessToken = response.data.accessToken;
+            setAuth({ accessToken });
+            setValue('name', '');
+            setValue('email', '');
+            setValue('contact', '');
+            setValue('password', '');
+            setErrMessage(null);
+            navigate('/');
+        } catch (err) {
+            if(err.response.status === 400) {
+                setErrMessage(err.response.data.msg);
+            } else {
+                setErrMessage(err.response.data.msg);
+            }
+        }
     }
 
     return(
@@ -45,7 +71,7 @@ const Register = () => {
 
                         <p className=' mt-3 mb-1'>Contact</p>
                         <input type="text" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='0712567345'
-                        {...register('contact', { maxLength: 10, pattern: /^[0-9]/})}/>
+                        {...register('contact', { maxLength: 10, pattern: /^\d{1,10}$/})}/>
                         {errors.contact && errors.contact.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.contact && <span className=' text-sm text-red-600'>enter only numbers from 0-9</span> }
 
                         <p className=' mt-3 mb-1'>Password</p>
@@ -55,6 +81,7 @@ const Register = () => {
                         errors.password && errors.password.type === 'minLength' ? <span className=' text-sm text-red-600'>min character limit is 8</span> :
                         errors.password && <span className=' text-sm text-red-600'>Password must contain only letters, numbers, @, _, and -'</span>}
                         
+                        {errMessage && <p className=" mt-1 text-sm text-red-600">{errMessage}</p>}
                         <div className=' flex justify-center mt-10'>
                             <button className='btn bg-primary'>Create profile</button>
                         </div>

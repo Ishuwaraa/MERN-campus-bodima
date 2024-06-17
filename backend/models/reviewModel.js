@@ -6,6 +6,9 @@ const reviews = new Schema({
         type: String,
         required: true
     },
+    anonUser: {
+        type: Boolean
+    },
     room: {
         type: Number
     },

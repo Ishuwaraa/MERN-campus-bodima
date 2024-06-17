@@ -18,6 +18,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    ads: [String]
     // refreshToken: [String]
 }, { timestamps: true });
 
