@@ -13,17 +13,21 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loading from "../components/Loading";
 import noReviews from '../assets/noReviews.png';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+
 
 const Addetail = () => {
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
   const review = watch("review");
+  
   const [roomRate, setRoomRate] = useState('');
   const [locationRate, setLocationRate] = useState('');
   const [bathroomRate, setBathroomRate] = useState('');
   const [adDetails, setAdDetails] = useState([]);
   const [adReviews, setAdReviews] = useState([]);
   const [adRating, setAdRating] = useState(null);
-  const [loading, setLoading] = useState(false);
+  
+  
   const [imageLoading, setImageLoading] = useState(false);
   const [firstImageClick, setFirstImageClick] = useState(true);
   const [timeoutId, setTimeoutId] = useState(null);
@@ -103,6 +107,7 @@ const Addetail = () => {
   //   }, 1000); 
   // };
 
+  const [loading, setLoading] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
@@ -172,6 +177,45 @@ const Addetail = () => {
       }
     }
   }
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const adId = queryParams.get('id');
+
+    // Fetch ad details from your API
+    fetch(`http://localhost:3000/api/ads/${adId}`)  // Adjust this URL to match your API endpoint
+      .then(response => response.json())
+      .then(data => {
+        setAdDetails(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching ad details:', error);
+        setLoading(false);
+      });
+  }, [location]);
+
+  
+  
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!adDetails) {
+    return <div>Error loading ad details</div>;
+  }
+
+  const mapStyles = {
+    height: "100%",
+    width: "100%"
+  };
+
+  const defaultCenter = {
+    lat: adDetails.latitude,
+    lng: adDetails.longitude
+  };
+
 
   return (
     <div>
@@ -373,16 +417,17 @@ const Addetail = () => {
 
           </div>
           
-          {/* <div className=" w-full h-115 border border-cusGray rounded-lg my-20 overflow-hidden">
-            <iframe
-              width="100%"
-              height="100%"
-              frameBorder=""
-              style={{ border: 0 }}
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.229678747617!2d80.03966!3d6.82092!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae247f82e67f285%3A0x446d8a7e211d7b77!2sNSBM%20Green%20University!5e0!3m2!1sen!2slk!4v1621357486734!5m2!1sen!2slk"
-              allowFullScreen
-            ></iframe>
-          </div> */}
+          <div className="w-full h-96 my-10">
+          <LoadScript googleMapsApiKey="AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc">  
+        <GoogleMap
+          mapContainerStyle={mapStyles}
+          zoom={20}
+          center={defaultCenter}
+        >
+          <Marker position={defaultCenter} />
+        </GoogleMap>
+      </LoadScript>
+    </div>
         </>
         }
       </div>

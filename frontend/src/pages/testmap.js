@@ -1,96 +1,110 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
-import TestCard from "../components/Testcard";
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
+import Detail from "../components/Detail";
+import { Facebook, Share2 } from "lucide-react";
+import gender from '../assets/ad/gender.png';
+import Bed from "../assets/ad/bed.png";
+import shower from '../assets/ad/shower.png'
+import Phone from "../assets/ad/phone.png";
+import ReviewCard from "../components/ReviewCard";
+import Footer from "../components/Footer";
+import { useForm } from "react-hook-form";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Loading from "../components/Loading";
+import noReviews from '../assets/noReviews.png';
+import { GoogleMap, useLoadScript, Marker } from '@react-google-maps/api';
 
-const Map = () => {
-  const [ads, setAds] = useState([]);
-  const mapRef = useRef(null);
-  const googleMapRef = useRef(null);
-  const [markers, setMarkers] = useState([]);
-  const infoWindowRef = useRef(new window.google.maps.InfoWindow());
+const Addetail = () => {
+  
+ 
+  const [roomRate, setRoomRate] = useState('');
+  const [locationRate, setLocationRate] = useState('');
+  const [bathroomRate, setBathroomRate] = useState('');
+  
+  const [adReviews, setAdReviews] = useState([]);
+  const [adRating, setAdRating] = useState(null);
+  
+  const [adDetails, setAdDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
+  const adId = searchParams.get('id');
 
-  useEffect(() => {
-    const fetchAds = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/map');
-        setAds(response.data);
-      } catch (error) {
-        console.error('Error fetching ads:', error);
-      }
-    };
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: "AIzaSyDdr0Aijr7M2pIqpX43Hsk2erMP4mYtoxc", // Replace with your actual API key
+  });
 
-    fetchAds();
-  }, []);
-
-  useEffect(() => {
-    googleMapRef.current = new window.google.maps.Map(mapRef.current, {
-      center: { lat: 6.9271, lng: 79.8612 },
-      zoom: 10
-    });
-  }, []);
-
-  useEffect(() => {
-    markers.forEach(marker => marker.setMap(null));  // Clear existing markers
-    const newMarkers = ads.map(ad => {
-      const marker = new window.google.maps.Marker({
-        position: { lat: parseFloat(ad.latitude), lng: parseFloat(ad.longitude) },
-        map: googleMapRef.current,
-        title: ad.title
-      });
-
-      // Add click event listener for each marker
-      marker.addListener('click', () => {
-        infoWindowRef.current.setContent(`<div><strong>${ad.title}</strong></div>`);
-        infoWindowRef.current.open(googleMapRef.current, marker);
-      });
-
-      return marker;
-    });
-    setMarkers(newMarkers);
-  }, [ads]);
-
-  const smoothZoom = (map, max, cnt) => {
-    if (cnt >= max) {
-      return;
-    } else {
-      const z = window.google.maps.event.addListener(map, 'zoom_changed', (event) => {
-        window.google.maps.event.removeListener(z);
-        smoothZoom(map, max, cnt + 1);
-      });
-      setTimeout(() => { map.setZoom(cnt) }, 80);
+  const fetchData = async () => {
+    try {
+      if (adId === '') return navigate('/');
+      setLoading(true);
+      const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
+      setAdDetails(response.data.ad);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching ad details:', err);
+      setLoading(false);
     }
   };
 
-  const handleCardClick = (latitude, longitude) => {
-    const latLng = new window.google.maps.LatLng(parseFloat(latitude), parseFloat(longitude));
-    googleMapRef.current.panTo(latLng);
-    smoothZoom(googleMapRef.current, 15, googleMapRef.current.getZoom());
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!adDetails) {
+    return <div>Error loading ad details</div>;
+  }
+
+  const mapStyles = {
+    height: "100vh",
+    width: "100%"
   };
 
+  const defaultCenter = {
+    lat: adDetails.latitude,
+    lng: adDetails.longitude
+  };
+
+  if (loadError) {
+    return <div>Error loading maps</div>;
+  }
+
+  if (!isLoaded) {
+    return <div>Loading Maps</div>;
+  }
+
   return (
-    <div className="page">
-      <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
-        <div className="flex flex-row md:flex-col border border-red-500 rounded-lg px-5 py-8 md:px-2 min-w-64 h-56 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
-          <div className="flex flex-row md:flex-col">
-            {ads.map((ad, index) => (
-              <TestCard
-                key={index}
-                image={ad.image}
-                title={ad.title}
-                gender={ad.gender}
-                bed={ad.bed}
-                price={ad.price}
-                onClick={() => handleCardClick(ad.latitude, ad.longitude)}
-              />
-            ))}
-          </div>
+    <div>
+      <div className="page">
+        <div className="w-full h-96 my-10">
+          <GoogleMap
+            mapContainerStyle={mapStyles}
+            zoom={15}
+            center={defaultCenter}
+            onLoad={() => console.log("GoogleMap Loaded")}
+            onUnmount={() => console.log("GoogleMap Unmounted")}
+          >
+            <Marker
+              position={defaultCenter}
+              onLoad={() => console.log("Marker Loaded")}
+            />
+          </GoogleMap>
         </div>
-        <div className="h-110 md:col-span-2 lg:col-span-3 border border-cusGray rounded-lg">
-          <div ref={mapRef} style={{ width: '100%', height: '100%' }}></div>
+        {/* Display the latitude and longitude for debugging */}
+        <div>
+          <p>Latitude: {adDetails.latitude}</p>
+          <p>Longitude: {adDetails.longitude}</p>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
 
-export default Map;
+export default Addetail;

@@ -1,4 +1,4 @@
-const { S3Client, ListBucketsCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const multer = require('multer');
 const multerS3 = require('multer-s3');
