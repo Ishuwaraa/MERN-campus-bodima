@@ -8,13 +8,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import data from '../data/uniNames.json';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import { Bounce, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { notify, errorNotify, deleteNotify } from "../toastify/notifi";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 const PostUpdate = () => {
+    const axiosPrivate = useAxiosPrivate();
+
     const navigate = useNavigate();
-    const searchLocation = useLocation();
-    const searchParams = new URLSearchParams(searchLocation.search);
+    const pageStateLocation = useLocation();
+    const searchParams = new URLSearchParams(pageStateLocation.search);
     const adId = searchParams.get('id');
 
     //form input
@@ -49,23 +51,20 @@ const PostUpdate = () => {
     const handleIconClick = (index) => {
         fileInputRefs.current[index].click();   //referencing to the input field
     }    
-    const errorNotify = (msg) => toast.error(msg, {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-    });
+    
     const handleChange = (e, index) => {
         const file = e.target.files[0];
         if (file && !file.type.match('image.*')) {
             // alert('Please upload only image files (png, jpg, jpeg).');
             errorNotify('Please upload only image files (png, jpg, jpeg).')
             e.target.value = ''; // Reset the input field
+            return;
+        }
+
+        const maxSizeInBytes = 5 * 1024 * 1024;
+        if(file && file.size > maxSizeInBytes){
+            errorNotify('Max file size is 5mb');
+            e.target.value = '';
             return;
         }
 
@@ -97,8 +96,8 @@ const PostUpdate = () => {
     }    
 
     //map variables
-    const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
-    const oldMarker = (oldLat === null || oldLng === null) ? {lat: 6.884504262718018, lng: 79.91861383804526} : {lat: oldLat, lng: oldLng};
+    // const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
+    const oldPosition = (oldLat === null || oldLng === null) ? {lat: 6.884504262718018, lng: 79.91861383804526} : {lat: oldLat, lng: oldLng};
     // const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
     const [clickedPosition, setClickedPosition] = useState(null);
 
@@ -138,7 +137,7 @@ const PostUpdate = () => {
             setOldLng(response.data.ad.longitude || '');
         } catch(err) {
             if(err.response) {
-                setLoading(false);
+                // setLoading(false);
                 console.log(err.response.data);
                 setErrMessage(err.response.data.msg);
             } else if(err.request) {
@@ -149,62 +148,58 @@ const PostUpdate = () => {
         }
     }
     useEffect(() => {
-        fetchData();
-    }, [])
+        const checkUserId = async () => {
+            try{
+                await axiosPrivate.post('/api/user/check-id', { adId });
+                fetchData();
+            } catch (err) {
+                if(err.response.status === 401){
+                    console.log(err.response.data.msg);
+                    localStorage.removeItem('auth');
+                    errorNotify('Your session has expired. Please log in again to continue.')
+                    navigate('/login', { state: { from: pageStateLocation }, replace: true });
+                }else if(err.response.status === 403){
+                    console.log(err.response.data.msg);
+                    navigate('/');
+                }else console.log(err.message);
+            }
+        }
 
-    const deleteNotify = () => toast.success('Ad deleted successfully!', {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-    });
+        checkUserId();        
+    }, [])
+    
     const deleteAd = async (e) => {
         e.preventDefault();
 
         try{
             if(window.confirm('Are you sure you want to delete this ad? ')){
-                const response = await axios.delete(`http://localhost:4000/api/ads/${adId}`);
-                console.log(response.data.msg, response.data.deletedAd);
+                const response = await axiosPrivate.delete(`/api/ads/${adId}`);
+                console.log(response.data.msg);
                 navigate('/profile');
-                deleteNotify();
+                deleteNotify('Ad deleted successfully!');
             }
         } catch (err) {
-            if(err.response) {
+            if(err.response.status === 401){
                 console.log(err.response.data.msg);
-            } else if(err.request) {
-                console.log(err.request);
-            } else {
-                console.log(err.message);
-            }
+                localStorage.removeItem('auth');
+                errorNotify('Your session has expired. Please log in again to continue.')
+                navigate('/login', { state: { from: pageStateLocation }, replace: true });
+            } else if(err.response.status === 403) {
+                console.log(err.response.data.msg);
+            } else if (err.response.status === 404) {
+                console.log(err.response.data.msg);
+            } else console.log(err.message);
         }
     }
-
-    const updateNotify = () => toast.success('Ad updated successfully!', {
-        position: "bottom-left",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        transition: Bounce,
-    });
+    
     const onSubmit = async () => {
         const newImages = images.filter(image => image !== null);            
 
         if(newImages.length > 0 && newImages.length !== 4){
-            // alert('Please add 4 images');
             errorNotify('All 4 images are required');
             return;
         }else if(newImages.length === 4){
             const formData = new FormData();
-            formData.append('userId', "123");
             formData.append('title', title);
             formData.append('location', location);
             formData.append('uniInput', (uniInput === '')? uni : uniInput);
@@ -223,7 +218,7 @@ const PostUpdate = () => {
 
             try{
                 setLoading(true);
-                const response = await axios.patch(`http://localhost:4000/api/ads/new/${adId}`, formData, {
+                const response = await axiosPrivate.patch(`/api/ads/new/${adId}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -233,25 +228,23 @@ const PostUpdate = () => {
                 setLoading(false);
                 setImages(Array(4).fill(null));
                 setClickedPosition(null);
+                notify('Ad updated successfully!');
                 fetchData();
-                // alert('Your ad updated successfully');
-                updateNotify();
                 // navigate('/profile');
             } catch (err) {                
-                if(err.response){
-                    setLoading(false);
-                    // alert(err.response.data.msg);
-                    const msg = err.response.data.msg;
-                    errorNotify(msg)
-                }else if(err.request) {
-                    console.log(err.request);
-                }else {
-                    console.log(err.message);
-                }
+                if(err.response.status === 401){
+                    console.log(err.response.data.msg);
+                    localStorage.removeItem('auth');
+                    errorNotify('Your session has expired. Please log in again to continue.')
+                    navigate('/login', { state: { from: pageStateLocation }, replace: true });
+                } else if(err.response.status === 403) {
+                    console.log(err.response.data.msg);
+                } else if (err.response.status === 404) {
+                    console.log(err.response.data.msg);
+                } else console.log(err.message);
             }
         }else {
             const newData = {
-                userId: 123,
                 title, 
                 location, 
                 uniInput: (uniInput === '')? uni : uniInput,
@@ -266,25 +259,25 @@ const PostUpdate = () => {
             }    
 
             try{
-                setLoading(true);
-                const response = await axios.patch(`http://localhost:4000/api/ads/${adId}`, newData);
+                // setLoading(true);
+                const response = await axiosPrivate.patch(`/api/ads/${adId}`, newData);
 
-                setLoading(false);
+                // setLoading(false);
                 setClickedPosition(null);
                 // alert('Your ad updated successfully');
                 fetchData();
-                updateNotify();
-                // console.log(response.data.ad);
-                // navigate('/profile');
+                notify('Ad updated successfully!');
             } catch (err) {       
-                if(err.response){
-                    setLoading(false);
+                if(err.response.status === 401){
                     console.log(err.response.data.msg);
-                }else if(err.request) {
-                    console.log(err.request);
-                }else{
-                    console.log('Error updating ad', err.message);
-                }
+                    localStorage.removeItem('auth');
+                    errorNotify('Your session has expired. Please log in again to continue.')
+                    navigate('/login', { state: { from: pageStateLocation }, replace: true });
+                } else if(err.response.status === 403) {
+                    console.log(err.response.data.msg);
+                } else if (err.response.status === 404) {
+                    console.log(err.response.data.msg);
+                } else console.log(err.message);
             }
         }
     }    
@@ -326,7 +319,8 @@ const PostUpdate = () => {
                                 }                            
                             </div>    
                         </div>
-                        <span className="flex justify-center text-sm text-red-600 mt-3 text-justify">Note: To update images, all 4 images are required. <br /> If no new images added, your current images will remain unchanged.</span>  
+                        <span className="flex justify-center text-sm text-red-600 mt-3"> image size should be less than 5mb*</span>
+                        <span className="flex justify-center text-sm text-red-600 text-justify">Note: To update images, all 4 images are required. If no new images added, your current images will remain unchanged.</span>  
 
                         <div className="mx-5 md:mx-20 lg:mx-40 lg:px-20 mt-10 mb-3">
                             <p className=' w-full text-secondary font-semibold text-xl '>Current images</p>
@@ -360,7 +354,7 @@ const PostUpdate = () => {
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Contact</p>
                                 <input type="text" name='contact' required value={contact} className=' input' placeholder='0772345123'
-                                {...register('contact', { maxLength: 10, pattern: /^[0-9]/ })}/>
+                                {...register('contact', { maxLength: 10, pattern: /^\d{1,10}$/ })}/>
                                 {errors.contact && errors.contact.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.contact && <span className=' text-sm text-red-600'>enter only numbers from 0-9</span> }
                             </div>                   
                             <div className=" lg:px-20 mb-3">
@@ -433,7 +427,7 @@ const PostUpdate = () => {
                             <div className=" lg:px-20 mb-3">
                                 <p className=' mt-3 mb-1 w-full text-secondary font-semibold text-xl'>Price (monthly) Rs.</p>
                                 <input type="text" name='price' required value={price} className=' input' placeholder='5500'
-                                {...register('price', { maxLength: 10, pattern: /^[0-9.]/})}/> 
+                                {...register('price', { maxLength: 10, pattern: /^[0-9.]*$/ })}/> 
                                 {errors.price && errors.price.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.price && <span className=' text-sm text-red-600'>only numbers from 0-9 and period (.) are allowed</span>}                   
                             </div>         
                             <div className=" lg:px-20 mb-3">
@@ -448,8 +442,8 @@ const PostUpdate = () => {
                         <span className="flex justify-center text-sm text-red-600 mt-3 text-justify">Note: If no new pin added your current location will remain unchanged.</span> 
                         <div className=" w-full h-96 border border-cusGray rounded-lg mb-20">
                             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
-                                <Map defaultCenter={defPosition} defaultZoom={12} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>   
-                                    <AdvancedMarker position={oldMarker} title='Current Location'/>                                 
+                                <Map defaultCenter={oldPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>   
+                                    <AdvancedMarker position={oldPosition} title='Current Location'/>                                 
                                     {clickedPosition && <AdvancedMarker position={clickedPosition} title='New Location'/>}                                    
                                 </Map>
                             </APIProvider>

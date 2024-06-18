@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/userModel');
 const Ad = require('../models/adModel');
+const Review = require('../models/reviewModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { genAccessToken, genRefreshToken } = require('../middleware/authMiddleware');
@@ -11,7 +12,7 @@ const cookieOptions = {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     // maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
-    maxAge: 60 * 1000
+    maxAge: 2 * 60 * 1000
 }
 
 //register user
@@ -84,7 +85,7 @@ const loginUser = async (req, res) => {
 const logoutUser = (req, res) => {
     const cookies = req.cookies;
 
-    if(!cookies?.jwt) return res.status(204).json({ msg: 'No token' });
+    if(!cookies?.jwt) return res.status(401).json({ msg: 'No token' });
 
     res.clearCookie('jwt', {
         httpOnly: cookieOptions.httpOnly, 
@@ -174,7 +175,7 @@ const updateUserData = async (req, res) => {
             contact: editPhone
         }, { new: true });
         
-        if(!user) return res.status(304).json({ msg: 'Update failed' });
+        if(!user) return res.status(500).json({ msg: 'Update failed' });
         res.status(200).json({ name: user.name, email: user.email, contact: user.contact });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -193,7 +194,7 @@ const updatePass = async (req, res) => {
         if(!user) return res.status(404).json({ msg: 'No user found' });
 
         const match = await bcrypt.compare(currPass, user.password);
-        if(!match) return res.status(401).json({ msg: 'Incorrect password' });
+        if(!match) return res.status(404).json({ msg: 'Incorrect password' });
         
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(newPass, salt);
@@ -215,7 +216,62 @@ const updatePass = async (req, res) => {
 
 //delete acc
 const deleteAcc = async (req, res) => {
+    const userId = req.user;
     const { delPass } = req.body;
+
+    //delete images from s3, delete ad, delete ad reviews, delete user posted reviews, clear cookie    
+    try{
+        const user = await User.findById(userId);
+        if(!user) return res.status(404).json({ msg: 'No user found' });
+
+        const match = await bcrypt.compare(delPass, user.password);
+        if(!match) return res.status(400).json({ msg: 'Incorrect passwrord' });
+
+        const adIds = user.ads;
+        const adImages = [];
+        
+        if(adIds.length !== 0){
+            for(const id of adIds){
+                const ad = await Ad.findById(id);
+                // if(!ad) return res.status(404).json({ msg: 'No ad was found' });
+    
+                ad.images.forEach((image) => {
+                    adImages.push(image);
+                })
+            }
+
+            try{
+                await deleteImages(adImages);            
+            } catch (err) {
+                return res.status(500).json({ msg: 'Error deleting images' });
+            }
+
+            for(const id of adIds){
+                const review = await Review.findByIdAndDelete(id);
+                // if(!review) return res.status(404).json({ msg: 'No review doc found' });
+    
+                await Ad.findByIdAndDelete(id);
+            }
+        }
+
+        //deleting reviews posted by the user
+        // const reviews = await Review.updateMany(
+        //     {},
+        //     { $pull: { reviews: { userId: userId }}}
+        // )
+                
+        const deleted = await User.findByIdAndDelete(userId);
+        if(!deleted) return res.status(500).json({ msg: 'Error deleting account' });
+
+        res.clearCookie('jwt', {
+            httpOnly: cookieOptions.httpOnly, 
+            secure: cookieOptions.secure,
+            sameSite: cookieOptions.sameSite,
+        });
+        res.status(200).json({ msg: 'Your account has been deleted successfully.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 }
 
 module.exports = { registerUser, loginUser, logoutUser, refreshAccessToken, getUserData, checkAdIds, updateUserData, updatePass, deleteAcc };

@@ -13,7 +13,7 @@ router.get('/', ads.getAllAds);
 router.get('/uni/:uni', ads.getAdsByUniName);
 
 //get user specific ads
-router.get('/user/:id', ads.getUserAds);
+// router.get('/user/:id', ads.getUserAds);
 
 //get one ad
 router.get('/:id', ads.getAd);
@@ -24,12 +24,12 @@ router.post('/', verifyJWT, upload, ads.createAd);
 // router.post('/', upload.array('photos', 4), ads.createAd);
 
 //update ad
-router.patch('/:id', ads.updateAd);
+router.patch('/:id', verifyJWT, ads.updateAd);
 
 //update ad w new images
-router.patch('/new/:id', upload, ads.updateAdwNewImgs);
+router.patch('/new/:id', verifyJWT, upload, ads.updateAdwNewImgs);
 
 //delete ad
-router.delete('/:id', ads.deleteAd);
+router.delete('/:id', verifyJWT, ads.deleteAd);
 
 module.exports = router;

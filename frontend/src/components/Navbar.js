@@ -21,7 +21,8 @@ const Navbar = () => {
             localStorage.removeItem('auth');
             navigate('/login');
         } catch (err) {
-            if(err.response.status === 204){
+            if(err.response.status === 401){
+                localStorage.removeItem('auth');
                 navigate('/login');
             } else {
                 console.log(err.message);
@@ -40,7 +41,7 @@ const Navbar = () => {
             <li><a href="/map" className=' hover:text-primary'>Map</a></li>
             <li><a href="/postAd" className=' hover:text-primary'>Post Ad</a></li>
             <li><a href="/#about-us" className=' hover:text-primary'>About Us</a></li>
-            <li><a href="/profile" className=' hover:text-primary'>Profile</a></li>
+            {auth?.accessToken && <li><a href="/profile" className=' hover:text-primary'>Profile</a></li>}
             </ul>
 
             <div className=' mx-10 block md:hidden' onClick={toggleBurgerIcon}>
@@ -68,10 +69,9 @@ const Navbar = () => {
                 <li><a href="/map" className='block w-full text-center'>Map</a></li>
                 <li><a href="/postAd" className='block w-full text-center'>Post Ad</a></li>
                 <li><a href="/#about-us" className='block w-full text-center'>About Us</a></li>
-                <li><a href="/profile" className='block w-full text-center'>Profile</a></li>
+                {auth?.accessToken && <li><a href="/profile" className='block w-full text-center'>Profile</a></li>}
                 </ul>
                 <div className=' flex justify-center'>
-                    {/*this doesnt change yet when the refresh token get expired */}
                     {auth?.accessToken ? (
                         <button className='btn bg-primary' onClick={logout}>Log out</button>
                     ) : (

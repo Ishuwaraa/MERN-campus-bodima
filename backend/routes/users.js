@@ -28,6 +28,6 @@ router.patch('/update-data', verifyJWT, users.updateUserData);
 router.patch('/update-pass', verifyJWT, users.updatePass);
 
 //delete acc
-router.delete('/del', verifyJWT, users.deleteAcc);
+router.post('/del', verifyJWT, users.deleteAcc);
 
 module.exports = router;

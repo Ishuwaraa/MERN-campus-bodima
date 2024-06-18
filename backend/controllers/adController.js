@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Ad = require('../models/adModel');
 const Review = require('../models/reviewModel');
+const User = require('../models/userModel');
 const { getImageUrls, deleteImages } = require('../middleware/awsMiddleware');
 
 //get all ads
@@ -105,19 +106,20 @@ const getAd = async (req, res) => {
 
 //create ad 
 const createAd = async (req, res) => {
+    const userId = req.user;
+    const data = req.body;
+    const files = req.files;
+    const images = [];
+
     try{
-        const data = req.body;
-        const files = req.files;
-        const images = [];
         // console.log('type', Array.isArray(files));
         Object.values(files).forEach((file) => {
             images.push(file.key);
         })
         // console.log(images, data);
-        // res.status(201).json({ text: data, files});
 
         const ad = await Ad.create({
-            user: data.userId,
+            user: userId,
             title: data.title,
             location: data.location,
             latitude: data.lat,
@@ -131,7 +133,14 @@ const createAd = async (req, res) => {
             description: data.description,
             images: images,
             rating: 0
-        });
+        });    
+        if(!ad) return res.status(500).json({ msg: 'Error creating the ad' });
+
+        const user = await User.findByIdAndUpdate(userId, {
+            $push: { ads: ad._id }
+        }, { new: true })
+        if(!user) return res.status(500).json({ msg: 'Error updating user doc' });
+
         res.status(201).json(ad);
     }catch(err) {
         res.status(500).json({ error: err.message });
@@ -140,10 +149,11 @@ const createAd = async (req, res) => {
 
 //update ad with new images 
 const updateAdwNewImgs = async (req, res) => {
+    const data = req.body;
+    const { id } = req.params;
+    const files = req.files;
+
     try{
-        const data = req.body;
-        const { id } = req.params;
-        const files = req.files;
         // console.log('type', Array.isArray(files));
         // console.log(data, files);
 
@@ -175,7 +185,7 @@ const updateAdwNewImgs = async (req, res) => {
             images: newImages
         }, { new: true });  //return the updated doc in response
 
-        if(!newAd) return res.status(304).json({ msg: "Update failed" });
+        if(!newAd) return res.status(500).json({ msg: "Update failed" });
         res.status(200).json({ msg: "Ad updated", newAd });
     }catch(err){
         res.status(500).json({ error: err.message })
@@ -184,11 +194,10 @@ const updateAdwNewImgs = async (req, res) => {
 
 //update ad
 const updateAd = async (req, res) => {
-    try{
-        const data = req.body;
-        const { id } = req.params;
-        // console.log(data);
+    const data = req.body;
+    const { id } = req.params;
 
+    try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
 
         const ad = await Ad.findByIdAndUpdate(id, {
@@ -205,7 +214,7 @@ const updateAd = async (req, res) => {
             description: data.description
         }, { new: true });  //return the updated doc in response
 
-        if(!ad) return res.status(404).json({ msg: "Update failed" });
+        if(!ad) return res.status(500).json({ msg: "Update failed" });
         res.status(200).json({ msg: "Ad updated", ad });
     }catch(err){
         res.status(500).json({ error: err.message })
@@ -214,9 +223,10 @@ const updateAd = async (req, res) => {
 
 //delete ad - delete reviews here
 const deleteAd = async (req, res) => {
-    try{
-        const id = req.params.id;
+    const id = req.params.id;
+    const userId = req.user;
 
+    try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
         const ad = await Ad.findById(id); 
 
@@ -229,11 +239,15 @@ const deleteAd = async (req, res) => {
         await Review.findByIdAndDelete(id);
 
         const deletedAd = await Ad.findByIdAndDelete(id);
+        const user = await User.findByIdAndUpdate(userId, {
+            $pull: { ads: id }
+        }, { new: true });
+        if(!user) return res.status(500).json({ msg: 'Error updating user doc' });
 
-        res.status(200).json({ msg: "Workout deleted", deletedAd});
+        res.status(200).json({ msg: "Ad deleted", deletedAd});
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
 }
 
-module.exports = { getAllAds, getAdsByUniName, getUserAds, getAd, createAd, updateAdwNewImgs, updateAd, deleteAd };
+module.exports = { getAllAds, getAdsByUniName, getAd, createAd, updateAdwNewImgs, updateAd, deleteAd };

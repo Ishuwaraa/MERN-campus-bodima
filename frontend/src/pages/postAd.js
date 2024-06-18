@@ -8,8 +8,14 @@ import axios from "axios";
 import Loading from '../components/Loading';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import { notify, errorNotify } from "../toastify/notifi";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const PostAd = () => {
+    const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const pageStateLocation = useLocation();
+
     const [uniInput, setUniInput] = useState('');
     const [dropdownVisible, setDropdownVisible] = useState(false);
     
@@ -36,10 +42,17 @@ const PostAd = () => {
     
     const handleChange = (e, index) => {
         const file = e.target.files[0];
+        console.log(file);
         if (file && !file.type.match('image.*')) {
-            // alert('Please upload only image files (png, jpg, jpeg).');
             errorNotify('Please upload only image files (png, jpg, jpeg)');
             e.target.value = ''; // Reset the input field
+            return;
+        }
+
+        const maxSizeInBytes = 5 * 1024 * 1024;
+        if(file && file.size > maxSizeInBytes){
+            errorNotify('Max file size is 5mb');
+            e.target.value = '';
             return;
         }
             
@@ -54,19 +67,16 @@ const PostAd = () => {
              
     const onSubmit = async () => {
         if (images.some(image => image === null)) {
-            // alert('Please add 4 images');
             errorNotify('All 4 images are required');
             return;
         }
 
         if(lat === null || long === null) {
-            // alert('Please add your location on the map');
             errorNotify('Please add your location on the map');
             return;
         }
 
         const formData = new FormData();
-        formData.append('userId', "123");
         formData.append('title', title);
         formData.append('location', location);
         formData.append('uniInput', uniInput);
@@ -85,13 +95,12 @@ const PostAd = () => {
 
         try {
             setLoading(true);
-            const response = await axios.post('http://localhost:4000/api/ads/', formData, {
+            const response = await axiosPrivate.post('/api/ads/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
             setLoading(false);
-            // alert('Ad posted successfully!');
             notify('Ad posted successfully!');
             setImages(Array(4).fill(null));
             setBackendImg([]);
@@ -107,9 +116,19 @@ const PostAd = () => {
             setLong(null);
             setClickedPosition(null);
             // console.log('ad posted', response);
-        } catch (error) {
+        } catch (err) {
             setLoading(false);
-            console.error('Error posting ad:', error);
+            if(err.response.status === 401) {
+                //no refresh token
+                console.log(err.response.data.msg);
+                localStorage.removeItem('auth');
+                errorNotify('Your session has expired. Please log in again to continue.')
+                navigate('/login', { state: { from: pageStateLocation }, replace: true });
+            }
+            else if(err.response.status === 403) console.log(err.response.data.error);
+            else if(err.response.status === 404) console.log(err.response.data.msg);
+            else if(err.response) errorNotify(err.response.data.msg);
+            else console.log(err.message);
         }
     }
 
@@ -182,7 +201,8 @@ const PostAd = () => {
                                 }                            
                             </div>    
                         </div>
-                        <span className="flex justify-center text-sm text-red-600 mt-3"> all 4 images are required to post the ad. (.png, .jpg, .jpeg)*</span>                                                
+                        <span className="flex justify-center text-sm text-red-600 mt-3"> all 4 images are required to post the ad. (.png, .jpg, .jpeg)*</span>                                              
+                        <span className="flex justify-center text-sm text-red-600"> image size should be less than 5mb*</span>
 
                         <div className=" flex flex-col justify-center mx-5 md:mx-20 lg:mx-40 mt-3 mb-10"> 
                             <div className=" lg:px-20 mb-3">

@@ -95,7 +95,7 @@ const addReview = async (req, res) => {
             })
         }
 
-        if(!updatedDoc) return res.status(404).json({ msg: "Unable to add review"})
+        if(!updatedDoc) return res.status(500).json({ msg: "Unable to add review"})
         res.status(200).json(updatedDoc);
     }catch(err) {
         res.status(500).json({ error: err.message })

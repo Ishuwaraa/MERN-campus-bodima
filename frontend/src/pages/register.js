@@ -22,7 +22,7 @@ const Register = () => {
     // const onAccChange = (e) => setAccType(e.target.value);
 
     const onSubmit = async () => {
-        console.log( name, email, contact, password);
+        // console.log( name, email, contact, password);
         const formData = { name, email, contact, password };
         try{
             const response = await axios.post('/api/user/register', formData, { withCredentials: true });

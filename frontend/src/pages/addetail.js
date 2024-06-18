@@ -14,12 +14,13 @@ import axios from "axios";
 import Loading from "../components/Loading";
 import noReviews from '../assets/noReviews.png';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
-import card from '../assets/card.png';
-import { Bounce, toast } from 'react-toastify';
 import useAuth from "../hooks/useAuth";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { notify, errorNotify } from '../toastify/notifi';
 
 const Addetail = () => {
   const { auth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
 
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
   const review = watch("review");
@@ -33,7 +34,7 @@ const Addetail = () => {
   const [dscSort, setDscSort] = useState([]);
 
   const [adDetails, setAdDetails] = useState([]);
-  const [adReviews, setAdReviews] = useState([]);
+  const [reviewsArray, setReviewsArray] = useState([]);
   const [adRating, setAdRating] = useState(null);
   const [loading, setLoading] = useState(false);
   const [adDate, setAdDate] = useState('');
@@ -93,17 +94,27 @@ const Addetail = () => {
 
       setLoading(true);
       const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
-      const reviews = await axios.get(`http://localhost:4000/api/review/${adId}`);
+      const reviewsResponse = await axios.get(`http://localhost:4000/api/review/${adId}`);
+
       setAdDetails(response.data.ad);
       setImageUrls(response.data.imageUrls);
       setAdRating(response.data.ad.rating);
       setLat(response.data.ad.latitude);
       setLong(response.data.ad.longitude);
-      setAdReviews(reviews.data);
+
+      setReviewsArray(
+        reviewsResponse.data.reviewsArray.map((review, index) => ({
+          ...review,
+          name: reviewsResponse.data.usernameArray[index]
+        }))
+      );
+      // setAdReviews(reviewsResponse.data.reviewsArray);
+      // setReviewsUnames(review.data.usernameArray);
+      // console.log(reviewsResponse.data);
+
       setErrMessage(null);      
       setLoading(false);
-      // console.log(response.data.ad)
-      // console.log(reviews.data);
+
       const date = response.data.ad.createdAt;
       const formatted = new Date(date);
       setAdDate(formatted.toLocaleDateString())
@@ -125,8 +136,8 @@ const Addetail = () => {
   }, []);
 
   const sortByAsc = () => {
-    if(adReviews.length !== 0){
-      const ascOrder = [...adReviews].sort((a, b) => {
+    if(reviewsArray.length !== 0){
+      const ascOrder = [...reviewsArray].sort((a, b) => {
         const date1 = new Date(a.createAt);
         const date2 = new Date(b.createdAt);
 
@@ -136,8 +147,8 @@ const Addetail = () => {
     }
   }
   const sortByDsc = () => {
-    if(adReviews.length !== 0){
-      const dscOrder = [...adReviews].sort((a, b) => {
+    if(reviewsArray.length !== 0){
+      const dscOrder = [...reviewsArray].sort((a, b) => {
         const date1 = new Date(a.createdAt);
         const date2 = new Date(b.createdAt);
 
@@ -152,28 +163,6 @@ const Addetail = () => {
     sortByDsc();
   }
 
-  const notify = () => toast.success('Review added successfully!', {
-    position: "bottom-left",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "colored",
-    transition: Bounce,
-  });
-  const errorNotify = (msg) => toast.error(msg, {
-    position: "bottom-left",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "colored",
-    transition: Bounce,
-  });
   const onSubmit = async () => {
     if(!auth?.accessToken){
       // navigate('/login', { state: { from: location.pathname + location.search } });
@@ -182,14 +171,12 @@ const Addetail = () => {
     }
 
     if(roomRate === '' || locationRate === '' || bathroomRate === ''){
-      // alert('Please add a rating for all the fields');
-      const msg = 'Please add a rating for all the fields'
-      errorNotify(msg);
+      errorNotify('Please add a rating for all the fields');
       return
     }
 
     const formData = {
-      userId: anonUser? 'Anonymous user' : '123',
+      anonUser,
       roomRate,
       locationRate,
       bathroomRate,
@@ -197,20 +184,28 @@ const Addetail = () => {
     }
 
     try{
-      const response = await axios.post(`http://localhost:4000/api/review/${adId}`, formData);
+      const response = await axiosPrivate.post(`/api/review/${adId}`, formData);
       // console.log(response);
       fetchData();
-      notify();
+      notify('Review added successfully!');
       setValue('review', '');
     }catch(err) {
-      if(err.response) {
-        // alert(err.response.data.msg);
-        const msg = err.response.data.msg;
-        errorNotify(msg);
-      } else if(err.request) {
-        console.log(err.request);
-      } else {
-        console.log(err.message);
+      if(err.response.status === 400) console.log(err.response.data.msg);
+      else if(err.response.status === 401) {
+        //no refresh token
+        console.log(err.response.data.msg);
+        localStorage.removeItem('auth');
+        errorNotify('Your session has expired. Please log in again to continue.')
+        navigate('/login', { state: { from: location }, replace: true });
+      }
+      else if(err.response.status === 403) console.log(err.response.data.error);
+      else if(err.response.status === 404) {
+        console.log(err.response.data.msg);
+        errorNotify(err.response.data.msg);
+      }
+      else {
+          console.log(err.message);
+          errMessage(err.message);
       }
     }
   }
@@ -291,9 +286,9 @@ const Addetail = () => {
           <div className=" flex flex-col md:grid md:grid-cols-2 gap-10 mt-10">
             {/* left col */}
             <div className="flex flex-col justify-center border border-primary rounded-lg">
-              {adReviews.length > 0 && 
+              {reviewsArray.length > 0 && 
                 <div className=" flex justify-between mt-5 px-5 items-center mb-1">
-                  <p className=" text-cusGray">{adReviews.length} reviews</p>
+                  <p className=" text-cusGray">{reviewsArray.length} reviews</p>
                   <select name="sort" value={sortBy} onChange={(e) => dropdownOnChange(e)} className="h-8 p-1 border border-cusGray rounded-lg">
                       <option value="" className=" text-gray-500">Sort by</option>
                       <option value="new" >Date added (Newest)</option>
@@ -304,7 +299,7 @@ const Addetail = () => {
               <div className="max-h-96 overflow-y-auto p-5 md:py-8">
                 {/* Wrapper for all review cards */}
                 <div className=" space-y-14 ">
-                  {adReviews.length === 0 ? (
+                  {reviewsArray.length === 0 ? (
                     <div className=" flex flex-col justify-center items-center">
                       <img src={noReviews} alt="no reviews" className=" w-40" />
                       <p className=" text-cusGray md:-ml-8">No reviews yet...</p>
@@ -316,7 +311,7 @@ const Addetail = () => {
 
                         return (
                           <ReviewCard
-                            name={review.userId}
+                            name={review.name}
                             date={formatted.toLocaleDateString()}
                             review={review.review}
                             room={review.room}
@@ -333,7 +328,7 @@ const Addetail = () => {
 
                         return (
                           <ReviewCard
-                            name={review.userId}
+                            name={review.name}
                             date={formatted.toLocaleDateString()}
                             review={review.review}
                             room={review.room}
@@ -344,13 +339,13 @@ const Addetail = () => {
                         )
                       })
                     ) : (
-                      adReviews.map((review, index) => {
+                      reviewsArray.map((review, index) => {
                         const date = review.createdAt;
                         const formatted = new Date(date);
 
                         return (
                           <ReviewCard
-                            name={review.userId}
+                            name={review.name}
                             date={formatted.toLocaleDateString()}
                             review={review.review}
                             room={review.room}
