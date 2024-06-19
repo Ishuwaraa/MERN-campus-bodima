@@ -1,6 +1,17 @@
+import { BeatLoader } from 'react-spinners';
+
 const Loading = () => {
-    return(
-        <div>loading</div>
+    const loaderStyle = {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+    };
+
+    return (
+        <div style={loaderStyle}>
+            <BeatLoader color='#FF7A00' loading={true} size={15} />
+        </div>
     )
 }
 

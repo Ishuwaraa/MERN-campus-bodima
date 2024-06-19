@@ -9,12 +9,13 @@ import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import Loading from "../components/Loading";
 import uniData from '../data/uniNames.json';
+import SkeltionAdCard from "../components/AdSkeltonCard";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const Search = () => {
     const [uniAds, setUniAds] = useState([]);
-    // const [imageUrls, setImageUrls] = useState([]);
     const [errMessage, setErrMessage] = useState(false);
     const [loading, setLoading] = useState(false);
     const [uniImage, setUniImage] = useState('');
@@ -107,7 +108,7 @@ const Search = () => {
     useEffect(() => {
         const fetchUniAds = async () => {
             try{
-                // setLoading(true);
+                setLoading(true);
                 const response = await axios.get(`http://localhost:4000/api/ads/uni/${uni}`);
                 
                 //combining ads with respected images for sorting function. returns an array of objects
@@ -116,7 +117,6 @@ const Search = () => {
                     imageUrl: response.data.imageUrls[index]
                 }));
                 setUniAds(adsWithImages);
-                // setImageUrls(response.data.imageUrls);
 
                 //getting hero image dynamically
                 //getting the first item that matches the name
@@ -125,8 +125,9 @@ const Search = () => {
                     setUniImage(imageMap[matchedItem.image]);
                     setUniTitle(matchedItem.fullname);
                 }
-                // setLoading(false);
+                setLoading(false);
             }catch(err) {
+                setLoading(false);
                 // request was made and the server responded with a status code that falls out of the range of 2xx
                 if(err.response) {
                     setLoading(false);
@@ -147,9 +148,18 @@ const Search = () => {
 
             <div className="page">
                 {
-                // loading? (
-                //     <Loading />
-                // ) : 
+                loading? (
+                    <>
+                        <Skeleton className=" w-full h-64 mb-10" />
+                        <div className="flex justify-center">
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                {Array(3).fill(0).map((_, index) => (
+                                    <SkeltionAdCard key={index}/>
+                                ))}
+                            </div>
+                        </div>
+                    </>
+                ) : 
                 errMessage? (
                     <div className=" flex justify-center">
                         <p className=" text-cusGray text-lg">{errMessage}</p>
@@ -159,7 +169,6 @@ const Search = () => {
                     <SearchPageHero image={uniImage} title={uniTitle} />
 
                     <div>
-                        {/* <p className=" mt-14 lg:mt-20 mb-8 text-2xl md:text-4xl text-primary font-bold">Search results...</p> */}
                         <div className=" mt-14 lg:mt-20 mb-10 flex justify-between">
                             <p className="text-2xl md:text-4xl text-primary font-bold">Search results...</p>
                             <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className=" p-1 border border-cusGray rounded-lg">

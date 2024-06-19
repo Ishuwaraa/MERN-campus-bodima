@@ -4,7 +4,6 @@ import { Plus } from 'lucide-react'
 import { useForm } from "react-hook-form";
 import data from '../data/uniNames.json';
 import Footer from "../components/Footer";
-import axios from "axios";
 import Loading from '../components/Loading';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import { notify, errorNotify } from "../toastify/notifi";
@@ -169,11 +168,12 @@ const PostAd = () => {
         <div>
             <Navbar />
 
-            <div className="page">
-
-                {loading? <Loading /> :
-
-                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">                      
+            {loading? (
+                <Loading /> 
+            ) : (
+                <>
+                <div className="page">
+                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                         <div className="flex justify-center">
                             <div className=" grid grid-cols-2 gap-5 md:gap-15">
                                 {
@@ -318,13 +318,12 @@ const PostAd = () => {
                             <button onClick={(e) => {e.preventDefault(); window.location.href = '/'}} className="text-xl font-bold px-3 py-1 rounded-lg text-center border border-primary text-primary">GO BACK</button>
                             <button className="btn bg-primary">POST AD</button>
                         </div>
-                    </form>
-                }
-                
-                
-            </div>
+                    </form>                                               
+                </div>
 
-            <Footer />
+                <Footer />
+                </>
+            )}
         </div>
     )
 }

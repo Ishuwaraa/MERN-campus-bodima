@@ -3,12 +3,12 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import AdDetail from "../components/AdDetail";
+import SkeltionAdCard from "../components/AdSkeltonCard";
 
 const AllAds = () => {
     const [ads, setAds] = useState([]);
     const [errMessage, setErrMessage] = useState(false);
     const [loading, setLoading] = useState(false);
-    // const [imageUrls, setImageUrls] = useState([]);
     const [sortBy, setSortBy] = useState('');
 
     const [ratingAscSort, setRatingAscSort] = useState([]);
@@ -82,6 +82,7 @@ const AllAds = () => {
     useEffect(() => {
         const fetchAds = async () => {
             try{
+                setLoading(true);
                 const response = await axios.get('http://localhost:4000/api/ads/');
 
                 const adsWithImages = response.data.ads.map((ad, index) => ({
@@ -89,9 +90,10 @@ const AllAds = () => {
                     imageUrl: response.data.imageUrls[index]
                 }));
                 setAds(adsWithImages);
-                // setImageUrls(response.data.imageUrls);
+                setLoading(false);
                 setErrMessage(false);
             } catch(err) {
+                setLoading(false);
                 console.log(err.message);
                 setErrMessage(true);
             }
@@ -99,6 +101,7 @@ const AllAds = () => {
 
         fetchAds();
     }, [])
+
     return (
         <div>
             <Navbar />
@@ -112,17 +115,24 @@ const AllAds = () => {
                     <>
                     <div className="mb-8  flex justify-between">
                         <p className="text-2xl md:text-4xl text-primary font-bold">All Ads</p>
-                        <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className=" p-1 border border-cusGray rounded-lg">
-                            <option value="" className=" text-gray-500">Sort by</option>
-                            <option value="ratingAsc" >Rating (Lowest)</option>
-                            <option value="ratingDsc" >Rating (Highest)</option>
-                            <option value="new" >Date added (Newest)</option>
-                            <option value="old" >Date added (Oldest)</option>
-                        </select>
+                        {ads.length > 0 && 
+                            <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className=" p-1 border border-cusGray rounded-lg">
+                                <option value="" className=" text-gray-500">Sort by</option>
+                                <option value="ratingAsc" >Rating (Lowest)</option>
+                                <option value="ratingDsc" >Rating (Highest)</option>
+                                <option value="new" >Date added (Newest)</option>
+                                <option value="old" >Date added (Oldest)</option>
+                            </select>                    
+                        }
                     </div>
                     <div className="flex justify-center">
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {ads.length > 0? (
+                            {loading? (
+                                Array(3).fill(0).map((_, index) => (
+                                    <SkeltionAdCard key={index}/>
+                                ))
+                            ) : 
+                            ads.length > 0 ? (
                                 sortBy === 'ratingAsc'? (
                                     ratingAscSort.map((ad) => (
                                         <a href={`/addetail?id=${ad._id}`} key={ad._id}>

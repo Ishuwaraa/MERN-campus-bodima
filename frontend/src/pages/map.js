@@ -3,8 +3,9 @@ import MapCard from "../components/MapCard";
 import Footer from "../components/Footer";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import Loading from "../components/Loading";
 import { APIProvider, Map, InfoWindow, AdvancedMarker, useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const MapPage = () => {
   const [ads, setAds] = useState([]);
@@ -22,10 +23,13 @@ const MapPage = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
+        setLoading(true);
         const response = await axios.get('http://localhost:4000/api/ads/');        
         setAds(response.data.ads);
         setImageUrls(response.data.imageUrls);
+        setLoading(false);
       }catch(err) {
+        setLoading(false);
         if(err.response) {
           console.log(err.response.data);
           setErrMessage(err.response.data.msg);
@@ -50,14 +54,19 @@ const MapPage = () => {
           <div className=" flex justify-center">
             <p className=" text-cusGray text-lg">{errMessage}</p>
           </div>
+        ) : loading? (
+          <div className=" flex flex-col md:grid md:grid-cols-3 gap-10 lg:gap-20">
+            <div className=" col-span-1 h-48 md:h-64"><Skeleton className=" h-full"/></div>
+            <div className=" col-span-2 h-48 md:h-64"><Skeleton className=" h-full"/></div>
+          </div>          
         ) : (
           <>
             <div className="flex justify-center mb-5">
-              <p className=" text-sm text-red-400">note: Click on the marker to view the Ad.</p>
+              <p className=" text-sm text-red-400">Tip: Click on the marker to view the Ad details.</p>
             </div>
 
             <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
-              <div className="flex flex-row md:flex-col border border-red-500 rounded-lg px-5 py-8 md:px-2 min-w-64 h-64 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
+              <div className="flex flex-row md:flex-col border border-cusGray rounded-lg px-5 py-8 md:px-2 min-w-64 h-64 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
                 <div className="flex flex-row md:flex-col">
                   {ads.length > 0 && ads.map((ad, index) => {
                     const image = imageUrls[index % imageUrls.length];

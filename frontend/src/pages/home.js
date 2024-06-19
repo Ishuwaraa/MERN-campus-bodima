@@ -9,17 +9,13 @@ import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import SkeltionAdCard from "../components/AdSkeltonCard";
 
 const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [topAds, setTopAds] = useState([]);
-  // const [imageUrls, setImageUrls] = useState([]);
-
-  // const fileInputRefs = useRef([]);
-  // const handleIconClick = (index) => {
-  //     fileInputRefs.current[index].click();   //referencing to the input field
-  // };
+  const [loading, setLoading] = useState(false);  
 
   //uni name input filter
   const filterData = data.filter((item) => {
@@ -49,7 +45,8 @@ const Home = () => {
   useEffect(() => {
     const fetchTopAds = async () => {
       try{
-        const response = await axios.get('http://localhost:4000/api/ads/');
+        setLoading(true);
+        const response = await axios.get('http://localhost:4000/api/ads/');        
 
         const adsWithImages = response.data.ads.map((ad, index) => ({
           ...ad,
@@ -58,8 +55,9 @@ const Home = () => {
 
         const sortedAds = [...adsWithImages].sort((a, b) => b.rating - a.rating);
         setTopAds(sortedAds);
-        // setImageUrls(response.data.imageUrls);
-      }catch(err) {
+        setLoading(false);
+      }catch(err) {  
+        setLoading(false);      
         console.log(err.message);
       }
     }
@@ -162,22 +160,28 @@ const Home = () => {
 
           <div className="flex justify-center">
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-              {topAds.length > 0?
+              {loading? (
+                Array(3).fill(0).map((_, index) => (
+                  <SkeltionAdCard key={index}/>
+                ))
+              ) : topAds.length > 0 ?(
                 topAds.slice(0, 3).map((ad) => (
-                    <a href={`/addetail?id=${ad._id}`} key={ad._id}>
-                        <AdDetail 
-                            image={ad.imageUrl} 
-                            title={ad.title} 
-                            location={ad.location}
-                            price={ad.price}
-                            rate={ad.rating}                  
-                        />
-                    </a> 
-                )) :            
+                  <a href={`/addetail?id=${ad._id}`} key={ad._id}>
+                      <AdDetail 
+                          image={ad.imageUrl} 
+                          title={ad.title} 
+                          location={ad.location}
+                          price={ad.price}
+                          rate={ad.rating}                  
+                      />
+                  </a> 
+                  
+                ))
+              ) : (
                 <div className=" flex justify-center md:col-span-2 lg:col-span-3">
                   <p>No ads</p>
                 </div>
-              }
+              )}
             </div>
           </div>
         </div>

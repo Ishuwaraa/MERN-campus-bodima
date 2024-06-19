@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from "react";
+import Loading from "../components/Loading";
 
 const AuthContext = createContext({});
 
@@ -22,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
     
     // console.log('auth provider: auth state', auth);
+    // if(loading) return <Loading />
 
     return (
         <AuthContext.Provider value={{ auth, setAuth, loading }}>

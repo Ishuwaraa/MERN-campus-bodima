@@ -173,10 +173,12 @@ const PostUpdate = () => {
 
         try{
             if(window.confirm('Are you sure you want to delete this ad? ')){
+                setLoading(true);
                 const response = await axiosPrivate.delete(`/api/ads/${adId}`);
                 console.log(response.data.msg);
                 navigate('/profile');
                 deleteNotify('Ad deleted successfully!');
+                setLoading(false);
             }
         } catch (err) {
             if(err.response.status === 401){
@@ -286,13 +288,12 @@ const PostUpdate = () => {
         <div>
             <Navbar />
 
-            <div className="page">
-
-                {loading? (
-                    <Loading />
-                ) : (
-                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-                        
+            {loading? (
+                <Loading />
+            ) : (
+                <>
+                <div className="page">
+                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">                        
                         <div className="flex justify-center">
                             <div className=" grid grid-cols-2 gap-5 md:gap-15">
                                 {                             
@@ -454,12 +455,12 @@ const PostUpdate = () => {
                             <button className="btn bg-secondary">SAVE CHANGES</button>
                         </div>
                     </form>
-                )}
-                
-                
-            </div>
+                </div>
 
-            <Footer />
+                <Footer />
+                </>
+            )}  
+
         </div>
     )
 }
