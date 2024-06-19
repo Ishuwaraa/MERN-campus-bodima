@@ -62,7 +62,7 @@ const MapPage = () => {
         ) : (
           <>
             <div className="flex justify-center mb-5">
-              <p className=" text-sm text-red-400">Tip: Click on the marker to view the Ad details.</p>
+              <p className=" text-sm text-secondary">Tip: Click on the marker to view the Ad details.</p>
             </div>
 
             <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">

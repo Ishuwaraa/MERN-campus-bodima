@@ -155,13 +155,13 @@ const PostAd = () => {
     const [clickedPosition, setClickedPosition] = useState(null);
 
     const handleMapClick = (event) => {
-        console.log('Map clicked', event);
+        // console.log('Map clicked', event);
         setClickedPosition(event.detail.latLng);
         const lat = event.detail.latLng.lat;
         const lng = event.detail.latLng.lng;
         setLat(lat);
         setLong(lng);
-        console.log(lat, lng);
+        // console.log(lat, lng);
     }
 
     return (

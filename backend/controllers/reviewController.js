@@ -24,7 +24,11 @@ const getReviews = async (req, res) => {
             }else {
                 try{
                     const user = await User.findById(review.userId);
-                    usernameArray.push(user.name);
+                    if(!user) {
+                        usernameArray.push('Deleted user');
+                    }else {
+                        usernameArray.push(user.name);
+                    }
                 } catch (err) {
                     return res.status(500).json({ msg: 'Error fetching user names' });
                 }

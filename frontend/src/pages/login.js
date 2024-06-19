@@ -72,18 +72,19 @@ const Login = () => {
                 <div className=' flex justify-center'>                    
                     <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
                         <p className=' mt-3 mb-1'>Email</p>
-                        <input type="email" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='johndoyle@gmail.com'
+                        <input type="email" name='email' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='cbodima@gmail.com'
                         {...register('email', { maxLength: 100})}/>
                         {errors.email && <span className=" text-red-600 text-sm">max character limit is 100</span>}
 
                         <p className=' mt-3 mb-1'>Password</p>
-                        <input type="password" name='name' required className=' border border-cusGray rounded-lg w-full h-8 p-2' 
+                        <input type="password" name='password' required className=' border border-cusGray rounded-lg w-full h-8 p-2' 
                         {...register('password', { maxLength: 15, minLength: 8, pattern: /^[a-zA-Z0-9@_-]+$/})}/>
                         {errors.password && errors.password.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit for password is 15</span> : 
                         errors.password && errors.password.type === 'minLength' ? <span className=' text-sm text-red-600'>password must contain atleast 8 characters</span> :
                         errors.password && <span className=' text-sm text-red-600'>password must contain only letters, numbers, @, _, and -'</span>}
                         
                         {errMessage && <p className=" mt-1 text-sm text-red-600">{errMessage}</p>}
+                        <a href=""><p className=" mt-3 text-sm text-cusGray underline">Forgot your password?</p></a>
                                                 
                         {/* <div className="flex justify-center mt-6">
                             <div className="relative w-64 border border-gray-500 rounded-full">

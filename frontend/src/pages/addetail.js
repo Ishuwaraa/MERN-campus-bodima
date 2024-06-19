@@ -467,7 +467,7 @@ const Addetail = () => {
                   )
                 )}
 
-                <span className=" text-sm text-red-600">note: You need to be logged in to add a review</span>
+                <span className=" text-sm text-cusGray">note: You need to be logged in to add a review</span>
                 <div className="mt-3 flex items-center">
                   <input type="checkbox" id="anonUser" className=' w-4 h-4 ' onChange={(e) => setAnonUser(e.target.checked)}/>
                   <label htmlFor="anonUser" className=' ml-2 text-cusGray  cursor-pointer text-center'>stay anonymous</label>
