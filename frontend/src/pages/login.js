@@ -65,13 +65,11 @@ const Login = () => {
             <LoginSideView />
 
             <div className=' m-10 font-poppins'>
-                <div className=' flex justify-center mb-10 md:mb-14'>
-                    <p className=' font-bold text-2xl text-cusGray'>Welcome Back!</p>
-                </div>
+                <div className=' flex flex-col justify-center items-center md:mt-14'>  
+                    <p className=' font-bold text-2xl text-cusGray mb-8 md:mb-14'>Welcome Back!</p> 
 
-                <div className=' flex justify-center'>                    
                     <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
-                        <p className=' mt-3 mb-1'>Email</p>
+                        <p className='mb-1'>Email</p>
                         <input type="email" name='email' required className=' border border-cusGray rounded-lg w-full h-8 p-2' placeholder='cbodima@gmail.com'
                         {...register('email', { maxLength: 100})}/>
                         {errors.email && <span className=" text-red-600 text-sm">max character limit is 100</span>}
@@ -84,7 +82,7 @@ const Login = () => {
                         errors.password && <span className=' text-sm text-red-600'>password must contain only letters, numbers, @, _, and -'</span>}
                         
                         {errMessage && <p className=" mt-1 text-sm text-red-600">{errMessage}</p>}
-                        <a href=""><p className=" mt-3 text-sm text-cusGray underline">Forgot your password?</p></a>
+                        <p className=" mt-3 text-sm text-cusGray">Forgot password?<a href="/forgot-password" className=" text-primary hover:underline ml-3">Reset here</a></p>
                                                 
                         {/* <div className="flex justify-center mt-6">
                             <div className="relative w-64 border border-gray-500 rounded-full">
@@ -103,7 +101,7 @@ const Login = () => {
                         </div>
                         
                         <div className=' flex justify-center mt-2'>
-                            <p>New to Campus Bodima? <a href="/register" className=' text-primary'>Register</a></p>
+                            <p>New to Campus Bodima? <a href="/register" className=' text-primary hover:underline'>Register</a></p>
                         </div>
 
                     </form>

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const genAccessToken = (id) => jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
 const genRefreshToken = (id) => jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '2m' });
+const genResetPassToken = (id) => jwt.sign({ id }, process.env.RESET_PASS_TOKEN_SECRET, { expiresIn: '10m' });
 
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers['authorization'];    //auth header is, Bearer token
@@ -18,4 +19,4 @@ const verifyJWT = (req, res, next) => {
     })
 }
 
-module.exports = { genAccessToken, genRefreshToken, verifyJWT };
+module.exports = { genAccessToken, genRefreshToken, genResetPassToken, verifyJWT };

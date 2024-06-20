@@ -13,6 +13,8 @@ import ErrorPage from './pages/404';
 
 import { AuthProvider } from './context/AuthProvider';
 import PrivateRoute from './components/PrivateRoute';
+import ForgotPass from './pages/forgotPass';
+import ResetPass from './pages/resetPass';
 
 
 function App() {
@@ -27,7 +29,9 @@ function App() {
           <Route path='/search' element={<Search />} />
           <Route path='/map' element={<MapPage />} />
           <Route path='/allAds' element={<AllAds />} />
-          <Route path='/addetail' element={<Addetail />} />        
+          <Route path='/addetail' element={<Addetail />} />
+          <Route path='/forgot-password' element={<ForgotPass />} />
+          <Route path='/reset-password' element={<ResetPass />} />
                   
           <Route path='/postAd' element={<PrivateRoute element={<PostAd />} />} />
           <Route path='/postUpdate' element={<PrivateRoute element={<PostUpdate />} />} />

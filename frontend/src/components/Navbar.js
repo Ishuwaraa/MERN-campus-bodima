@@ -19,11 +19,11 @@ const Navbar = () => {
         try{
             await axios.get('http://localhost:4000/api/user/logout', { withCredentials: true });
             localStorage.removeItem('auth');
-            navigate('/login');
+            navigate('/login', { replace: true });
         } catch (err) {
             if(err.response.status === 401){
                 localStorage.removeItem('auth');
-                navigate('/login');
+                navigate('/login', { replace: true });
             } else {
                 console.log(err.message);
             }

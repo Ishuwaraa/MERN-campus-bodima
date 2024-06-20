@@ -21,6 +21,12 @@ router.get('/', verifyJWT, users.getUserData);
 //check ad ids
 router.post('/check-id', verifyJWT, users.checkAdIds);
 
+//forgot password
+router.post('/forgot-pass', users.forgotPass);
+
+//reset password from mail
+router.patch('/reset-pass/:token', users.resetPass);
+
 //update user data
 router.patch('/update-data', verifyJWT, users.updateUserData);
 

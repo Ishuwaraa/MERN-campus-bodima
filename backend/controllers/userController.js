@@ -4,7 +4,8 @@ const Ad = require('../models/adModel');
 const Review = require('../models/reviewModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { genAccessToken, genRefreshToken } = require('../middleware/authMiddleware');
+const nodemailer = require('nodemailer');
+const { genAccessToken, genRefreshToken, genResetPassToken } = require('../middleware/authMiddleware');
 const { getImageUrls, deleteImages } = require('../middleware/awsMiddleware');
 
 const cookieOptions = {
@@ -274,4 +275,71 @@ const deleteAcc = async (req, res) => {
     }
 }
 
-module.exports = { registerUser, loginUser, logoutUser, refreshAccessToken, getUserData, checkAdIds, updateUserData, updatePass, deleteAcc };
+//forgot password
+const forgotPass = async (req, res) => {
+    const { email } = req.body;
+
+    try{
+        const user = await User.findOne({ email });
+        if(!user) return res.status(404).json({ msg: 'Invalid email' });
+
+        const resetPassToken = genResetPassToken(user._id);
+
+        //sending token to the user's email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.RESET_EMAIL_CLIENT,
+                pass: process.env.RESET_EMAIL_PASS,
+            }
+        });
+
+        //email configuration
+        const mailOptions = {
+            from: process.env.RESET_EMAIL_CLIENT,
+            to: email,
+            subject: 'Reset Password',
+            html: `<h1>Reset Your Password</h1>
+            <p>Click on the following link to reset your password:</p>
+            <a href="http://localhost:3000/reset-password?token=${resetPassToken}">http://localhost:3000/reset-password?token=${resetPassToken}</a>
+            <p>This link will expire in 10 minutes.</p>
+            <p>If you didn't request a password reset, please ignore this email.</p>`,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err) return res.status(500).json({ error: err.message });
+            res.status(200).json({ msg: 'Email sent' });
+        });
+        
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+//reset password 
+const resetPass = async (req, res) => {
+    const token = req.params.token;
+    const { password } = req.body;
+
+    try{
+        const decoded = jwt.verify(token, process.env.RESET_PASS_TOKEN_SECRET);
+        if(!decoded) return res.status(401).json({ msg: 'Invalid token' });
+
+        const user = await User.findById(decoded.id);
+        if(!user) return res.status(404).json({ msg: 'No user found' });
+
+        const salt = await bcrypt.genSalt(10);  
+        const hash = await bcrypt.hash(password, salt);  
+
+        const updated = await User.findByIdAndUpdate(decoded.id, { password: hash }, { new: true });
+        if(!updated) return res.status(500).json({ msg: 'Error updating password' });
+        
+        res.status(200).json({ msg: 'Password updated successfully' });
+
+    } catch (err) {
+        res.status(500).json({ msg: err.message });
+    }
+}
+
+module.exports = { registerUser, loginUser, logoutUser, refreshAccessToken, getUserData, 
+    checkAdIds, updateUserData, updatePass, deleteAcc, forgotPass, resetPass };
