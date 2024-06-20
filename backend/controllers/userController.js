@@ -13,7 +13,7 @@ const cookieOptions = {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     // maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
-    maxAge: 2 * 60 * 1000
+    maxAge: 24 * 60 * 60 * 1000
 }
 
 //register user

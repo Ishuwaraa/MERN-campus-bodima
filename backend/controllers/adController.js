@@ -7,7 +7,7 @@ const { getImageUrls, deleteImages } = require('../middleware/awsMiddleware');
 //get all ads
 const getAllAds = async (req, res) => {
     try{
-        const ads = await Ad.find({}).sort({ createdAt: -1 });  //latest first
+        const ads = await Ad.find({ status: 'approved' }).sort({ createdAt: -1 });  //latest first
         const adImages = [];
 
         ads.forEach((ad) => {
@@ -29,7 +29,7 @@ const getAdsByUniName = async (req, res) => {
         const { uni } = req.params;
         //gott validate the uni input here
 
-        const ads = await Ad.find({ university: uni }).sort({ createdAt: -1 });
+        const ads = await Ad.find({ university: uni, status: 'approved' }).sort({ createdAt: -1 });
         if(ads.length == 0) return res.status(404).json({ msg: "No ads were found for that search"})        
 
         const adImages = [];
@@ -45,28 +45,6 @@ const getAdsByUniName = async (req, res) => {
     }
 }
 
-//get user specific ads
-const getUserAds = async (req, res) => {
-    try{
-        // const { id } = req.params;
-        const { id } = req.params;
-        // if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid user ID" });
-
-        const ads = await Ad.find({ user: id }).sort({ createdAd: -1 });
-        if(ads.length == 0) return res.status(404).json({ msg: "No ads were found for that search"});
-
-        const adImages = [];
-        ads.forEach((ad) => {
-            adImages.push(ad.images[0])
-        });
-
-        const imageUrls = await getImageUrls(adImages, 900);    
-        res.status(200).json({ads, imageUrls});
-    }catch(err) {
-        res.status(500).json({ error: err.message });
-    }
-}
-
 //get one ad
 const getAd = async (req, res) => {
     try{
@@ -76,6 +54,8 @@ const getAd = async (req, res) => {
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
     
         const ad = await Ad.findById(id);
+        if(!ad) return res.status(404).json({ msg: 'No such ad was found' });
+
         const images = ad.images;
         // console.log('type', Array.isArray(ad.images));
 
@@ -94,11 +74,11 @@ const getAd = async (req, res) => {
         //.map creates an array of promisses. promise.all waits for all them to resolve or reject        
         const imageUrls = await getImageUrls(images, 1800); 
 
-        // console.log(imageUrls);                
+        const user = await User.findById(ad.user);
+        if(!user) return res.status(404).json({ msg: 'No user found' });
+        // console.log(user);                
         
-        if(!ad) res.status(404).json({ msg: "No such Ad was found" });
-        
-        res.status(200).json({ad, imageUrls});
+        res.status(200).json({ad, imageUrls, username: user?.name });
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -132,7 +112,8 @@ const createAd = async (req, res) => {
             price: data.price, 
             description: data.description,
             images: images,
-            rating: 0
+            rating: 0,
+            status: 'pending'
         });    
         if(!ad) return res.status(500).json({ msg: 'Error creating the ad' });
 

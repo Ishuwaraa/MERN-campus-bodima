@@ -8,7 +8,7 @@ import { Search } from "lucide-react";
 import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import SkeltionAdCard from "../components/AdSkeltonCard";
 
 const Home = () => {
@@ -46,7 +46,7 @@ const Home = () => {
     const fetchTopAds = async () => {
       try{
         setLoading(true);
-        const response = await axios.get('http://localhost:4000/api/ads/');        
+        const response = await axios.get('/api/ads/');        
 
         const adsWithImages = response.data.ads.map((ad, index) => ({
           ...ad,

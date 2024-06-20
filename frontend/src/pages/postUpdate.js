@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar"
 import { Plus } from 'lucide-react'
 import { useForm } from "react-hook-form";
 import Footer from "../components/Footer";
-import axios from "axios";
+import axios from "../api/axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 import data from '../data/uniNames.json';
@@ -38,6 +38,7 @@ const PostUpdate = () => {
     const [long, setLong] = useState(null);
     const [oldLat, setOldLat] = useState(null);
     const [oldLng, setOldLng] = useState(null);
+    const [status, setStatus] = useState('');
 
     //use form inputs
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
@@ -116,7 +117,7 @@ const PostUpdate = () => {
             if(adId === '') return navigate('/');
 
             // setLoading(true);
-            const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
+            const response = await axios.get(`/api/ads/${adId}`);
             setImageUrls(response.data.imageUrls);
             setImageNames(response.data.ad.images);
             // setLoading(false);
@@ -132,6 +133,7 @@ const PostUpdate = () => {
             setBathroom(response.data.ad.bathroom || '');
             setLat(response.data.ad.latitude || '');
             setLong(response.data.ad.longitude || '');
+            setStatus(response.data.ad.status || '');
             // setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
             setOldLat(response.data.ad.latitude || '');
             setOldLng(response.data.ad.longitude || '');
@@ -293,7 +295,8 @@ const PostUpdate = () => {
             ) : (
                 <>
                 <div className="page">
-                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">                        
+                    <p className=" text-xl text-cusGray font-semibold mb-5">Ad status : <span className=" text-primary">{status}</span></p>
+                    <form action="" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
                         <div className="flex justify-center">
                             <div className=" grid grid-cols-2 gap-5 md:gap-15">
                                 {                             

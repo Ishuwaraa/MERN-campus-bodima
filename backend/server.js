@@ -7,13 +7,14 @@ const cookieParser = require('cookie-parser');
 const adRoutes = require('./routes/ads');
 const userRoutes = require('./routes/users');
 const reviewRoutes = require('./routes/reviews');
+const adminRoutes = require('./routes/admins');
 
 const app = express();
 
 // app.use(cors());
 app.use(cors({
     origin: ["http://localhost:3000"],
-    // methods: ["GET", "POST", "PUT", "DELETE"],
+    // methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
 }));
 
@@ -31,3 +32,4 @@ app.use(cookieParser());
 app.use('/api/ads', adRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/review', reviewRoutes);
+app.use('/api/admin', adminRoutes);

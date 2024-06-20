@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar";
 import MapCard from "../components/MapCard";
 import Footer from "../components/Footer";
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../api/axios';
 import { APIProvider, Map, InfoWindow, AdvancedMarker, useAdvancedMarkerRef } from '@vis.gl/react-google-maps';
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -24,7 +24,7 @@ const MapPage = () => {
     const fetchAds = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:4000/api/ads/');        
+        const response = await axios.get('/api/ads/');        
         setAds(response.data.ads);
         setImageUrls(response.data.imageUrls);
         setLoading(false);

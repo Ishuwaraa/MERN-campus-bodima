@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoginSideView from "../components/LoginSideView";
 import { useForm } from "react-hook-form";
-import axios from "axios";
+import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -37,7 +37,7 @@ const Login = () => {
     const onSubmit = async () => {
         const formData = { email, password };
         try{
-            const response = await axios.post('http://localhost:4000/api/user/login', formData, { withCredentials: true });
+            const response = await axios.post('/api/user/login', formData, { withCredentials: true });
             // console.log(response.data);
             const accessToken = response.data.accessToken;
             setAuth({ accessToken });

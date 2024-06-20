@@ -10,7 +10,7 @@ import ReviewCard from "../components/ReviewCard";
 import Footer from "../components/Footer";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axios";
 import noReviews from '../assets/noReviews.png';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import useAuth from "../hooks/useAuth";
@@ -35,6 +35,7 @@ const Addetail = () => {
   const [dscSort, setDscSort] = useState([]);
 
   const [adDetails, setAdDetails] = useState([]);
+  const [username, setUsername] = useState(null);
   const [reviewsArray, setReviewsArray] = useState([]);
   const [adRating, setAdRating] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -94,11 +95,12 @@ const Addetail = () => {
       if(adId === '') return navigate('/');
 
       setLoading(true);
-      const response = await axios.get(`http://localhost:4000/api/ads/${adId}`);
-      const reviewsResponse = await axios.get(`http://localhost:4000/api/review/${adId}`);
+      const response = await axios.get(`/api/ads/${adId}`);
+      const reviewsResponse = await axios.get(`/api/review/${adId}`);
 
       setAdDetails(response.data.ad);
       setImageUrls(response.data.imageUrls);
+      setUsername(response.data.username);
       setAdRating(response.data.ad.rating);
       setLat(response.data.ad.latitude);
       setLong(response.data.ad.longitude);
@@ -229,10 +231,10 @@ const Addetail = () => {
                   <img src={imageUrls[currentIndex]} alt="ad title" className="w-full h-72 md:h-96 object-contain transition-transform duration-500 ease-in-out"/>
                 </div>
                 
-                <button onClick={prevSlide} className="z-20 absolute top-1/2 md:left-5 left-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
+                <button onClick={prevSlide} className="z-20 absolute top-1/2 md:left-5 left-0 transform -translate-y-1/2 p-4 text-4xl md:text-5xl text-primary flex items-center justify-center">
                   <span>&#10094;</span>
                 </button>
-                <button onClick={nextSlide} className=" z-20 absolute top-1/2 md:right-5 right-0 transform -translate-y-1/2 p-4 md:bg-gray-700 text-4xl md:text-lg text-primary md:text-white rounded-full md:h-11 md:w-11 flex items-center justify-center">
+                <button onClick={nextSlide} className=" z-20 absolute top-1/2 md:right-5 right-0 transform -translate-y-1/2 p-4 text-4xl md:text-5xl text-primary flex items-center justify-center">
                   <span>&#10095;</span>
                 </button>
 
@@ -253,7 +255,8 @@ const Addetail = () => {
                   <p className=" text-2xl md:text-4xl font-bold mb-1">{adDetails.title}</p>
                   <p className="md:text-2xl text-gray-600">{adDetails.location}</p>
                   <p className="md:text-lg text-gray-600">{adDetails.university}</p>
-                  <p className="text-lg md:text-3xl font-bold text-secondary">Rs. {adDetails.price}/mo</p>                  
+                  <p className="text-lg md:text-3xl font-bold text-secondary">Rs. {adDetails.price}/mo</p>   
+                  <p className=" text-cusGray text-lg mt-4">Posted by {username && <span className=" text-black font-semibold">{username}</span>}</p>               
                   </>
                 )}
               </div>

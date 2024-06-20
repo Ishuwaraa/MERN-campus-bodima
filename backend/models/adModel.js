@@ -53,6 +53,10 @@ const adSchema = new Schema({
     images: [String],
     rating: {
         type: Number
+    },
+    status: {
+        type: String,
+        required: true
     }
 }, { timestamps: true });
 

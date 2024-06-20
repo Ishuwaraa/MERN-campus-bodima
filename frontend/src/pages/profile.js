@@ -25,6 +25,7 @@ const Profile = () => {
 
     const [activeForm, setActiveForm] = useState('profile');
     const [activeLink, setActiveLink] = useState('profile');
+    const [sortBy, setSortBy] = useState('')
     const onActiveFormClick = (type) => {
         setActiveForm(type);
         setActiveLink(type);
@@ -307,7 +308,15 @@ const Profile = () => {
                         </div>
                     ) : ads.length > 0 && (
                         <>
-                            <p className=" mt-20 mb-8 text-2xl md:text-4xl text-primary font-bold">My Ads</p>
+                            <div className=" mt-14 lg:mt-20 mb-10 flex justify-between">
+                                <p className="text-2xl md:text-4xl text-primary font-bold">My Ads</p>
+                                <select name="sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)} className=" p-1 border border-cusGray rounded-lg">
+                                    <option value="" className=" text-gray-500">Sort by</option>
+                                    <option value="approved" >Approved ads</option>
+                                    <option value="pending" >Pending ads</option>
+                                    <option value="denied" >Denied ads</option>
+                                </select>
+                            </div>
                             <div className="flex justify-center">
                                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                                     {ads.map((ad, index) => {

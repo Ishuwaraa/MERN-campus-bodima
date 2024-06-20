@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
-const genAccessToken = (id) => jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '30s' });
-const genRefreshToken = (id) => jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '2m' });
+const genAccessToken = (id) => jwt.sign({ id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
+const genRefreshToken = (id) => jwt.sign({ id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
 const genResetPassToken = (id) => jwt.sign({ id }, process.env.RESET_PASS_TOKEN_SECRET, { expiresIn: '10m' });
 
 const verifyJWT = (req, res, next) => {

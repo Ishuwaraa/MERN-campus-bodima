@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logoDark from '../assets/logo/campus_bodima_dark.png';
 import useAuth from '../hooks/useAuth';
-import axios from 'axios';
+import axios from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
@@ -17,7 +17,7 @@ const Navbar = () => {
     
     const logout = async () => {
         try{
-            await axios.get('http://localhost:4000/api/user/logout', { withCredentials: true });
+            await axios.get('/api/user/logout', { withCredentials: true });
             localStorage.removeItem('auth');
             navigate('/login', { replace: true });
         } catch (err) {

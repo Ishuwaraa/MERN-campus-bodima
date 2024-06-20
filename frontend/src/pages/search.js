@@ -7,7 +7,7 @@ import SearchPageHero from "../components/SearchPageHero";
 import AdDetail from "../components/AdDetail";
 import Footer from "../components/Footer";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axios";
 import { useEffect, useState } from "react";
 import uniData from '../data/uniNames.json';
 import SkeltionAdCard from "../components/AdSkeltonCard";
@@ -109,7 +109,7 @@ const Search = () => {
         const fetchUniAds = async () => {
             try{
                 setLoading(true);
-                const response = await axios.get(`http://localhost:4000/api/ads/uni/${uni}`);
+                const response = await axios.get(`/api/ads/uni/${uni}`);
                 
                 //combining ads with respected images for sorting function. returns an array of objects
                 const adsWithImages = response.data.ads.map((ad, index) => ({
