@@ -205,7 +205,7 @@ const Addetail = () => {
       }
       else {
           console.log(err.message);
-          errMessage(err.message);
+          setErrMessage(err.message);
       }
     }
   }

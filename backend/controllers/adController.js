@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Ad = require('../models/adModel');
 const Review = require('../models/reviewModel');
 const User = require('../models/userModel');
+const nodemailer = require('nodemailer');
 const { getImageUrls, deleteImages } = require('../middleware/awsMiddleware');
 
 //get all ads
@@ -78,7 +79,7 @@ const getAd = async (req, res) => {
         if(!user) return res.status(404).json({ msg: 'No user found' });
         // console.log(user);                
         
-        res.status(200).json({ad, imageUrls, username: user?.name });
+        res.status(200).json({ad, imageUrls, username: user?.name, useremail: user?.email });
     }catch(err) {
         res.status(500).json({ error: err.message });
     }
@@ -121,6 +122,30 @@ const createAd = async (req, res) => {
             $push: { ads: ad._id }
         }, { new: true })
         if(!user) return res.status(500).json({ msg: 'Error updating user doc' });
+        
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.RESET_EMAIL_CLIENT,
+                pass: process.env.RESET_EMAIL_PASS,
+            }
+        });
+
+        //email configuration
+        const mailOptions = {
+            from: process.env.RESET_EMAIL_CLIENT,
+            to: process.env.RESET_EMAIL_CLIENT,
+            subject: 'Pending approval for a new Ad',
+            html: `<h1>${data.title}</h1>
+            <p>By ${user.name}</p>
+            <a href="http://localhost:3000/addetail?id=${ad._id}">view ad</a>`,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            // if(err) return res.status(500).json({ error: err.message });
+            // res.status(200).json({ msg: 'Email sent' });
+            console.log(err, info);
+        });        
 
         res.status(201).json(ad);
     }catch(err) {

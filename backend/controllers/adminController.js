@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Admin = require('../models/adminModel');
 const Ad = require('../models/adModel');
+const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -27,14 +28,15 @@ const registerUser = async (req, res) => {
             const hash = await bcrypt.hash(password, salt);                
             
             const user = new Admin({ name, email, contact, password: hash });
-            const accessToken = genAccessToken(user._id);
-            const refreshToken = genRefreshToken(user._id);
+            // const accessToken = genAccessToken(user._id);
+            // const refreshToken = genRefreshToken(user._id);
 
             const newUser = await user.save();
             if(!newUser) return res.status(500).json({ msg: 'Account creation failed' });            
 
-            res.cookie("jwt", refreshToken, cookieOptions);   
-            res.status(201).json({ accessToken, name: newUser.name, email: newUser.email });
+            // res.cookie("jwt", refreshToken, cookieOptions);   
+            // res.status(201).json({ accessToken, name: newUser.name, email: newUser.email });
+            res.status(201).json({ name: newUser.name, email: newUser.email });
 
         }
     } catch (err) {
@@ -132,13 +134,39 @@ const getAllAds = async (req, res) => {
 //update ad status
 const updateAdStatus = async (req, res) => {
     const id = req.params.id;
-    const { status } = req.body;
+    const { status, emailMsg } = req.body;
 
     try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: 'Invalid ID. No such ad was found' });
 
         const ad = await Ad.findByIdAndUpdate(id, { status }, { new: true });
         if(!ad) return res.status(500).json({ msg: 'Failed to update ad' });
+
+        const user = await User.findById(ad.user);
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.RESET_EMAIL_CLIENT,
+                pass: process.env.RESET_EMAIL_PASS,
+            }
+        });
+
+        //email configuration
+        const mailOptions = {
+            from: process.env.RESET_EMAIL_CLIENT,
+            to: user?.email,
+            subject: 'Your Ad status has been updated.',
+            html: `<h1>${ad.title}</h1>
+            <p>${emailMsg}</p>
+            <a href="http://localhost:3000/addetail?id=${ad._id}">view ad</a>`,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err) return res.status(500).json({ error: err.message });
+            // res.status(200).json({ msg: 'Email sent' });
+            // console.log(err, info);
+        }); 
 
         res.status(200).json({ msg: 'Ad updated', ad });
     } catch (err) {
