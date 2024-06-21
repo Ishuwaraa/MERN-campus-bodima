@@ -100,7 +100,7 @@ const PostAd = () => {
                 }
             });
             setLoading(false);
-            notify('Ad posted successfully!');
+            notify("We'll send you an email once your Ad is live");
             setImages(Array(4).fill(null));
             setBackendImg([]);
             setGender(null);

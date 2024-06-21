@@ -25,7 +25,10 @@ const Profile = () => {
 
     const [activeForm, setActiveForm] = useState('profile');
     const [activeLink, setActiveLink] = useState('profile');
-    const [sortBy, setSortBy] = useState('')
+    const [sortBy, setSortBy] = useState('');
+    const [approvedAds, setApprovedAds] = useState([]);
+    const [deniedAds, setDeniedAds] = useState([]);
+    const [pendingAds, setPendingAds] = useState([]);
     const onActiveFormClick = (type) => {
         setActiveForm(type);
         setActiveLink(type);
@@ -62,8 +65,11 @@ const Profile = () => {
             setSkeletonLoad(true);
             const response = await axiosPrivate.get('/api/user/');
             setSkeletonLoad(false);
-            setAds(response.data.ads);
-            setImageUrls(response.data.imageUrls);
+            setAds(response.data.ads.map((ad, index) => ({
+                ...ad,
+                imageUrl: response.data.imageUrls[index]
+            })));
+            // setImageUrls(response.data.imageUrls);
             setName(response.data.name || '');
             setEmail(response.data.email || '');
             setPhone(response.data.contact || '');
@@ -130,7 +136,7 @@ const Profile = () => {
                 setSkeletonLoad(false);
                 notify(response.data.msg);
                 localStorage.removeItem('auth');
-                navigate('/login');
+                navigate('/login', { replace: true });
                 setErrMessage(null);
                 setFormErrMsg(null);
             } catch (err) {
@@ -178,6 +184,17 @@ const Profile = () => {
                 }
             }
         }
+    }
+
+    const displayApproved = () => setApprovedAds(ads.filter((ad) => ad.status === 'approved'))
+    const displayDenied = () => setDeniedAds(ads.filter((ad) => ad.status === 'denied'))
+    const displayPending = () => setPendingAds(ads.filter((ad) => ad.status === 'pending'))
+
+    const dropDownOnChange = (e) => {
+        setSortBy(e.target.value);
+        displayApproved();
+        displayDenied();
+        displayPending();
     }
 
     return(
@@ -310,7 +327,7 @@ const Profile = () => {
                         <>
                             <div className=" mt-14 lg:mt-20 mb-10 flex justify-between">
                                 <p className="text-2xl md:text-4xl text-primary font-bold">My Ads</p>
-                                <select name="sort" value={sortBy} onChange={(e) => setSortBy(e.target.value)} className=" p-1 border border-cusGray rounded-lg">
+                                <select name="sort" value={sortBy} onChange={(e) => dropDownOnChange(e)} className=" p-1 border border-cusGray rounded-lg">
                                     <option value="" className=" text-gray-500">Sort by</option>
                                     <option value="approved" >Approved ads</option>
                                     <option value="pending" >Pending ads</option>
@@ -319,21 +336,57 @@ const Profile = () => {
                             </div>
                             <div className="flex justify-center">
                                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                                    {ads.map((ad, index) => {
-                                        const image = imageUrls[index];
-    
-                                        return (
-                                            <a href={`/postUpdate?id=${ad._id}`} key={ad._id}>
-                                                <AdDetail 
-                                                    image={image} 
-                                                    title={ad.title} 
-                                                    location={ad.location}
-                                                    price={ad.price}
-                                                    rate={ad.rating}                  
-                                                />
-                                            </a> 
+                                    {ads.length > 0 && 
+                                        sortBy === 'approved'? (
+                                            approvedAds.map((ad, index) => (
+                                                <a href={`/postUpdate?id=${ad._id}`} key={ad._id}>
+                                                    <AdDetail 
+                                                        image={ad.imageUrl} 
+                                                        title={ad.title} 
+                                                        location={ad.location}
+                                                        price={ad.price}
+                                                        rate={ad.rating}                  
+                                                    />
+                                                </a> 
+                                            ))
+                                        ) : sortBy === 'denied' ? (
+                                            deniedAds.map((ad, index) => (
+                                                <a href={`/postUpdate?id=${ad._id}`} key={ad._id}>
+                                                    <AdDetail 
+                                                        image={ad.imageUrl} 
+                                                        title={ad.title} 
+                                                        location={ad.location}
+                                                        price={ad.price}
+                                                        rate={ad.rating}                  
+                                                    />
+                                                </a> 
+                                            ))
+                                        ) : sortBy === 'pending' ? (
+                                            pendingAds.map((ad, index) => (
+                                                <a href={`/postUpdate?id=${ad._id}`} key={ad._id}>
+                                                    <AdDetail 
+                                                        image={ad.imageUrl} 
+                                                        title={ad.title} 
+                                                        location={ad.location}
+                                                        price={ad.price}
+                                                        rate={ad.rating}                  
+                                                    />
+                                                </a> 
+                                            ))
+                                        ) : (
+                                            ads.map((ad, index) => (
+                                                <a href={`/postUpdate?id=${ad._id}`} key={ad._id}>
+                                                    <AdDetail 
+                                                        image={ad.imageUrl} 
+                                                        title={ad.title} 
+                                                        location={ad.location}
+                                                        price={ad.price}
+                                                        rate={ad.rating}                  
+                                                    />
+                                                </a> 
+                                            ))
                                         )
-                                    })}
+                                    }
                                 </div>
                             </div>
                         </>

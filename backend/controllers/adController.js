@@ -138,13 +138,13 @@ const createAd = async (req, res) => {
             subject: 'Pending approval for a new Ad',
             html: `<h1>${data.title}</h1>
             <p>By ${user.name}</p>
-            <a href="http://localhost:3000/addetail?id=${ad._id}">view ad</a>`,
+            <a href="http://localhost:3000/ad-approve?id=${ad._id}">view ad</a>`,
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
             // if(err) return res.status(500).json({ error: err.message });
             // res.status(200).json({ msg: 'Email sent' });
-            console.log(err, info);
+            // console.log(err, info);
         });        
 
         res.status(201).json(ad);
@@ -188,10 +188,34 @@ const updateAdwNewImgs = async (req, res) => {
             bathroom: data.bathroom, 
             price: data.price, 
             description: data.description,
-            images: newImages
+            images: newImages,
+            status: 'pending'
         }, { new: true });  //return the updated doc in response
 
         if(!newAd) return res.status(500).json({ msg: "Update failed" });
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.RESET_EMAIL_CLIENT,
+                pass: process.env.RESET_EMAIL_PASS,
+            }
+        });
+
+        //email configuration
+        const mailOptions = {
+            from: process.env.RESET_EMAIL_CLIENT,
+            to: process.env.RESET_EMAIL_CLIENT,
+            subject: 'Pending approval for a updated Ad w images',
+            html: `<h1>${newAd.title}</h1>
+            <a href="http://localhost:3000/ad-approve?id=${newAd._id}">view ad</a>`,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            // if(err) return res.status(500).json({ error: err.message });
+            // res.status(200).json({ msg: 'Email sent' });
+            // console.log(err, info);
+        }); 
         res.status(200).json({ msg: "Ad updated", newAd });
     }catch(err){
         res.status(500).json({ error: err.message })
@@ -220,7 +244,7 @@ const updateAd = async (req, res) => {
             description: data.description
         }, { new: true });  //return the updated doc in response
 
-        if(!ad) return res.status(500).json({ msg: "Update failed" });
+        if(!ad) return res.status(500).json({ msg: "Update failed" });        
         res.status(200).json({ msg: "Ad updated", ad });
     }catch(err){
         res.status(500).json({ error: err.message })

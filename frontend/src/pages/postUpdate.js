@@ -232,7 +232,7 @@ const PostUpdate = () => {
                 setLoading(false);
                 setImages(Array(4).fill(null));
                 setClickedPosition(null);
-                notify('Ad updated successfully!');
+                notify("We'll send you an email once your Ad is live");
                 fetchData();
                 // navigate('/profile');
             } catch (err) {                

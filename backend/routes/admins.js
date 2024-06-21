@@ -35,4 +35,7 @@ router.patch('/update-ad/:id', verifyJWT, admins.updateAdStatus);
 
 //update user data
 
+//delete ad
+router.post('/delete-ad/:id', verifyJWT, admins.deleteAd);
+
 module.exports = router;

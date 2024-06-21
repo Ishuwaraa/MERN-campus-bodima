@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Admin = require('../models/adminModel');
 const Ad = require('../models/adModel');
 const User = require('../models/userModel');
+const Review = require('../models/reviewModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -134,7 +135,7 @@ const getAllAds = async (req, res) => {
 //update ad status
 const updateAdStatus = async (req, res) => {
     const id = req.params.id;
-    const { status, emailMsg } = req.body;
+    const { status, emailMsg, emailSubject } = req.body;
 
     try{
         if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: 'Invalid ID. No such ad was found' });
@@ -156,10 +157,10 @@ const updateAdStatus = async (req, res) => {
         const mailOptions = {
             from: process.env.RESET_EMAIL_CLIENT,
             to: user?.email,
-            subject: 'Your Ad status has been updated.',
-            html: `<h1>${ad.title}</h1>
+            subject: emailSubject,
+            html: `<p>Hello ${user?.name},</p>
             <p>${emailMsg}</p>
-            <a href="http://localhost:3000/addetail?id=${ad._id}">view ad</a>`,
+            <p>View your ad <a href="http://localhost:3000/addetail?id=${ad._id}">here</a></p>`,
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
@@ -174,5 +175,57 @@ const updateAdStatus = async (req, res) => {
     }
 }
 
+const deleteAd = async (req, res) => {
+    const id = req.params.id;
+    const { emailMsg } = req.body;
 
-module.exports = { registerUser, loginUser, logoutUser, refreshAccessToken, getAllAds, updateAdStatus }
+    try{
+        if(!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ msg: "Invalid ID. No such Ad was found" });
+        const ad = await Ad.findById(id); 
+
+        if(!ad) return res.status(404).json({ msg: "No such Ad was found" });
+        
+        //get the image names and delete from s3 then delete the ad here
+        const images = ad.images;
+
+        await deleteImages(images);    
+        await Review.findByIdAndDelete(id);
+
+        const user = await User.findByIdAndUpdate(ad.user, {
+            $pull: { ads: id }
+        }, { new: true });
+        if(!user) return res.status(500).json({ msg: 'Error updating user doc' });
+
+        const deletedAd = await Ad.findByIdAndDelete(id);
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.RESET_EMAIL_CLIENT,
+                pass: process.env.RESET_EMAIL_PASS,
+            }
+        });
+
+        //email configuration
+        const mailOptions = {
+            from: process.env.RESET_EMAIL_CLIENT,
+            to: user?.email,
+            subject: 'Ad has been deleted',
+            html: `<p>Hello ${user?.name},</p>
+            <p>${emailMsg}</p>`,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if(err) return res.status(500).json({ error: err.message });
+            // res.status(200).json({ msg: 'Email sent' });
+            // console.log(err, info);
+        }); 
+
+        res.status(200).json({ msg: "Ad deleted", deletedAd});
+    }catch(err) {
+        res.status(500).json({ error: err.message });
+    }
+}
+
+
+module.exports = { registerUser, loginUser, logoutUser, refreshAccessToken, getAllAds, updateAdStatus, deleteAd }
