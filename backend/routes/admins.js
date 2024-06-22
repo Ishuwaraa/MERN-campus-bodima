@@ -5,7 +5,7 @@ const ads = require('../controllers/adController');
 const { verifyJWT } = require('../middleware/authMiddleware');
 
 //signup
-router.post('/register', admins.registerUser);
+router.post('/register', verifyJWT, admins.registerUser);
 
 //login
 router.post('/login', admins.loginUser);
@@ -16,13 +16,26 @@ router.get('/logout', admins.logoutUser);
 //refresh access
 router.get('/refresh', admins.refreshAccessToken);
 
-//udpate data
+//get admin data
+router.get('/', verifyJWT, admins.getAdminData);
 
-//update pass
+//udpate admin data
+router.patch('/update', verifyJWT, admins.updateAdminData);
 
-//delete acc
+//update admin pass
+router.patch('/update-pass', verifyJWT, admins.updateAdminPass);
+
+//forgot password
+router.post('/forgot-pass', admins.forgotPass);
+
+//reset password
+router.patch('/reset-pass/:token', admins.resetPass);
+
+//delete admin acc
+router.post('/del', verifyJWT, admins.deleteAdminAcc);
 
 //get all users
+router.get('/users', verifyJWT, admins.getAllUsers);
 
 //get all ads
 router.get('/all-ads', verifyJWT, admins.getAllAds);
@@ -30,7 +43,7 @@ router.get('/all-ads', verifyJWT, admins.getAllAds);
 //get ad details
 router.get('/ad/:id', verifyJWT, ads.getAd);
 
-//update/aprove/delete ad
+//approve ad
 router.patch('/update-ad/:id', verifyJWT, admins.updateAdStatus);
 
 //update user data

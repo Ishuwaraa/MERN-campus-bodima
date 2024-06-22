@@ -126,15 +126,15 @@ const createAd = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.RESET_EMAIL_CLIENT,
-                pass: process.env.RESET_EMAIL_PASS,
+                user: process.env.EMAIL_CLIENT,
+                pass: process.env.EMAIL_PASS,
             }
         });
 
         //email configuration
         const mailOptions = {
-            from: process.env.RESET_EMAIL_CLIENT,
-            to: process.env.RESET_EMAIL_CLIENT,
+            from: process.env.EMAIL_CLIENT,
+            to: process.env.EMAIL_CLIENT,
             subject: 'Pending approval for a new Ad',
             html: `<h1>${data.title}</h1>
             <p>By ${user.name}</p>
@@ -197,15 +197,15 @@ const updateAdwNewImgs = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.RESET_EMAIL_CLIENT,
-                pass: process.env.RESET_EMAIL_PASS,
+                user: process.env.EMAIL_CLIENT,
+                pass: process.env.EMAIL_PASS,
             }
         });
 
         //email configuration
         const mailOptions = {
-            from: process.env.RESET_EMAIL_CLIENT,
-            to: process.env.RESET_EMAIL_CLIENT,
+            from: process.env.EMAIL_CLIENT,
+            to: process.env.EMAIL_CLIENT,
             subject: 'Pending approval for a updated Ad w images',
             html: `<h1>${newAd.title}</h1>
             <a href="http://localhost:3000/ad-approve?id=${newAd._id}">view ad</a>`,
