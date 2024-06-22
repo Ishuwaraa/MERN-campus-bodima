@@ -164,6 +164,26 @@ const PostAd = () => {
         // console.log(lat, lng);
     }
 
+    const handleLocateMe = (e) => {
+        e.preventDefault();
+
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition((position) => {
+                const userPosition = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
+                setClickedPosition(userPosition);
+            }, (error) => {
+                if (error.code === error.PERMISSION_DENIED) {
+                    alert('Location access is required to find your position. Please enable location access.');
+                } else {
+                    console.log('Error getting user location:', error);
+                }
+            });
+        } else errorNotify('Geo location not supported on this device');
+    }
+
     return (
         <div>
             <Navbar />
@@ -305,7 +325,10 @@ const PostAd = () => {
                             </div>         
                         </div>
 
-                        <p className='mb-5 w-full text-secondary font-semibold text-xl '>Pin your location</p>
+                        <div className=" mb-5 flex justify-between">
+                            <p className=' text-secondary font-semibold text-xl '>Pin your location</p>
+                            <button onClick={(e) => handleLocateMe(e)} className=" btn bg-secondary">Locate Me</button>
+                        </div>
                         <div className=" w-full h-96 border border-cusGray rounded-lg mb-20">
                             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
                                 <Map defaultCenter={defPosition} defaultZoom={10} mapId={'bf51a910020fa25a'} onClick={handleMapClick}>                                    

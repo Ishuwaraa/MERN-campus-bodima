@@ -268,9 +268,8 @@ const PostUpdate = () => {
 
                 // setLoading(false);
                 setClickedPosition(null);
-                // alert('Your ad updated successfully');
                 fetchData();
-                notify('Ad updated successfully!');
+                notify("We'll send you an email once your Ad is live");
             } catch (err) {       
                 if(err.response.status === 401){
                     console.log(err.response.data.msg);

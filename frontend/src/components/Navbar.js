@@ -39,8 +39,8 @@ const Navbar = () => {
             <ul className=' hidden md:flex flex-grow justify-evenly mx-16 lg:px-32 text-cusGray'>
             <li><a href="/" className=' hover:text-primary'>Home</a></li>
             <li><a href="/map" className=' hover:text-primary'>Map</a></li>
-            <li><a href="/postAd" className=' hover:text-primary'>Post Ad</a></li>
-            <li><a href="/#about-us" className=' hover:text-primary'>About Us</a></li>
+            <li><a href="/postAd" className=' hover:text-primary'>Post Your Ad</a></li>
+            {/* <li><a href="/#about-us" className=' hover:text-primary'>About Us</a></li> */}
             {auth?.accessToken && <li><a href="/profile" className=' hover:text-primary'>Profile</a></li>}
             </ul>
 
@@ -67,8 +67,8 @@ const Navbar = () => {
                 <ul className='flex flex-col items-center space-y-4 py-4 text-cusGray'>
                 <li><a href="/" className='block w-full text-center'>Home</a></li>
                 <li><a href="/map" className='block w-full text-center'>Map</a></li>
-                <li><a href="/postAd" className='block w-full text-center'>Post Ad</a></li>
-                <li><a href="/#about-us" className='block w-full text-center'>About Us</a></li>
+                <li><a href="/postAd" className='block w-full text-center'>Post Your Ad</a></li>
+                {/* <li><a href="/#about-us" className='block w-full text-center'>About Us</a></li> */}
                 {auth?.accessToken && <li><a href="/profile" className='block w-full text-center'>Profile</a></li>}
                 </ul>
                 <div className=' flex justify-center'>

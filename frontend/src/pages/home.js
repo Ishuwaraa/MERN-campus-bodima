@@ -146,7 +146,7 @@ const Home = () => {
               <img src={sticker1} alt="Find your university" className=" w-32 md:w-48"/>
             </div>
             <div className="md:flex md:flex-col md:justify-center md:col-span-2 order-1 md:order-2 mb-5 md:mb-0">
-              <p className="flex justify-center md:justify-start text-primary text-xl font-semibold">Add reviews, Share with others</p>
+              <p className="flex justify-center md:justify-start text-primary text-xl font-semibold">Add reviews, Stay anonymous</p>
               <p className="flex justify-center md:justify-start px-10 md:px-0 pl-12 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
             </div>
           </div>
