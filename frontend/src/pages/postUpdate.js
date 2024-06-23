@@ -280,7 +280,9 @@ const PostUpdate = () => {
                     console.log(err.response.data.msg);
                 } else if (err.response.status === 404) {
                     console.log(err.response.data.msg);
-                } else console.log(err.message);
+                } else if (err.response.status === 500){
+                    console.log(err.response.data.error)
+                }else console.log(err.message);
             }
         }
     }    

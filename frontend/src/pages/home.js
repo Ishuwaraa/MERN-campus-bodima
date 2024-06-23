@@ -25,9 +25,9 @@ const Home = () => {
   const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
   const feedback = watch("feedback");
   const [rate, setRate] = useState(null);
-  const [rate1Clr, setRate1Clr] = useState('none');
-  const [rate2Clr, setRate2Clr] = useState('none');
-  const [rate3Clr, setRate3Clr] = useState('none');
+  const [rate1Clr, setRate1Clr] = useState('white');
+  const [rate2Clr, setRate2Clr] = useState('white');
+  const [rate3Clr, setRate3Clr] = useState('white');
 
   //uni name input filter
   const filterData = data.filter((item) => {
@@ -87,31 +87,30 @@ const Home = () => {
     if(rating === 1){
       setRate(1);
       setRate1Clr('red');
-      setRate2Clr('none');
-      setRate3Clr('none');
+      setRate2Clr('white');
+      setRate3Clr('white');
     } else if(rating === 2){
       setRate(2);
-      setRate1Clr('none');
+      setRate1Clr('white');
       setRate2Clr('orange');
-      setRate3Clr('none');
+      setRate3Clr('white');
     } else {
       setRate(3);
-      setRate1Clr('none');
-      setRate2Clr('none');
+      setRate1Clr('white');
+      setRate2Clr('white');
       setRate3Clr('green');
     }
   }
   
-  const onSubmit = async () => {
-    console.log( rate1Clr, rate2Clr, rate3Clr, rate);   
+  const onSubmit = async () => {  
     if(rate){
       try{
         await axios.post('/api/feedback/', { rate, feedback });
         notify('Thank you for your valuable feedback!');
         setValue('feedback', '');
-        setRate1Clr('none');
-        setRate2Clr('none');
-        setRate3Clr('none');
+        setRate1Clr('white');
+        setRate2Clr('white');
+        setRate3Clr('white');
       } catch (err) {
         if(err.response) {
           console.log(err.message);
@@ -212,10 +211,10 @@ const Home = () => {
           </div>
         </div>
 
-        <div className=" mt-24">
+        <div className=" mt-24 md:mt-32">
           <div className="mb-8 flex justify-between">
             <p className=" text-2xl md:text-4xl text-primary font-bold">Top Ads</p>
-            <p onClick={() => window.location.href = '/allAds'} className=" text-secondary text-lg cursor-pointer hover:underline">view all</p>
+            {topAds.length > 0 && <p onClick={() => window.location.href = '/allAds'} className=" text-secondary text-lg cursor-pointer hover:underline">view all</p>}
           </div>
 
           <div className="flex justify-center">
@@ -239,14 +238,14 @@ const Home = () => {
                 ))
               ) : (
                 <div className=" flex justify-center md:col-span-2 lg:col-span-3">
-                  <p>No ads</p>
+                  <p className=" text-cusGray text-lg">No ads to display yet</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        <div className=" flex flex-col md:grid md:grid-cols-2 mt-24">
+        <div className=" flex flex-col md:grid md:grid-cols-2 mt-24 md:mt-32">
           <div className=" mb-5 md:mb-0" id="about-us">
             <p className=" flex justify-center md:justify-start text-2xl md:text-4xl text-primary font-bold">About Us</p>
             <p className="flex justify-center md:justify-start px-10 md:px-0 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
@@ -256,16 +255,16 @@ const Home = () => {
           </div>
         </div>
 
-        <div className=" flex flex-col mt-24">
+        <div className=" flex flex-col mt-24 md:mt-32">
           <p className=" flex justify-center text-2xl md:text-4xl text-primary font-bold mb-10">Give us Feedback</p>
 
           <div className=" flex flex-col justify-center border border-cusGray rounded-lg py-5 px-5 md:px-10">
             <div>
               <p className=" flex justify-center my-3 text-lg">How was your experience?</p>
               <div className=" flex justify-center gap-5">
-                <img onClick={() => emojiClick(1)} src={sad} alt="sad" className=" w-10 h-10 hover:bg-red-500 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" style={{ backgroundColor: rate1Clr}}/>
-                <img onClick={() => emojiClick(2)} src={neutral} alt="neutral" className=" w-10 h-10 hover:bg-primary rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" style={{ backgroundColor: rate2Clr}}/>
-                <img onClick={() => emojiClick(3)} src={happy} alt="happy" className=" w-10 h-10 hover:bg-green-600 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" style={{ backgroundColor: rate3Clr}}/>
+                  <img onClick={() => emojiClick(1)} src={sad} alt="sad" style={{ backgroundColor: rate1Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />
+                  <img onClick={() => emojiClick(2)} src={neutral} alt="neutral" style={{ backgroundColor: rate2Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />
+                  <img onClick={() => emojiClick(3)} src={happy} alt="happy" style={{ backgroundColor: rate3Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />                
               </div>
             </div>
 

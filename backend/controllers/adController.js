@@ -244,8 +244,8 @@ const updateAd = async (req, res) => {
             description: data.description,
             status: 'pending'
         }, { new: true });  //return the updated doc in response
-
-        if(!ad) return res.status(500).json({ msg: "Update failed" });   
+        
+        if(!ad) return res.status(500).json({ msg: "Update failed" }); 
         
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -260,14 +260,14 @@ const updateAd = async (req, res) => {
             from: process.env.EMAIL_CLIENT,
             to: process.env.EMAIL_CLIENT,
             subject: 'Pending approval for an updated Ad',
-            html: `<h1>${newAd.title}</h1>
-            <a href="http://localhost:3000/ad-approve?id=${newAd._id}">view ad</a>`,
+            html: `<h1>${ad.title}</h1>
+            <a href="http://localhost:3000/ad-approve?id=${ad._id}">view ad</a>`,
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
             // if(err) return res.status(500).json({ error: err.message });
             // res.status(200).json({ msg: 'Email sent' });
-            // console.log(err, info);
+            if(err) console.log(err, info);
         }); 
         res.status(200).json({ msg: "Ad updated", ad });
     }catch(err){

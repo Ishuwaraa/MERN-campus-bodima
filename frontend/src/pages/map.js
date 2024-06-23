@@ -59,7 +59,7 @@ const MapPage = () => {
             <div className=" col-span-1 h-48 md:h-64"><Skeleton className=" h-full"/></div>
             <div className=" col-span-2 h-48 md:h-64"><Skeleton className=" h-full"/></div>
           </div>          
-        ) : (
+        ) : ads.length > 0 ? (
           <>
             <div className="flex justify-center mb-5">
               <p className=" text-sm text-secondary">Tip: Click on the marker to view the Ad details.</p>
@@ -68,7 +68,7 @@ const MapPage = () => {
             <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-5 lg:gap-10">
               <div className="flex flex-row md:flex-col border border-cusGray rounded-lg px-5 py-8 md:px-2 min-w-64 h-64 md:h-110 md:overflow-y-scroll overflow-x-scroll md:overflow-x-hidden">
                 <div className="flex flex-row md:flex-col">
-                  {ads.length > 0 && ads.map((ad, index) => {
+                  {ads.map((ad, index) => {
                     const image = imageUrls[index % imageUrls.length];
                     return (
                       <MapCard
@@ -117,6 +117,10 @@ const MapPage = () => {
               </div>
             </div>
           </>
+        ) : (
+          <div className=" flex justify-center items-center">
+            <p className=" text-cusGray text-lg">No ads to display yet</p>
+          </div>
         )}
         
       </div>

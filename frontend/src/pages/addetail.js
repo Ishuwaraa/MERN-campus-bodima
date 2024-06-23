@@ -254,7 +254,7 @@ const Addetail = () => {
                   <>
                   <p className=" text-2xl md:text-4xl font-bold mb-1">{adDetails.title}</p>
                   <p className="md:text-2xl text-gray-600">{adDetails.location}</p>
-                  <p className="md:text-lg text-gray-600">{adDetails.university}</p>
+                  <p className="md:text-lg text-gray-600 mb-1">{adDetails.university}</p>
                   <p className="text-lg md:text-3xl font-bold text-secondary">Rs. {adDetails.price}/mo</p>   
                   <p className=" text-cusGray text-lg mt-4">Posted by {username && <span className=" text-black font-semibold">{username}</span>}</p>               
                   </>
