@@ -99,11 +99,11 @@ const Search = () => {
     }
 
     //mapping uni names to images
-    const imageMap = {
-        nsbm: nsbm,
-        sliit: sliit,
-        iit: iit
-    };    
+    // const imageMap = {
+    //     nsbm: nsbm,
+    //     sliit: sliit,
+    //     iit: iit
+    // };    
 
     useEffect(() => {
         const fetchUniAds = async () => {
@@ -120,11 +120,11 @@ const Search = () => {
 
                 //getting hero image dynamically
                 //getting the first item that matches the name
-                const matchedItem = uniData.find((item) => item.title === uni);
-                if(matchedItem) {
-                    setUniImage(imageMap[matchedItem.image]);
-                    setUniTitle(matchedItem.fullname);
-                }
+                // const matchedItem = uniData.find((item) => item.title === uni);
+                // if(matchedItem) {
+                //     setUniImage(imageMap[matchedItem.image]);
+                //     setUniTitle(matchedItem.fullname);
+                // }
                 setLoading(false);
             }catch(err) {
                 setLoading(false);
@@ -150,7 +150,7 @@ const Search = () => {
                 {
                 loading? (
                     <>
-                        <Skeleton className=" w-full h-64 mb-10" />
+                        {/* <Skeleton className=" w-full h-64 mb-10" /> */}
                         <div className="flex justify-center">
                             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                                 {Array(3).fill(0).map((_, index) => (
@@ -166,7 +166,7 @@ const Search = () => {
                     </div>
                 ) : (
                     <>
-                    <SearchPageHero image={uniImage} title={uniTitle} />
+                    {/* <SearchPageHero image={uniImage} title={uniTitle} /> */}
 
                     <div>
                         <div className=" mt-14 lg:mt-20 mb-10 flex justify-between">

@@ -8,6 +8,7 @@ const adRoutes = require('./routes/ads');
 const userRoutes = require('./routes/users');
 const reviewRoutes = require('./routes/reviews');
 const adminRoutes = require('./routes/admins');
+const feedbackRoutes = require('./routes/feedback');
 
 const app = express();
 
@@ -33,3 +34,4 @@ app.use('/api/ads', adRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/feedback', feedbackRoutes);

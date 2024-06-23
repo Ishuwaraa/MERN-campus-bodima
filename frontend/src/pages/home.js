@@ -10,12 +10,24 @@ import data from '../data/uniNames.json';
 import { useEffect, useRef, useState } from "react";
 import axios from "../api/axios";
 import SkeltionAdCard from "../components/AdSkeltonCard";
+import { useForm } from "react-hook-form";
+import happy from '../assets/home/happy-face.png';
+import neutral from '../assets/home/neutral-face.png';
+import sad from '../assets/home/sad-face.png';
+import { errorNotify, notify } from '../toastify/notifi';
 
 const Home = () => {
   const [uniInput, setUniInput] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [topAds, setTopAds] = useState([]);
   const [loading, setLoading] = useState(false);  
+
+  const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+  const feedback = watch("feedback");
+  const [rate, setRate] = useState(null);
+  const [rate1Clr, setRate1Clr] = useState('none');
+  const [rate2Clr, setRate2Clr] = useState('none');
+  const [rate3Clr, setRate3Clr] = useState('none');
 
   //uni name input filter
   const filterData = data.filter((item) => {
@@ -39,6 +51,12 @@ const Home = () => {
 
   const onSearchIconClick = (e) => {
     e.preventDefault();
+
+    if(!data.some(item => item.title === uniInput)){
+      setUniInput('');
+      return
+    }
+    
     if(uniInput !== '') window.location.href = `/search?uni=${uniInput}`
   }
 
@@ -63,7 +81,49 @@ const Home = () => {
     }
 
     fetchTopAds();
-  }, [])
+  }, [])    
+
+  const emojiClick = (rating) => {
+    if(rating === 1){
+      setRate(1);
+      setRate1Clr('red');
+      setRate2Clr('none');
+      setRate3Clr('none');
+    } else if(rating === 2){
+      setRate(2);
+      setRate1Clr('none');
+      setRate2Clr('orange');
+      setRate3Clr('none');
+    } else {
+      setRate(3);
+      setRate1Clr('none');
+      setRate2Clr('none');
+      setRate3Clr('green');
+    }
+  }
+  
+  const onSubmit = async () => {
+    console.log( rate1Clr, rate2Clr, rate3Clr, rate);   
+    if(rate){
+      try{
+        await axios.post('/api/feedback/', { rate, feedback });
+        notify('Thank you for your valuable feedback!');
+        setValue('feedback', '');
+        setRate1Clr('none');
+        setRate2Clr('none');
+        setRate3Clr('none');
+      } catch (err) {
+        if(err.response) {
+          console.log(err.message);
+        } else {
+          console.log(err.message);
+        }
+      }
+    } else {
+      errorNotify('Please add a rating');
+      return
+    }
+  }
 
   return (
     <div>
@@ -193,6 +253,32 @@ const Home = () => {
           </div>
           <div className=" flex justify-center md:justify-end">
             <img src={about} alt="Find your university" className=" w-60 md:w-64"/>
+          </div>
+        </div>
+
+        <div className=" flex flex-col mt-24">
+          <p className=" flex justify-center text-2xl md:text-4xl text-primary font-bold mb-10">Give us Feedback</p>
+
+          <div className=" flex flex-col justify-center border border-cusGray rounded-lg py-5 px-5 md:px-10">
+            <div>
+              <p className=" flex justify-center my-3 text-lg">How was your experience?</p>
+              <div className=" flex justify-center gap-5">
+                <img onClick={() => emojiClick(1)} src={sad} alt="sad" className=" w-10 h-10 hover:bg-red-500 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" style={{ backgroundColor: rate1Clr}}/>
+                <img onClick={() => emojiClick(2)} src={neutral} alt="neutral" className=" w-10 h-10 hover:bg-primary rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" style={{ backgroundColor: rate2Clr}}/>
+                <img onClick={() => emojiClick(3)} src={happy} alt="happy" className=" w-10 h-10 hover:bg-green-600 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" style={{ backgroundColor: rate3Clr}}/>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className=" md:px-28 lg:px-48">
+              <textarea name="description" rows="4" required placeholder="Share your thoughts with us..." style={{resize: "none"}} className=" mt-10 p-2 w-full border border-cusGray rounded-lg"
+              {...register("feedback", { maxLength: 300, pattern: /^[a-zA-Z0-9\s\.,_&@'"?!\-]+$/i })}/>
+              {errors.feedback && errors.feedback.type === "maxLength" ? <span className=" text-sm text-red-600">max character limit is 300</span> 
+              : errors.feedback && <span className=" text-sm text-red-600">feedback must contain only letters, numbers, and characters(@ & ' " _ - , . !)</span>}
+
+              <div className=" flex justify-center mt-5">
+                <button className=" btn bg-secondary">Send Feedback</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

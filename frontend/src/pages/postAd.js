@@ -26,6 +26,7 @@ const PostAd = () => {
     const [loading, setLoading] = useState(false);
     const [lat, setLat] = useState(null);
     const [long, setLong] = useState(null);
+    const [disableBtn, setDisableBtn] = useState(false);
     
     const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
     const title = watch('title');
@@ -41,7 +42,7 @@ const PostAd = () => {
     
     const handleChange = (e, index) => {
         const file = e.target.files[0];
-        console.log(file);
+        // console.log(file);
         if (file && !file.type.match('image.*')) {
             errorNotify('Please upload only image files (png, jpg, jpeg)');
             e.target.value = ''; // Reset the input field
@@ -70,10 +71,17 @@ const PostAd = () => {
             return;
         }
 
+        if(!data.some(item => item.title === uniInput)){
+            setUniInput('');
+            errorNotify('Please enter a valid university name from the list');
+            return
+        }
+
         if(lat === null || long === null) {
             errorNotify('Please add your location on the map');
             return;
         }
+
 
         const formData = new FormData();
         formData.append('title', title);
@@ -168,13 +176,20 @@ const PostAd = () => {
         e.preventDefault();
 
         if(navigator.geolocation){
+            setDisableBtn(true);
             navigator.geolocation.getCurrentPosition((position) => {
                 const userPosition = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                 };
                 setClickedPosition(userPosition);
+                setTimeout(() => {
+                    setDisableBtn(false);
+                }, 5000);
             }, (error) => {
+                setTimeout(() => {
+                    setDisableBtn(false);
+                }, 5000);
                 if (error.code === error.PERMISSION_DENIED) {
                     alert('Location access is required to find your position. Please enable location access.');
                 } else {
@@ -327,7 +342,7 @@ const PostAd = () => {
 
                         <div className=" mb-5 flex justify-between">
                             <p className=' text-secondary font-semibold text-xl '>Pin your location</p>
-                            <button onClick={(e) => handleLocateMe(e)} className=" btn bg-secondary">Locate Me</button>
+                            <button onClick={(e) => handleLocateMe(e)} className=" text-xl font-bold px-3 py-1 rounded-lg text-center border border-secondary text-secondary" disabled = {disableBtn? true : false}>Locate Me</button>
                         </div>
                         <div className=" w-full h-96 border border-cusGray rounded-lg mb-20">
                             <APIProvider apiKey={process.env.REACT_APP_MAP_KEY}>
