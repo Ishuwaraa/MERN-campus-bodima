@@ -1,5 +1,4 @@
 import logo from '../assets/logo/campus_bodima.png';
-import { Facebook, Instagram } from 'lucide-react'
 
 const Footer = () => {
     return(
@@ -30,7 +29,6 @@ const Footer = () => {
                 <div className=" flex items-center mb-3 md:my-0 pl-8 md:pl-0">
                     <ul>
                         <li className=" mb-2">Contact us</li>
-                        {/* <li className=" text-sm">34, flower Rd, Colombo 5, Sri Lanka</li> */}
                         {/* <li className=" text-sm">0112224448</li> */}
                         <li className=" text-sm">cbodima@gmail.com</li>
                     </ul>

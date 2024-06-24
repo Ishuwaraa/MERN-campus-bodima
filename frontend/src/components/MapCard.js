@@ -1,6 +1,3 @@
-import React from 'react';
-
-
 const MapCard = ({title, image, gender, bed, price, viewClick }) => {
   
   const onViewClick = () => window.location.href = `/addetail?id=${viewClick}`;
@@ -8,8 +5,7 @@ const MapCard = ({title, image, gender, bed, price, viewClick }) => {
   return (
     <div className="flex flex-row md:flex-col border border-secondary rounded-lg w-80 h-44 md:h-full md:w-full mr-8 md:mr-0 mb-0 md:mb-8 ">
       <div className="">
-        <img src={image} alt={title} className="h-full md:h-32 w-52 md:w-full object-cover rounded-tl-lg rounded-bl-lg md:rounded-bl-none md:rounded-tr-lg"
-        />
+        <img src={image} alt={title} className="h-full md:h-32 w-52 md:w-full object-cover rounded-tl-lg rounded-bl-lg md:rounded-bl-none md:rounded-tr-lg"/>
       </div>
       <div className="flex flex-col p-2">
         <p className="line-clamp-1 md:line-clamp-2 pb-1 text-lg font-bold text-gray-700">{title}</p>

@@ -20,7 +20,7 @@ const getAllAds = async (req, res) => {
 
         res.status(200).json({ads, imageUrls});
     }catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -42,7 +42,7 @@ const getAdsByUniName = async (req, res) => {
 
         res.status(200).json({ ads, imageUrls });
     }catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -81,7 +81,7 @@ const getAd = async (req, res) => {
         
         res.status(200).json({ad, imageUrls, username: user?.name, useremail: user?.email });
     }catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -149,7 +149,7 @@ const createAd = async (req, res) => {
 
         res.status(201).json(ad);
     }catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -218,7 +218,7 @@ const updateAdwNewImgs = async (req, res) => {
         }); 
         res.status(200).json({ msg: "Ad updated", newAd });
     }catch(err){
-        res.status(500).json({ error: err.message })
+        res.status(500).json({ msg: err.message })
     }
 }
 
@@ -271,7 +271,7 @@ const updateAd = async (req, res) => {
         }); 
         res.status(200).json({ msg: "Ad updated", ad });
     }catch(err){
-        res.status(500).json({ error: err.message })
+        res.status(500).json({ msg: err.message })
     }
 }
 
@@ -300,7 +300,7 @@ const deleteAd = async (req, res) => {
 
         res.status(200).json({ msg: "Ad deleted", deletedAd});
     }catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 

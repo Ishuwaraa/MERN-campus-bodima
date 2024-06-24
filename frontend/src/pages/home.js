@@ -4,10 +4,9 @@ import heropic from "../assets/home/heropic.png";
 import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
 import about from "../assets/home/about.jpg";
-import { Search } from "lucide-react";
 import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import SkeltionAdCard from "../components/AdSkeltonCard";
 import { useForm } from "react-hook-form";
@@ -22,7 +21,7 @@ const Home = () => {
   const [topAds, setTopAds] = useState([]);
   const [loading, setLoading] = useState(false);  
 
-  const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+  const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
   const feedback = watch("feedback");
   const [rate, setRate] = useState(null);
   const [rate1Clr, setRate1Clr] = useState('white');
@@ -114,6 +113,7 @@ const Home = () => {
       } catch (err) {
         if(err.response) {
           console.log(err.message);
+          errorNotify(err.response?.data?.msg);
         } else {
           console.log(err.message);
         }
@@ -138,7 +138,6 @@ const Home = () => {
               </div>
 
               <form action="" autoComplete="off">
-                {/* <div className=" mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg"> */}
                 <div className="relative mt-5 p-1 grid grid-cols-5 items-center border border-cusGray rounded-lg">
                   <div className=" col-span-4 md:-mr-10 lg:-mr-16">
                     <input type="text" name="university" required className=' w-full h-8 p-2' value={uniInput} placeholder="Search ads related to your university"
@@ -149,7 +148,9 @@ const Home = () => {
                     />
                   </div>
                   <div className=" flex justify-center md:justify-end ml-1 md:ml-0">
-                    <Search className=" text-secondary hover:cursor-pointer" onClick={(e) => onSearchIconClick(e)}/>
+                    <svg onClick={(e) => onSearchIconClick(e)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6 text-secondary hover:cursor-pointer">
+                      <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z" clipRule="evenodd" />
+                    </svg>
                   </div>
 
                   {dropdownVisible && (

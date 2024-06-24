@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import LoginSideView from "../components/LoginSideView";
 import { useForm } from "react-hook-form";
 import axios from '../api/axios';
-import Loading from "../components/Loading";
 import { notify } from "../toastify/notifi";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -12,9 +11,8 @@ const ResetPass = () => {
     const searchParams = new URLSearchParams(location.search);
     const token = searchParams.get('token');
 
-    const [loading, setLoading] = useState(false);
     const [errMessage, setErrMessage] = useState(null);
-    const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
 
     const password = watch('password');
     const conPass = watch('conPass');
@@ -28,23 +26,20 @@ const ResetPass = () => {
         }
 
         try{
-            // setLoading(true);
             await axios.patch(`/api/user/reset-pass/${token}`, { password });
-            // setLoading(false);
             setErrMessage(null);
             notify('Your password has been reset successfully');
             setValue('password', '');
             setValue('conPass', '');
             navigate('/login', { replace: true });
         } catch (err) {
-            // setLoading(false);
             if(err.response.status === 401){
                 setErrMessage(err.response.data.msg);
             }else if(err.response.status === 404){
                 setErrMessage(err.response.data.msg);
             }else if(err.response.status === 500){
                 console.log(err.response.data.msg);
-                setErrMessage('Token expired');
+                setErrMessage(err.response.data.msg);
             }else console.log(err.message);
         }
     }
@@ -55,12 +50,6 @@ const ResetPass = () => {
 
 
     return (
-        // <>
-        // {loading? (
-        //     <Loading />
-        // ) : (
-        // )}
-        // </>
         <div className=" grid md:grid-cols-2 mx-6 my-8">
             <LoginSideView />
 
@@ -68,7 +57,6 @@ const ResetPass = () => {
 
                 <div className=' flex flex-col justify-center items-center md:mt-14'>  
                     <p className=' font-bold text-2xl text-cusGray mb-8 md:mb-14'>Reset your password</p>
-                    {/* <p className=' font-semibold text-cusGray mb-10 lg:w-96 text-justify'>Please enter your email address. We'll email you a link to reset your password.</p> */}
                                     
                     <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
                         <p className='mb-1'>New password</p>
@@ -87,7 +75,7 @@ const ResetPass = () => {
 
                         {errMessage && <p className=" mt-1 text-sm text-red-600">{errMessage}</p>}
                         <div className=' flex justify-center mt-8'>
-                            <button className='btn bg-primary'>Reset password</button>
+                            <button className='btn bg-primary'>Reset Password</button>
                         </div>
                     </form>
                 </div>

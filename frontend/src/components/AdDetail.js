@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 const AdDetail = ({ image, title, location, price, rate }) => {
     return (
         <div className=" card"> 

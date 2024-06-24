@@ -10,7 +10,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 const MapPage = () => {
   const [ads, setAds] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
-  const [errMessage, setErrMessage] = useState(false);
+  const [errMessage, setErrMessage] = useState(null);
   const [loading, setLoading] = useState(false);
 
   //map 
@@ -28,6 +28,7 @@ const MapPage = () => {
         setAds(response.data.ads);
         setImageUrls(response.data.imageUrls);
         setLoading(false);
+        setErrMessage(null);
       }catch(err) {
         setLoading(false);
         if(err.response) {

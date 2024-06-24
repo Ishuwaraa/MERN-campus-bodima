@@ -40,7 +40,7 @@ const getReviews = async (req, res) => {
 
         res.status(200).json({ reviewsArray, usernameArray });
     }catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -102,7 +102,7 @@ const addReview = async (req, res) => {
         if(!updatedDoc) return res.status(500).json({ msg: "Unable to add review"})
         res.status(200).json(updatedDoc);
     }catch(err) {
-        res.status(500).json({ error: err.message })
+        res.status(500).json({ msg: err.message })
     }
 }
 

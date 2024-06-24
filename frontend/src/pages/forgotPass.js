@@ -11,7 +11,7 @@ const ForgotPass = () => {
 
     const [errMessage, setErrMessage] = useState(null);
     const [loading, setLoading] = useState(false);
-    const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
 
     const email = watch('email');
 
@@ -27,6 +27,9 @@ const ForgotPass = () => {
         } catch (err) {
             setLoading(false);            
             if(err.response.status === 404){
+                setErrMessage(err.response.data.msg);
+            }else if(err.response.status === 500){
+                console.log(err.response.data.msg);
                 setErrMessage(err.response.data.msg);
             }else {
                 console.log(err.message);
@@ -46,7 +49,7 @@ const ForgotPass = () => {
     
                     <div className=' flex flex-col justify-center items-center md:mt-14'>  
                         <p className=' font-bold text-2xl text-cusGray mb-8 md:mb-14'>Forgot your password?</p>
-                        <p className=' font-semibold text-cusGray mb-10 lg:w-96 text-justify'>Please enter your email address. We'll email you a link to reset your password.</p>
+                        <p className=' font-semibold text-cusGray mb-10 lg:w-96 text-justify'>Enter your email address and we’ll send you a password reset link..</p>
                                       
                         <form action="" onSubmit={handleSubmit(onSubmit)} className=' w-full lg:w-96'>
                             <p className=' mb-1'>Email</p>
@@ -56,7 +59,7 @@ const ForgotPass = () => {
     
                             {errMessage && <p className=" mt-1 text-sm text-red-600">{errMessage}</p>}
                             <div className=' flex justify-center mt-8'>
-                                <button className='btn bg-primary'>Reset password</button>
+                                <button className='btn bg-primary'>Reset Password</button>
                             </div>
                         </form>
                     </div>

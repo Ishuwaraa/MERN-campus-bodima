@@ -41,7 +41,7 @@ const registerUser = async (req, res) => {
 
         }
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -78,7 +78,7 @@ const loginUser = async (req, res) => {
             res.status(200).json({ accessToken, name: user.name, email: user.email });
         }
     }catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -137,7 +137,7 @@ const getUserData = async (req, res) => {
 
         res.status(200).json({ name: user.name, contact: user.contact, email: user.email, ads, imageUrls });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -158,7 +158,7 @@ const checkAdIds = async (req, res) => {
         res.sendStatus(200);
         
     } catch (err) { 
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -179,7 +179,7 @@ const updateUserData = async (req, res) => {
         if(!user) return res.status(500).json({ msg: 'Update failed' });
         res.status(200).json({ name: user.name, email: user.email, contact: user.contact });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -211,7 +211,7 @@ const updatePass = async (req, res) => {
         res.status(200).json({ msg: 'Password updated successfully' });
 
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -271,7 +271,7 @@ const deleteAcc = async (req, res) => {
         });
         res.status(200).json({ msg: 'Your account has been deleted successfully.' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -307,12 +307,12 @@ const forgotPass = async (req, res) => {
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
-            if(err) return res.status(500).json({ error: err.message });
+            if(err) return res.status(500).json({ msg: err.message });
             res.status(200).json({ msg: 'Email sent' });
         });
         
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 

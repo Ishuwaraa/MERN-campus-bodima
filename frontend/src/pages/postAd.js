@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect } from "react";
-import Navbar from "../components/Navbar"
-import { Plus } from 'lucide-react'
+import { useRef, useState } from "react";
+import Navbar from "../components/Navbar";
+import plus from '../assets/plus.png';
 import { useForm } from "react-hook-form";
 import data from '../data/uniNames.json';
 import Footer from "../components/Footer";
@@ -132,8 +132,7 @@ const PostAd = () => {
                 errorNotify('Your session has expired. Please log in again to continue.')
                 navigate('/login', { state: { from: pageStateLocation }, replace: true });
             }
-            else if(err.response.status === 403) console.log(err.response.data.error);
-            else if(err.response.status === 404) console.log(err.response.data.msg);
+            else if(err.response.status === 403) console.log(err.response.data.msg);
             else if(err.response) errorNotify(err.response.data.msg);
             else console.log(err.message);
         }
@@ -169,7 +168,6 @@ const PostAd = () => {
         const lng = event.detail.latLng.lng;
         setLat(lat);
         setLong(lng);
-        // console.log(lat, lng);
     }
 
     const handleLocateMe = (e) => {
@@ -227,7 +225,7 @@ const PostAd = () => {
                                                             onChange={(e) => handleChange(e, index)}
                                                             className="hidden"
                                                         />
-                                                        <Plus onClick={() => handleIconClick(index)} className="w-20 h-20 text-primary hover:cursor-pointer" />
+                                                        <img src={plus} alt="add image" onClick={() => handleIconClick(index)} className="w-20 h-20 text-primary hover:cursor-pointer"/>
                                                     </>
                                                 )}
                                             </div>

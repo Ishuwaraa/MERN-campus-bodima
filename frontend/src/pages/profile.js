@@ -6,7 +6,7 @@ import Loading from "../components/Loading";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import AdDetail from "../components/AdDetail";
 import { useNavigate, useLocation } from "react-router-dom";
-import { notify, errorNotify, deleteNotify } from '../toastify/notifi';
+import { notify, errorNotify } from '../toastify/notifi';
 import SkeltionAdCard from "../components/AdSkeltonCard";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -17,7 +17,6 @@ const Profile = () => {
     const location = useLocation();
 
     const [ads, setAds] = useState([]);
-    const [imageUrls, setImageUrls] = useState([]);
     const [loading, setLoading] = useState(false);
     const [skeletonLoad, setSkeletonLoad] = useState(false);
     const [errMessage, setErrMessage] = useState(null);
@@ -39,7 +38,7 @@ const Profile = () => {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
 
-    const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
 
     //edit form
     const editName = watch('editName');
@@ -69,7 +68,6 @@ const Profile = () => {
                 ...ad,
                 imageUrl: response.data.imageUrls[index]
             })));
-            // setImageUrls(response.data.imageUrls);
             setName(response.data.name || '');
             setEmail(response.data.email || '');
             setPhone(response.data.contact || '');
@@ -88,8 +86,12 @@ const Profile = () => {
                 errorNotify('Your session has expired. Please log in again to continue.')
                 navigate('/login', { state: { from: location }, replace: true });
             }
-            else if(err.response.status === 403) console.log(err.response.data.error);
+            else if(err.response.status === 403) console.log(err.response.data.msg);
             else if(err.response.status === 404) console.log(err.response.data.msg);
+            else if(err.response) {
+                console.log(err.response.data.msg);
+                setErrMessage(err.response.data.msg);
+            }
             else {
                 console.log(err.message);
                 setErrMessage(err.message);
@@ -119,6 +121,10 @@ const Profile = () => {
                     navigate('/login', { state: { from: location }, replace: true });
                 }
                 else if(err.response.status === 403) console.log(err.response.data.msg);
+                else if(err.response) {
+                    console.log(err.response.data.msg);
+                    setFormErrMsg(err.response.data.msg);
+                }
                 else console.log(err.message);
             }
 
@@ -152,6 +158,10 @@ const Profile = () => {
                 } 
                 else if(err.response.status === 403) console.log(err.response.data.msg);
                 else if(err.response.status === 404) {
+                    console.log(err.response.data.msg);
+                    setFormErrMsg(err.response.data.msg);
+                }
+                else if(err.response) {
                     console.log(err.response.data.msg);
                     setFormErrMsg(err.response.data.msg);
                 }
@@ -254,7 +264,7 @@ const Profile = () => {
                                             {errors.editPhone && errors.editPhone.type === 'maxLength' ? <span className=' text-sm text-red-600'>max character limit is 10</span> : errors.editPhone && <span className=' text-sm text-red-600'>enter only numbers from 0-9</span> }
         
                                             <div className=" flex justify-end mt-8">
-                                                <button className=" btn bg-primary"> Save changes</button>
+                                                <button className=" btn bg-primary"> Save Changes</button>
                                             </div>
                                         </form>
                                     }
@@ -285,7 +295,7 @@ const Profile = () => {
         
                                             {formErrMsg && <p className=" mt-1 text-sm text-red-600">{formErrMsg}</p>}
                                             <div className=" flex justify-end mt-8">
-                                                <button className=" btn bg-primary"> Update password</button>
+                                                <button className=" btn bg-primary"> Update Password</button>
                                             </div>
                                         </form>
                                     }
@@ -301,7 +311,7 @@ const Profile = () => {
         
                                             {formErrMsg && <p className=" mt-1 text-sm text-red-600">{formErrMsg}</p>}
                                             <div className=" flex justify-end mt-8">
-                                                <button className=" btn bg-red-500"> Delete account</button>
+                                                <button className=" btn bg-red-500"> Delete Account</button>
                                             </div>
                                         </form>
                                     }
@@ -311,7 +321,7 @@ const Profile = () => {
                         )}
                     </div>
     
-                    {errMessage !== null? (
+                    {errMessage? (
                         <div className=" flex justify-center mt-20">
                             <p className=" text-lg text-cusGray">{errMessage}</p>
                         </div>

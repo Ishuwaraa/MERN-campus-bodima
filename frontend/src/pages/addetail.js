@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Detail from "../components/Detail";
-// import { Facebook, Share2 } from "lucide-react";
 import gender from '../assets/ad/gender.png';
 import Bed from "../assets/ad/bed.png";
 import shower from '../assets/ad/shower.png'
@@ -9,7 +8,7 @@ import Phone from "../assets/ad/phone.png";
 import ReviewCard from "../components/ReviewCard";
 import Footer from "../components/Footer";
 import { useForm } from "react-hook-form";
-import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import noReviews from '../assets/noReviews.png';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
@@ -23,7 +22,7 @@ const Addetail = () => {
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
 
-  const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+  const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
   const review = watch("review");
 
   const [roomRate, setRoomRate] = useState('');
@@ -189,9 +188,9 @@ const Addetail = () => {
       fetchData();
       notify('Review added successfully!');
       setValue('review', '');
+      setErrMessage(null);
     }catch(err) {
-      if(err.response.status === 400) console.log(err.response.data.msg);
-      else if(err.response.status === 401) {
+      if(err.response.status === 401) {
         //no refresh token
         console.log(err.response.data.msg);
         localStorage.removeItem('auth');
@@ -203,9 +202,13 @@ const Addetail = () => {
         console.log(err.response.data.msg);
         errorNotify(err.response.data.msg);
       }
+      else if(err.response.status === 500) {
+        console.log(err.response.data.msg);
+        errorNotify(err.response.data.msg);
+      }
       else {
           console.log(err.message);
-          setErrMessage(err.message);
+          errorNotify(err.message);
       }
     }
   }
@@ -477,7 +480,7 @@ const Addetail = () => {
                 </div>
 
                 <div className="flex justify-end mt-10  ">
-                  <button className=" btn bg-primary">Add review</button>
+                  <button className=" btn bg-primary">Add Review</button>
                 </div>
                 </form>
               </div>              

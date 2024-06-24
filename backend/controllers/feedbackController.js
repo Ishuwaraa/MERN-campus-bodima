@@ -9,7 +9,7 @@ const addFeedback = async (req, res) => {
 
         res.status(201).json({ msg: 'Feedback added' });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -18,7 +18,7 @@ const getFeedbacks = async (req, res) => {
         const feedbacks = await Feedback.find().sort({ createdAt: -1 });
         res.status(200).json(feedbacks);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 

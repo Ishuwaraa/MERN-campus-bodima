@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Detail = ({name , image}) => {
   return (
     <div> 

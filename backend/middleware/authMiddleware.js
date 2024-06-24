@@ -12,7 +12,7 @@ const verifyJWT = (req, res, next) => {
     if(!token) return res.status(401).json({ msg: 'No token found' });
     
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, data) => {
-        if(err) return res.status(403).json({ error: err.message });
+        if(err) return res.status(403).json({ msg: err.message });
         
         req.user = data.id;
         next();

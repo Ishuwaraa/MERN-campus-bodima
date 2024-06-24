@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import LoginSideView from '../components/LoginSideView';
 import { useForm } from 'react-hook-form';
-// import axios from "axios";
 import axios from '../api/axios';
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +11,7 @@ const Register = () => {
 
     // const [accType, setAccType] = useState(null);
     const [errMessage, setErrMessage] = useState(null);
-    const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
 
     const name = watch('name');
     const email = watch('email');
@@ -43,9 +42,9 @@ const Register = () => {
         } catch (err) {
             if(err.response.status === 400) {
                 setErrMessage(err.response.data.msg);
-            } else {
+            } else if(err.response){
                 setErrMessage(err.response.data.msg);
-            }
+            } else console.log(err.message);
         }
     }
 
@@ -96,7 +95,7 @@ const Register = () => {
                         
                         {errMessage && <p className=" mt-1 text-sm text-red-600">{errMessage}</p>}
                         <div className=' flex justify-center mt-10'>
-                            <button className='btn bg-primary'>Create profile</button>
+                            <button className='btn bg-primary'>Create Account</button>
                         </div>
                         
                         <div className=' flex justify-center mt-2'>

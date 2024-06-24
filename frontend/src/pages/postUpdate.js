@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import Navbar from "../components/Navbar"
-import { Plus } from 'lucide-react'
+import Navbar from "../components/Navbar";
+import plus from '../assets/plus.png'
 import { useForm } from "react-hook-form";
 import Footer from "../components/Footer";
 import axios from "../api/axios";
@@ -30,7 +30,6 @@ const PostUpdate = () => {
 
     //storing fetched data
     const [loading, setLoading] = useState(false);
-    const [imageNames, setImageNames] = useState([]);
     const [imageUrls, setImageUrls] = useState([]);
     const [errMessage, setErrMessage] = useState(null);
     const [uni, setUni] = useState('');
@@ -41,7 +40,7 @@ const PostUpdate = () => {
     const [status, setStatus] = useState('');
 
     //use form inputs
-    const { register, handleSubmit, watch, formState: { errors }, getValues, setValue } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
     const title = watch('title');
     const location = watch('location');
     const contact = watch('contact');
@@ -97,9 +96,7 @@ const PostUpdate = () => {
     }    
 
     //map variables
-    // const defPosition = {lat: 6.884504262718018, lng: 79.91861383804526};
-    const oldPosition = (oldLat === null || oldLng === null) ? {lat: 6.884504262718018, lng: 79.91861383804526} : {lat: oldLat, lng: oldLng};
-    // const [oldMarker, setOldMarkr] = useState({ lat: null, lng: null});
+    const oldPosition = (oldLat === null || oldLng === null) ? {lat: 6.884504262718018, lng: 79.91861383804526} : {lat: oldLat, lng: oldLng};    
     const [clickedPosition, setClickedPosition] = useState(null);
 
     const handleMapClick = (event) => {
@@ -119,7 +116,6 @@ const PostUpdate = () => {
             // setLoading(true);
             const response = await axios.get(`/api/ads/${adId}`);
             setImageUrls(response.data.imageUrls);
-            setImageNames(response.data.ad.images);
             // setLoading(false);
             setErrMessage(null);
             setValue('title', response.data.ad.title || '');
@@ -134,12 +130,11 @@ const PostUpdate = () => {
             setLat(response.data.ad.latitude || '');
             setLong(response.data.ad.longitude || '');
             setStatus(response.data.ad.status || '');
-            // setOldMarkr({lat: response.data.ad.latitude, lng: response.data.ad.longitude});
             setOldLat(response.data.ad.latitude || '');
             setOldLng(response.data.ad.longitude || '');
         } catch(err) {
+            // setLoading(false);
             if(err.response) {
-                // setLoading(false);
                 console.log(err.response.data);
                 setErrMessage(err.response.data.msg);
             } else if(err.request) {
@@ -177,7 +172,7 @@ const PostUpdate = () => {
             if(window.confirm('Are you sure you want to delete this ad? ')){
                 setLoading(true);
                 const response = await axiosPrivate.delete(`/api/ads/${adId}`);
-                console.log(response.data.msg);
+                // console.log(response.data.msg);
                 navigate('/profile');
                 deleteNotify('Ad deleted successfully!');
                 setLoading(false);
@@ -191,6 +186,8 @@ const PostUpdate = () => {
             } else if(err.response.status === 403) {
                 console.log(err.response.data.msg);
             } else if (err.response.status === 404) {
+                console.log(err.response.data.msg);
+            } else if(err.response) {
                 console.log(err.response.data.msg);
             } else console.log(err.message);
         }
@@ -235,7 +232,8 @@ const PostUpdate = () => {
                 notify("We'll send you an email once your Ad is live");
                 fetchData();
                 // navigate('/profile');
-            } catch (err) {                
+            } catch (err) {     
+                setLoading(false);           
                 if(err.response.status === 401){
                     console.log(err.response.data.msg);
                     localStorage.removeItem('auth');
@@ -245,7 +243,9 @@ const PostUpdate = () => {
                     console.log(err.response.data.msg);
                 } else if (err.response.status === 404) {
                     console.log(err.response.data.msg);
-                } else console.log(err.message);
+                } else if(err.response) {
+                    console.log(err.response.data.msg);
+                } console.log(err.message);
             }
         }else {
             const newData = {
@@ -281,7 +281,7 @@ const PostUpdate = () => {
                 } else if (err.response.status === 404) {
                     console.log(err.response.data.msg);
                 } else if (err.response.status === 500){
-                    console.log(err.response.data.error)
+                    console.log(err.response.data.msg)
                 }else console.log(err.message);
             }
         }
@@ -291,7 +291,11 @@ const PostUpdate = () => {
         <div>
             <Navbar />
 
-            {loading? (
+            {errMessage? (
+                <div className=" flex justify-center">
+                    <p className=" text-cusGray text-lg">{errMessage}</p>
+                </div>
+            ) : loading? (
                 <Loading />
             ) : (
                 <>
@@ -315,7 +319,7 @@ const PostUpdate = () => {
                                                             onChange={(e) => handleChange(e, index)}
                                                             className="hidden"
                                                         />
-                                                        <Plus onClick={() => handleIconClick(index)} className="w-20 h-20 text-primary hover:cursor-pointer" />
+                                                        <img src={plus} alt="add" onClick={() => handleIconClick(index)} className="w-20 h-20 text-primary hover:cursor-pointer"/>
                                                     </>
                                                 )}
                                             </div>

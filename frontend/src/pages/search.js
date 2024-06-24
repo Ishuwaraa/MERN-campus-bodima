@@ -1,25 +1,16 @@
 import Navbar from "../components/Navbar";
-import nsbm from '../assets/unis/nsbm.jpg';
-import sliit from '../assets/unis/sliit.jpg';
-import iit from '../assets/unis/iit.jpg';
-import card from '../assets/card.png'
-import SearchPageHero from "../components/SearchPageHero";
 import AdDetail from "../components/AdDetail";
 import Footer from "../components/Footer";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import axios from "../api/axios";
 import { useEffect, useState } from "react";
-import uniData from '../data/uniNames.json';
 import SkeltionAdCard from "../components/AdSkeltonCard";
-import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
 
 const Search = () => {
     const [uniAds, setUniAds] = useState([]);
     const [errMessage, setErrMessage] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [uniImage, setUniImage] = useState('');
-    const [uniTitle, setUniTitle] = useState('');
 
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
@@ -130,7 +121,6 @@ const Search = () => {
                 setLoading(false);
                 // request was made and the server responded with a status code that falls out of the range of 2xx
                 if(err.response) {
-                    setLoading(false);
                     console.log(err.response.data);
                     setErrMessage(err.response.data.msg);
                 } else if(err.request) { 
@@ -149,25 +139,19 @@ const Search = () => {
             <div className="page">
                 {
                 loading? (
-                    <>
-                        {/* <Skeleton className=" w-full h-64 mb-10" /> */}
-                        <div className="flex justify-center">
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-                                {Array(3).fill(0).map((_, index) => (
-                                    <SkeltionAdCard key={index}/>
-                                ))}
-                            </div>
+                    <div className="flex justify-center">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                            {Array(3).fill(0).map((_, index) => (
+                                <SkeltionAdCard key={index}/>
+                            ))}
                         </div>
-                    </>
+                    </div>
                 ) : 
                 errMessage? (
                     <div className=" flex justify-center">
                         <p className=" text-cusGray text-lg">{errMessage}</p>
                     </div>
-                ) : (
-                    <>
-                    {/* <SearchPageHero image={uniImage} title={uniTitle} /> */}
-
+                ) : uniAds.length > 0? (
                     <div>
                         <div className=" mt-14 lg:mt-20 mb-10 flex justify-between">
                             <p className="text-2xl md:text-4xl text-primary font-bold">Search results...</p>
@@ -248,7 +232,10 @@ const Search = () => {
                             </div>
                         </div>
                     </div>
-                    </>
+                ) : (
+                    <div className=" flex justify-center">
+                        <p className=" text-cusGray text-lg">No ads to display</p>
+                    </div>
                 )}                
             </div>
 
