@@ -181,6 +181,8 @@ const PostAd = () => {
                     lng: position.coords.longitude,
                 };
                 setClickedPosition(userPosition);
+                setLat(position.coords.latitude);
+                setLong(position.coords.longitude);
                 setTimeout(() => {
                     setDisableBtn(false);
                 }, 5000);
