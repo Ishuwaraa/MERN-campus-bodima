@@ -203,14 +203,14 @@ const updateAdStatus = async (req, res) => {
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
-            if(err) return res.status(500).json({ error: err.message });
+            if(err) return res.status(500).json({ msg: err.message });
             // res.status(200).json({ msg: 'Email sent' });
             // console.log(err, info);
         }); 
 
         res.status(200).json({ msg: 'Ad updated', ad });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 
@@ -255,14 +255,14 @@ const deleteAd = async (req, res) => {
         };
 
         transporter.sendMail(mailOptions, (err, info) => {
-            if(err) return res.status(500).json({ error: err.message });
+            if(err) return res.status(500).json({ msg: err.message });
             // res.status(200).json({ msg: 'Email sent' });
             // console.log(err, info);
         }); 
 
         res.status(200).json({ msg: "Ad deleted", deletedAd});
     }catch(err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ msg: err.message });
     }
 }
 

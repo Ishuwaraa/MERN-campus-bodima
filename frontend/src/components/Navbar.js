@@ -45,13 +45,15 @@ const Navbar = () => {
             </ul>
 
             <div className=' mx-10 block md:hidden' onClick={toggleBurgerIcon}>
-            {
-                burgerIcon ? <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7 text-primary">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg> : <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7 text-primary">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+            {burgerIcon ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7 text-primary">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg> 
+            ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-7 h-7 text-primary">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                 </svg>
-            }                    
+            )}                    
             </div>       
 
             <div className=' mx-10 hidden md:block'>
@@ -63,7 +65,7 @@ const Navbar = () => {
             </div>
 
             {menuVisible && (
-            <div className={`absolute top-14 left-0 w-full bg-white border border-b-gray-200  pb-4 md:hidden transition-all duration-300 ease-in-out ${menuVisible ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+            <div className={`absolute top-14 left-0 w-full bg-white border border-b-gray-200  pb-4 md:hidden transition-all duration-500 ease-in-out transform ${menuVisible ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
                 <ul className='flex flex-col items-center space-y-4 py-4 text-cusGray'>
                 <li><a href="/" className='block w-full text-center'>Home</a></li>
                 <li><a href="/map" className='block w-full text-center'>Map</a></li>
