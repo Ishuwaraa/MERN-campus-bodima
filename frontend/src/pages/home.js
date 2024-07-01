@@ -3,7 +3,7 @@ import AdDetail from "../components/AdDetail";
 import heropic from "../assets/home/heropic.png";
 import sticker from "../assets/home/Designe3.png";
 import sticker1 from "../assets/home/Designe2.png";
-import about from "../assets/home/about.jpg";
+import about from "../assets/home/about.png";
 import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
 import { useEffect, useState } from "react";
