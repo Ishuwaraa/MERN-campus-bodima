@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseURL = 'https://campus-bodima-api.vercel.app/';
+const baseURL = 'https://campus-bodima-api.vercel.app';
 
 export default axios.create({ baseURL });
 
