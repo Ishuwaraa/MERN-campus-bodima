@@ -14,7 +14,7 @@ const app = express();
 
 // app.use(cors());
 app.use(cors({
-    origin: ["https://campusbodima.vercel.app/"],
+    origin: ["https://campusbodima.vercel.app"],
     methods: ["GET", "POST", "PATCH", "DELETE"],
     credentials: true,
 }));
