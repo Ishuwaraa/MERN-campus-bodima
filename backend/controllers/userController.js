@@ -11,9 +11,8 @@ const { getImageUrls, deleteImages } = require('../middleware/awsMiddleware');
 const cookieOptions = {
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
-    // maxAge: 24 * 60 * 60 * 1000
 }
 
 //register user
