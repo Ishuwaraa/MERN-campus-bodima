@@ -19,16 +19,17 @@ const cookieOptions = {
 //register user
 const registerUser = async (req, res) => {
     const { name, email, contact, password } = req.body;
+    const convEmail = email.toLowerCase();
 
     try{
-        const exists = await User.findOne({ email: email });
+        const exists = await User.findOne({ email: convEmail });
         if(exists) return res.status(400).json({ msg: 'Email already exists' });  
         else {
             const salt = await bcrypt.genSalt(10);  //salt with 10 characters
             const hash = await bcrypt.hash(password, salt);                
 
             // const user = new User({ name, email, contact, password: hash, refreshToken: "" });
-            const user = new User({ name, email, contact, password: hash });
+            const user = new User({ name, email: convEmail, contact, password: hash });
             const accessToken = genAccessToken(user._id);
             const refreshToken = genRefreshToken(user._id);
             // user.refreshToken = refreshToken;
@@ -49,9 +50,10 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
     const cookies = req.cookies;
+    const convEmail = email.toLowerCase();    
 
     try{
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: convEmail });
         if(!user) return res.status(404).json({ msg: "Email doesn't exist" });
         else {
             const match = await bcrypt.compare(password, user.password);
@@ -166,13 +168,14 @@ const checkAdIds = async (req, res) => {
 const updateUserData = async (req, res) => {
     const userId = req.user;
     const { editName, editEmail, editPhone } = req.body;
+    const convEmail = editEmail.toLowerCase();
 
     try{
         if(!mongoose.Types.ObjectId.isValid(userId)) return res.status(400).json({ msg: "Invalid ID" });
 
         const user = await User.findByIdAndUpdate(userId, {
             name: editName,
-            email: editEmail,
+            email: convEmail,
             contact: editPhone
         }, { new: true });
         
@@ -278,9 +281,10 @@ const deleteAcc = async (req, res) => {
 //forgot password
 const forgotPass = async (req, res) => {
     const { email } = req.body;
+    const convEmail = email.toLowerCase();
 
     try{
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: convEmail });
         if(!user) return res.status(404).json({ msg: 'Invalid email' });
 
         const resetPassToken = genResetPassToken(user._id);
@@ -297,7 +301,7 @@ const forgotPass = async (req, res) => {
         //email configuration
         const mailOptions = {
             from: process.env.EMAIL_CLIENT,
-            to: email,
+            to: convEmail,
             subject: 'Reset Password',
             html: `<h1>Reset Your Password</h1>
             <p>Click on the following link to reset your password:</p>
