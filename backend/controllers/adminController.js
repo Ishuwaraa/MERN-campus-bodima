@@ -13,8 +13,8 @@ const cookieOptions = {
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    // maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
+    // maxAge: 24 * 60 * 60 * 1000
 }
 
 //register user
@@ -163,7 +163,7 @@ const getAllAds = async (req, res) => {
             adImages.push(ad.images[0])
         })
 
-        const imageUrls = await getImageUrls(adImages, 900);
+        const imageUrls = await getImageUrls(adImages, 3600);
 
         res.status(200).json({ads, imageUrls});
     }catch(err) {
@@ -199,7 +199,7 @@ const updateAdStatus = async (req, res) => {
             subject: emailSubject,
             html: `<p>Hello ${user?.name},</p>
             <p>${emailMsg}</p>
-            <p>View your ad <a href="http://localhost:3000/addetail?id=${ad._id}">here</a></p>`,
+            <p>View your ad <a href="https://campusbodima.vercel.app/addetail?id=${ad._id}">here</a></p>`,
         };
 
         transporter.sendMail(mailOptions, (err, info) => {

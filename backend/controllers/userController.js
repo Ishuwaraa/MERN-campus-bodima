@@ -12,8 +12,8 @@ const cookieOptions = {
     httpOnly: true, 
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    // maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 3 * 24 * 60 * 60 * 1000    //exp in 3d
+    // maxAge: 24 * 60 * 60 * 1000
 }
 
 //register user
@@ -133,7 +133,7 @@ const getUserData = async (req, res) => {
             });
 
         }
-        const imageUrls = await getImageUrls(adImages, 900);         
+        const imageUrls = await getImageUrls(adImages, 3600);         
 
         res.status(200).json({ name: user.name, contact: user.contact, email: user.email, ads, imageUrls });
     } catch (err) {
@@ -301,7 +301,7 @@ const forgotPass = async (req, res) => {
             subject: 'Reset Password',
             html: `<h1>Reset Your Password</h1>
             <p>Click on the following link to reset your password:</p>
-            <a href="http://localhost:3000/reset-password?token=${resetPassToken}">http://localhost:3000/reset-password?token=${resetPassToken}</a>
+            <a href="https://campusbodima.vercel.app/reset-password?token=${resetPassToken}">https://campusbodima.vercel.app/reset-password?token=${resetPassToken}</a>
             <p>This link will expire in 10 minutes.</p>
             <p>If you didn't request a password reset, please ignore this email.</p>`,
         };

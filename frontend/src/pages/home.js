@@ -1,18 +1,11 @@
 import Navbar from "../components/Navbar";
 import AdDetail from "../components/AdDetail";
-import heropic from "../assets/home/heropic.png";
-import sticker from "../assets/home/Designe3.png";
-import sticker1 from "../assets/home/Designe2.png";
-import about from "../assets/home/about.png";
 import Footer from "../components/Footer";
 import data from '../data/uniNames.json';
 import { useEffect, useState } from "react";
 import axios from "../api/axios";
 import SkeltionAdCard from "../components/AdSkeltonCard";
 import { useForm } from "react-hook-form";
-import happy from '../assets/home/happy-face.png';
-import neutral from '../assets/home/neutral-face.png';
-import sad from '../assets/home/sad-face.png';
 import { errorNotify, notify } from '../toastify/notifi';
 
 const Home = () => {
@@ -185,7 +178,7 @@ const Home = () => {
             </div>
 
             <div className=" flex justify-center md:justify-end order-1 md:order-2 mb-5 md:mb-0">
-              <img src={heropic} alt="campus bodima" className="w-56 md:w-96" />
+              <img src='https://i.postimg.cc/NjbPfqtw/heropic.png' alt="campus bodima" className="w-56 md:w-96" />
             </div>
           </div>
         </div>
@@ -197,13 +190,13 @@ const Home = () => {
               <p className="flex justify-center md:justify-start px-10 md:px-0 md:pl-12 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
             </div>
             <div className=" flex justify-center md:justify-end md:pl-20">
-              <img src={sticker} alt="Find your university" className=" w-40 md:w-52"/>
+              <img src='https://i.postimg.cc/jn4CtPvw/Designe3.png' alt="Find your university" className=" w-40 md:w-52"/>
             </div>
           </div>
 
           <div className=" flex flex-col md:grid md:grid-cols-3 md:gap-5 mt-20">
             <div className="flex justify-center md:justify-start md:pl-20 mb-5 md:mb-0 order-2 md:order-1">
-              <img src={sticker1} alt="Find your university" className=" w-32 md:w-48"/>
+              <img src='https://i.postimg.cc/q6TgPjcH/Designe2.png' alt="Find your university" className=" w-32 md:w-48"/>
             </div>
             <div className="md:flex md:flex-col md:justify-center md:col-span-2 order-1 md:order-2 mb-5 md:mb-0">
               <p className="flex justify-center md:justify-start text-primary text-xl font-semibold">Add reviews, Stay anonymous</p>
@@ -252,7 +245,7 @@ const Home = () => {
             <p className="flex justify-center md:justify-start px-10 md:px-0 mt-3">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quasi sunt debitis doloremque vitae quam illo repellendus reprehenderit maxime aspernatur perspiciatis.</p>
           </div>
           <div className=" flex justify-center md:justify-end">
-            <img src={about} alt="Find your university" className=" w-60 md:w-64"/>
+            <img src='https://i.postimg.cc/ZWKvY7GT/about.jpg' alt="Find your university" className=" w-60 md:w-64"/>
           </div>
         </div>
 
@@ -263,9 +256,9 @@ const Home = () => {
             <div>
               <p className=" flex justify-center my-3 text-lg">How was your experience?</p>
               <div className=" flex justify-center gap-5">
-                  <img onClick={() => emojiClick(1)} src={sad} alt="sad" style={{ backgroundColor: rate1Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />
-                  <img onClick={() => emojiClick(2)} src={neutral} alt="neutral" style={{ backgroundColor: rate2Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />
-                  <img onClick={() => emojiClick(3)} src={happy} alt="happy" style={{ backgroundColor: rate3Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />                
+                  <img onClick={() => emojiClick(1)} src='https://i.postimg.cc/67F809y3/sad-face.png' alt="sad" style={{ backgroundColor: rate1Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />
+                  <img onClick={() => emojiClick(2)} src='https://i.postimg.cc/5HXHLH9T/neutral-face.png' alt="neutral" style={{ backgroundColor: rate2Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />
+                  <img onClick={() => emojiClick(3)} src='https://i.postimg.cc/mPXzP347/happy-face.png' alt="happy" style={{ backgroundColor: rate3Clr}} className=" w-10 h-10 rounded-full cursor-pointer hover:shadow-lg transform hover:scale-105 transition ease-in duration-200" />                
               </div>
             </div>
 

@@ -16,7 +16,7 @@ const getAllAds = async (req, res) => {
         })
         // console.log(adImages);
 
-        const imageUrls = await getImageUrls(adImages, 900);
+        const imageUrls = await getImageUrls(adImages, 3600);
 
         res.status(200).json({ads, imageUrls});
     }catch(err) {
@@ -38,7 +38,7 @@ const getAdsByUniName = async (req, res) => {
             adImages.push(ad.images[0])
         });
 
-        const imageUrls = await getImageUrls(adImages, 900);        
+        const imageUrls = await getImageUrls(adImages, 3600);        
 
         res.status(200).json({ ads, imageUrls });
     }catch(err) {
@@ -73,7 +73,7 @@ const getAd = async (req, res) => {
 
         //creating urls parallely
         //.map creates an array of promisses. promise.all waits for all them to resolve or reject        
-        const imageUrls = await getImageUrls(images, 1800); 
+        const imageUrls = await getImageUrls(images, 3600); 
 
         const user = await User.findById(ad.user);
         if(!user) return res.status(404).json({ msg: 'No user found' });
