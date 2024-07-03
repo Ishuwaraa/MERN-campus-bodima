@@ -263,14 +263,15 @@ const PostUpdate = () => {
             }    
 
             try{
-                // setLoading(true);
+                setLoading(true);
                 const response = await axiosPrivate.patch(`/api/ads/${adId}`, newData);
 
-                // setLoading(false);
+                setLoading(false);
                 setClickedPosition(null);
                 fetchData();
                 notify("We'll send you an email once your Ad is live");
-            } catch (err) {       
+            } catch (err) {   
+                setLoading(false);    
                 if(err.response.status === 401){
                     console.log(err.response.data.msg);
                     localStorage.removeItem('auth');
