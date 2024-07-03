@@ -473,14 +473,18 @@ const Addetail = () => {
                   )
                 )}
 
-                <span className=" text-sm text-cusGray">note: You need to be logged in to add a review</span>
+                <br /><span className=" text-sm text-cusGray">note: You need to be logged in to add a review</span>
                 <div className="mt-3 flex items-center">
                   <input type="checkbox" id="anonUser" className=' w-4 h-4 ' onChange={(e) => setAnonUser(e.target.checked)}/>
                   <label htmlFor="anonUser" className=' ml-2 text-cusGray  cursor-pointer text-center'>stay anonymous</label>
                 </div>
 
                 <div className="flex justify-end mt-10  ">
-                  <button className=" btn bg-primary">Add Review</button>
+                  {auth?.accessToken ? (
+                    <button className=" btn bg-primary">Add Review</button>
+                  ) : (
+                    <button className=" btn bg-orange-300 cursor-not-allowed" disabled>Add Review</button>
+                  )}
                 </div>
                 </form>
               </div>              
