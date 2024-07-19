@@ -132,9 +132,9 @@ const PostAd = () => {
                 errorNotify('Your session has expired. Please log in again to continue.')
                 navigate('/login', { state: { from: pageStateLocation }, replace: true });
             }
-            else if(err.response.status === 403) console.log(err.response.data.msg);
+            else if(err.response.status === 403) errorNotify(err.response.data.msg);            
             else if(err.response) errorNotify(err.response.data.msg);
-            else console.log(err.message);
+            else errorNotify(err.message);
         }
     }
 
