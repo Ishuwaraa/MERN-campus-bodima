@@ -100,6 +100,8 @@ const PostAd = () => {
             formData.append('photos', image);
         });
 
+        return;
+
         try {
             setLoading(true);
             const response = await axiosPrivate.post('/api/ads/', formData, {
@@ -354,7 +356,7 @@ const PostAd = () => {
 
                         <div className=" flex justify-between md:mx-20 lg:mx-48">
                             <button onClick={(e) => {e.preventDefault(); window.location.href = '/'}} className="text-xl font-bold px-3 py-1 rounded-lg text-center border border-primary text-primary">GO BACK</button>
-                            <button className="btn bg-primary">POST AD</button>
+                            <button disabled className="btn bg-primary">POST AD</button>
                         </div>
                     </form>                                               
                 </div>
